@@ -2,14 +2,14 @@ import { OperationId } from '../data/identifiers';
 import { IFunctionOperation } from '../data/IOperation';
 import { Value } from '../data/Value';
 import { Connection } from './Connection';
-import { Function } from './Function';
+import { getFunction, IFunction } from './CodeFunction';
 import { Operation } from './Operation';
 
 export class FunctionOperation extends Operation {
     constructor(
         id: OperationId,
-        public readonly functionToRun: Function,
-        public config: Record<string, string> = {},
+        public readonly functionToRun: IFunction,
+        public parameters: Record<string, string> = {},
     ) {
         super(id);
         this.inputs = new Array(functionToRun.inputs.length);
@@ -26,13 +26,13 @@ export class FunctionOperation extends Operation {
             type: this.type,
             id: this.id,
             function: this.functionToRun.id,
-            config: this.config,
+            config: this.parameters,
             inputs: this.inputs.map(input => input.toJson()),
         };
     }
     
     public static fromJson(data: IFunctionOperation) {
-        const functionToPerform = Function.allFunctions.get(data.function);
+        const functionToPerform = getFunction(data.function);
 
         if (!functionToPerform) {
             throw new Error(`Unrecognised function: ${data.function}`);
@@ -42,6 +42,7 @@ export class FunctionOperation extends Operation {
     }
 
     public perform(inputs: readonly Value[]) {
-        return this.functionToRun.run(inputs, this.config);
+        // TODO: validate parameters, if not done already?
+        return this.functionToRun.performRun(inputs, this.parameters);
     }
 }
