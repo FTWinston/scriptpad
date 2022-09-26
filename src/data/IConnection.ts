@@ -3,12 +3,12 @@ import { OperationId } from './identifiers';
 export interface IOperationConnection {
     type: 'operation';
     from: OperationId;
-    output: number;
+    output: string;
 }
 
 export interface IProcessConnection {
     type: 'process';
-    input: number;
+    input: string;
 }
 
 export type IConnection = IOperationConnection | IProcessConnection;

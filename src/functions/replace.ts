@@ -9,9 +9,13 @@ type Parameters = {
     matchCase: 'toggle'
 }
 
-type Inputs = ['text'];
+type Inputs = {
+    replaceIn: 'text',
+}
 
-type Outputs = ['text'];
+type Outputs = {
+    result: 'text',
+}
 
 export default new CodeFunction<Inputs, Outputs, Parameters>({
     id: 'replace',
@@ -27,15 +31,13 @@ export default new CodeFunction<Inputs, Outputs, Parameters>({
             type: 'toggle'
         },
     },
-    run: (inputs: RawValuesFromTypes<Inputs>, parameters: ParameterValues<Parameters>): RawValuesFromTypes<Outputs> => {
-        const input = inputs[0];
-
+    run: (inputs: Readonly<RawValuesFromTypes<Inputs>>, parameters: ParameterValues<Parameters>): RawValuesFromTypes<Outputs> => {
         const findValue = parameters.matchCase === 'true'
             ? new RegExp(escapeRegExp(parameters.find), 'i')
             : parameters.find;
 
-        const output = input.replaceAll(findValue, parameters.replace);
+        const result = inputs.replaceIn.replaceAll(findValue, parameters.replace);
         
-        return [output];
+        return { result };
     },
 });

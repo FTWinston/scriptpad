@@ -72,7 +72,7 @@ export class Process {
         }
 
         for (const operation of this.sortedOperations) {
-            operation.execute();
+            operation.run();
         }
 
         this._currentInputs = null;

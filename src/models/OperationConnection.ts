@@ -7,7 +7,7 @@ import { Operation } from './Operation';
 export class OperationConnection extends Connection {
     constructor(
         public from: Operation,
-        public output: number,
+        public output: string,
     ) {
         super();
     }
