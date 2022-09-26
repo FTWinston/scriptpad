@@ -1,5 +1,5 @@
 import { FunctionId } from '../data/identifiers';
-import { Value, ValueType } from '../data/Value';
+import { Value, RawValuesFromTypes, ValueType, createValueFromRaw } from '../data/Value';
 import { ParameterDeclaration, ParameterDefinitions, ParameterValues } from './FunctionParameter';
 
 const allFunctions = new Map<FunctionId, IFunction>();
@@ -8,30 +8,35 @@ export function getFunction(id: FunctionId) {
     return allFunctions.get(id);
 }
 
-type RunFunction<TParameterValues extends Record<string, string>> = (inputs: readonly Value[], parameters: TParameterValues) => Value[];
+type RunFunction<
+    TInputs extends readonly ValueType[],
+    TOutputs extends readonly ValueType[],
+    TParameterValues extends Record<string, string>
+> = (inputs: RawValuesFromTypes<TInputs>, parameters: TParameterValues) => RawValuesFromTypes<TOutputs>;
 
 
 export interface IFunction {
     readonly id: FunctionId;
-    readonly inputs: readonly ValueType[];
-    readonly outputs: readonly ValueType[];
-
     performRun(inputs: readonly Value[], parameterValues: Readonly<Record<string, string>>): Value[];
 }
 
-interface Initializer<TParameterDeclaration extends ParameterDeclaration> {
+interface Initializer<
+    TInputs extends readonly ValueType[],
+    TOutputs extends readonly ValueType[],
+    TParameterDeclaration extends ParameterDeclaration
+> {
     id: FunctionId;
-    inputs: readonly ValueType[];
-    outputs: readonly ValueType[];
     parameters: ParameterDefinitions<TParameterDeclaration>;
-    run: RunFunction<ParameterValues<TParameterDeclaration>>;
+    run: RunFunction<TInputs, TOutputs, ParameterValues<TParameterDeclaration>>;
 }
 
-export class CodeFunction<TParameterDeclaration extends ParameterDeclaration> implements IFunction {
-    constructor(init: Initializer<TParameterDeclaration>) {
+export class CodeFunction<
+    TInputs extends readonly ValueType[],
+    TOutputs extends readonly ValueType[],
+    TParameterDeclaration extends ParameterDeclaration
+> implements IFunction {
+    constructor(init: Initializer<TInputs, TOutputs, TParameterDeclaration>) {
         this.id = init.id;
-        this.inputs = init.inputs;
-        this.outputs = init.outputs;
         this.parameters = init.parameters;
         this.run = init.run;
 
@@ -39,12 +44,20 @@ export class CodeFunction<TParameterDeclaration extends ParameterDeclaration> im
     }
 
     public readonly id: FunctionId;
-    public readonly inputs: readonly ValueType[];
-    public readonly outputs: readonly ValueType[];
     public readonly parameters: ParameterDefinitions<TParameterDeclaration>;
-    private readonly run: RunFunction<ParameterValues<TParameterDeclaration>>;
+    private readonly run: RunFunction<TInputs, TOutputs, ParameterValues<TParameterDeclaration>>;
 
-    public performRun(inputs: readonly Value[], parameterValues: Readonly<Record<string, string>>) {
-        return this.run(inputs, parameterValues as ParameterValues<TParameterDeclaration>);
+    public performRun(inputs: Value[], parameterValues: ParameterValues<TParameterDeclaration>): Value[] {
+        // Unwrap the value objects to just pass the underlying values into run
+        const inputValues = inputs.map(input => input.value);
+
+        // TODO: ensure values have expected types?
+
+        // Actually run the code function
+        const outputValues = this.run(inputValues as unknown as RawValuesFromTypes<TInputs>, parameterValues);
+
+        // Wrap the raw output back up again into Value objects
+        return outputValues
+            .map(value => createValueFromRaw(value as unknown as string | string[]));
     }
 }
