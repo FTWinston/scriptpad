@@ -27,8 +27,8 @@ export class OperationConnection extends Connection {
             throw new Error(`Unrecognised operation ID: ${data.from}`);
         }
 
-        if (data.output < 0 || data.output >= from.outputs.length) {
-            throw new Error(`Operation output index #${data.output} out-of-bounds for operation ${from.id}`);
+        if (!Object.hasOwn(from.outputs, data.output)) {
+            throw new Error(`Operation output "${data.output}" not recognised for operation ${from.id}`);
         }
 
         return new OperationConnection(from, data.output);
@@ -37,7 +37,7 @@ export class OperationConnection extends Connection {
     public type: 'operation' = 'operation';
 
     public getType(): ValueType {
-        return this.from.outputs[this.output];
+        return this.from.outputs.get(this.output)!;
     }
 
     public getValue(): Value {

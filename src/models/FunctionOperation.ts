@@ -1,9 +1,9 @@
 import { OperationId } from '../data/identifiers';
 import { IFunctionOperation } from '../data/IOperation';
-import { Value } from '../data/Value';
-import { Connection } from './Connection';
+import { Values, ValueType } from '../data/Value';
 import { getFunction, IFunction } from './CodeFunction';
 import { Operation } from './Operation';
+import { mapToObject, objectToMap } from '../services/maps';
 
 export class FunctionOperation extends Operation {
     constructor(
@@ -12,14 +12,16 @@ export class FunctionOperation extends Operation {
         public parameters: Record<string, string> = {},
     ) {
         super(id);
-        this.inputs = new Array(functionToRun.inputs.length);
+
+        this.inputs = objectToMap(this.functionToRun.inputs);
+        this.outputs = objectToMap(this.functionToRun.outputs);
     }
 
     public readonly type: 'function' = 'function';
 
-    public inputs: Connection[];
+    public readonly inputs: ReadonlyMap<string, ValueType>;
 
-    public get outputs() { return this.functionToRun.outputs; }
+    public readonly outputs: ReadonlyMap<string, ValueType>;
     
     public toJson(): IFunctionOperation {
         return {
@@ -27,7 +29,7 @@ export class FunctionOperation extends Operation {
             id: this.id,
             function: this.functionToRun.id,
             config: this.parameters,
-            inputs: this.inputs.map(input => input.toJson()),
+            inputs: mapToObject(this.currentInputs, input => input.toJson()),
         };
     }
     
@@ -41,7 +43,7 @@ export class FunctionOperation extends Operation {
         return new FunctionOperation(data.id, functionToPerform, data.config);
     }
 
-    public perform(inputs: readonly Value[]) {
+    public perform(inputs: Readonly<Values>) {
         // TODO: validate parameters, if not done already?
         return this.functionToRun.performRun(inputs, this.parameters);
     }

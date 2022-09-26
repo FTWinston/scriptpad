@@ -1,7 +1,8 @@
 import { OperationId, ProcessId } from '../data/identifiers';
 import { IOperation } from '../data/IOperation';
-import { Value, Values, ValueTypes } from '../data/Value';
-import { Connection } from './Connection';
+import { Values, ValueType } from '../data/Value';
+import { mapToObject } from '../services/maps';
+import { Connections } from './Connection';
 import { FunctionOperation } from './FunctionOperation';
 import { Process } from './Process';
 import { ProcessOperation } from './ProcessOperation';
@@ -15,10 +16,12 @@ export abstract class Operation {
 
     public abstract type: 'function' | 'process';
 
-    public abstract inputs: Record<string, Connection>; // TODO: better type here?
+    public abstract get inputs(): ReadonlyMap<string, ValueType>;
 
-    public abstract get outputs(): ValueTypes;
+    public abstract get outputs(): ReadonlyMap<string, ValueType>;
     
+    public currentInputs: Connections = new Map();
+
     private _currentOutputs: Values | null = null;
 
     public get currentOutputs(): Readonly<Values> | null { return this._currentOutputs }
@@ -28,7 +31,7 @@ export abstract class Operation {
     protected abstract perform(inputs: Readonly<Values>): Values;
     
     public run() {
-        const currentInputs: Readonly<Values> = this.inputs.map(input => input.getValue());
+        const currentInputs = mapToObject(this.currentInputs, input => input.getValue());
 
         this._currentOutputs = this.perform(currentInputs);
     }

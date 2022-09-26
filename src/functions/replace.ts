@@ -19,6 +19,12 @@ type Outputs = {
 
 export default new CodeFunction<Inputs, Outputs, Parameters>({
     id: 'replace',
+    inputs: {
+        replaceIn: 'text',
+    },
+    outputs: {
+        result: 'text',
+    },
     parameters: {
         find: {
             type: 'text',

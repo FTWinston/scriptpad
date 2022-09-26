@@ -1,9 +1,9 @@
-import { IConnection } from './IConnection';
+import { IConnections } from './IConnection';
 import { OperationId, FunctionId, ProcessId } from './identifiers';
 
 interface IBaseOperation {
     id: OperationId;
-    inputs: IConnection[];
+    inputs: IConnections;
 }
 
 export interface IFunctionOperation extends IBaseOperation {

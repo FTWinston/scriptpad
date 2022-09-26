@@ -1,7 +1,7 @@
 import { OperationId, ProcessId } from '../data/identifiers';
 import { IProcessOperation } from '../data/IOperation';
-import { Value } from '../data/Value';
-import { Connection } from './Connection';
+import { Values } from '../data/Value';
+import { mapToObject } from '../services/maps';
 import { Operation } from './Operation';
 import { Process } from './Process';
 
@@ -11,21 +11,20 @@ export class ProcessOperation extends Operation {
         public readonly process: Process,
     ) {
         super(id);
-        this.inputs = new Array(process.inputs.length);
     }
 
     public readonly type: 'process' = 'process';
 
-    public inputs: Connection[];
-
-    public get outputs() { return this.process.outputs.map(output => output.getType()); }
+    public get inputs() { return this.process.inputs; }
+    
+    public get outputs() { return this.process.outputs; }
     
     public toJson(): IProcessOperation {
         return {
             type: this.type,
             id: this.id,
             process: this.process.id,
-            inputs: this.inputs.map(input => input.toJson()),
+            inputs: mapToObject(this.currentInputs, input => input.toJson()),
         };
     }
     
@@ -39,7 +38,7 @@ export class ProcessOperation extends Operation {
         return new ProcessOperation(data.id, process);
     }
 
-    public perform(inputs: readonly Value[]) {
+    public perform(inputs: Readonly<Values>) {
         return this.process.run(inputs);
     }
 }

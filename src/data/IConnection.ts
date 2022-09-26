@@ -13,4 +13,6 @@ export interface IProcessConnection {
 
 export type IConnection = IOperationConnection | IProcessConnection;
 
+export type IConnections = Record<string, IConnection>;
+
 export type ConnectionType = IConnection['type'];

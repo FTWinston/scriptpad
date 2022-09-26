@@ -62,7 +62,7 @@ export function wrapValues<TValues extends ValueTypes>(values: RawValuesFromType
     return output;
 }
 
-export function extractValues<TValues extends ValueTypes>(values: ValuesFromTypes<TValues>): RawValuesFromTypes<TValues> {
+export function unwrapValues<TValues extends ValueTypes>(values: ValuesFromTypes<TValues>): RawValuesFromTypes<TValues> {
     const output = {} as RawValuesFromTypes<TValues>;
 
     for (const [key, value] of Object.entries(values)) {

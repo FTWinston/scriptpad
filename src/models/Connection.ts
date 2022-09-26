@@ -12,6 +12,8 @@ export abstract class Connection {
     public abstract getValue(): Value;
 }
 
+export type Connections = Map<string, Connection>;
+
 export function connectionFromJson(data: IConnection, process: Process): Connection {
     if (data.type === 'operation') {
         return OperationConnection.fromJson(data, process.operations);

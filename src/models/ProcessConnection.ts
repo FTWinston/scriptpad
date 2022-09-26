@@ -5,7 +5,7 @@ import { Process } from './Process';
 
 export class ProcessConnection extends Connection {
     constructor(
-        public input: number,
+        public input: string,
         private readonly process: Process,
     ) {
         super();
@@ -19,8 +19,8 @@ export class ProcessConnection extends Connection {
     }
 
     public static fromJson(data: IProcessConnection, process: Process): ProcessConnection {
-        if (data.input < 0 || data.input >= process.inputs.length) {
-            throw new Error(`Process input index #${data.input} out-of-bounds in process ${process.id}`);
+        if (!process.inputs.has(data.input)) {
+            throw new Error(`Process input "${data.input}" not recognised in process ${process.id}`);
         }
 
         return new ProcessConnection(data.input, process);
