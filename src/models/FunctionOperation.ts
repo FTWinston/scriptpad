@@ -4,14 +4,16 @@ import { Values, ValueType } from '../data/Value';
 import { getFunction, IFunction } from './CodeFunction';
 import { Operation } from './Operation';
 import { mapToObject, objectToMap } from '../services/maps';
+import { Vector2D } from '../data/Vector2D';
 
 export class FunctionOperation extends Operation {
     constructor(
         id: OperationId,
+        position: Vector2D,
         public readonly functionToRun: IFunction,
         public parameters: Record<string, string> = {},
     ) {
-        super(id);
+        super(id, position);
 
         this.inputs = objectToMap(this.functionToRun.inputs);
         this.outputs = objectToMap(this.functionToRun.outputs);
@@ -27,6 +29,7 @@ export class FunctionOperation extends Operation {
         return {
             type: this.type,
             id: this.id,
+            position: this.position,
             function: this.functionToRun.id,
             config: this.parameters,
             inputs: mapToObject(this.currentInputs, input => input.toJson()),
@@ -40,11 +43,10 @@ export class FunctionOperation extends Operation {
             throw new Error(`Unrecognised function: ${data.function}`);
         }
 
-        return new FunctionOperation(data.id, functionToPerform, data.config);
+        return new FunctionOperation(data.id, data.position, functionToPerform, data.config);
     }
 
     public perform(inputs: Readonly<Values>) {
-        // TODO: validate parameters, if not done already?
         return this.functionToRun.performRun(inputs, this.parameters);
     }
 }

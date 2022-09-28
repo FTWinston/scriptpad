@@ -1,5 +1,6 @@
 import { OperationId, ProcessId } from '../data/identifiers';
 import { IOperation } from '../data/IOperation';
+import { Vector2D } from '../data/Vector2D';
 import { Values, ValueType } from '../data/Value';
 import { mapToObject } from '../services/maps';
 import { Connections } from './Connection';
@@ -10,6 +11,7 @@ import { ProcessOperation } from './ProcessOperation';
 export abstract class Operation {
     constructor(
         public readonly id: OperationId,
+        public position: Readonly<Vector2D>,
     ) {}
 
     public abstract toJson(): IOperation;

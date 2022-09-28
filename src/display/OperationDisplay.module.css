@@ -1,0 +1,29 @@
+.operation {
+    cursor: pointer;
+
+    --operation-bg: #333;
+    --operation-fg: #ddd;
+}
+
+.background {
+    fill: var(--operation-bg);
+}
+
+.functionBackground {
+    rx: 0.15;
+}
+
+.processBackground {
+    stroke: var(--operation-bg);
+    stroke-linejoin: square;
+    stroke-width: 0.1;
+    stroke-dasharray: .05,.95;
+    stroke-dashoffset: .025;
+}
+
+.symbol {
+    text-anchor: middle;
+    alignment-baseline: central;
+    fill: var(--operation-fg);
+    font: bold 1px sans-serif;
+}

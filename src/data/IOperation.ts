@@ -1,9 +1,11 @@
 import { IConnections } from './IConnection';
 import { OperationId, FunctionId, ProcessId } from './identifiers';
+import { Vector2D } from './Vector2D';
 
 interface IBaseOperation {
     id: OperationId;
     inputs: IConnections;
+    position: Vector2D;
 }
 
 export interface IFunctionOperation extends IBaseOperation {
