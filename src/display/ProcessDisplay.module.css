@@ -1,5 +1,8 @@
 .root {
     --operation-bg: #333;
     --operation-fg: #ddd;
-    background-color: #aaa;
+    --operation-fg-focus: #f00;
+    --connection: #000;
+    --background: #aaa;
+    background-color: var(--background);
 }

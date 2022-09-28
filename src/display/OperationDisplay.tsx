@@ -3,8 +3,8 @@ import { IOperation } from '../data/IOperation';
 import { Vector2D } from '../data/Vector2D';
 import classes from './OperationDisplay.module.css';
 
-export interface Props {
-    id: OperationId
+export interface OperationProps {
+    id: OperationId;
     position: Vector2D;
     width: number;
     height: number;
@@ -13,7 +13,7 @@ export interface Props {
     type: IOperation['type'];
 }
 
-export const OperationDisplay: React.FC<Props> = props => {
+export const OperationDisplay: React.FC<OperationProps> = props => {
     const typeBackground = props.type + 'Background';
 
     return (

@@ -42,5 +42,31 @@ Process.args = {
       width: 1,
       height: 1,
     }
-  ]
+  ],
+  connections: [
+    {
+      id: 'in_to_1',
+      from: {
+        facing: 'U',
+        position: { x: 1.5, y: 0 }
+      },
+      to: {
+        facing: 'D',
+        position: { x: 1.5, y: 1.5 }
+      },
+      type: 'sequence',
+    },
+    {
+      id: '1_to_2',
+      from: {
+        facing: 'L',
+        position: { x: 1.5, y: 1.5 }
+      },
+      to: {
+        facing: 'R',
+        position: { x: 3.5, y: 1.5 }
+      },
+      type: 'text',
+    }
+  ],
 };

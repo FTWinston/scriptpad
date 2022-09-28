@@ -1,0 +1,21 @@
+.connection {
+    
+}
+
+.line {
+    fill: transparent;
+    stroke: var(--connection);
+}
+
+.line.text {
+    stroke-width: 0.05;
+}
+
+.line.sequence {
+    stroke-width: 0.1;
+}
+
+.sequenceLine2 {
+    stroke-width: 0.0333;
+    stroke: var(--background);
+}

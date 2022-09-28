@@ -30,7 +30,7 @@
 }
 
 .operation:focus .symbol {
-    fill: red;
+    fill: var(--operation-fg-focus);
 }
 
 .operation:focus .background {

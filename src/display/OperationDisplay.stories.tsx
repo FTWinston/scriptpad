@@ -8,10 +8,8 @@ export default {
 } as ComponentMeta<typeof OperationDisplay>;
 
 const Template: ComponentStory<typeof OperationDisplay> = (args) => (
-  <svg>
-    <g transform="scale(40,40)">
-      <OperationDisplay {...args} />
-    </g>
+  <svg viewBox="0.9 0.9 1.2 1.2" style={{maxWidth: '400px', maxHeight: '400px', '--operation-bg': '#333', '--operation-fg': '#ddd', '--operation-fg-focus': '#f00'} as React.CSSProperties}>
+    <OperationDisplay {...args} />
   </svg>
 );
 

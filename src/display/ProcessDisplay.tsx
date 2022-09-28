@@ -1,13 +1,15 @@
 import { useMemo } from 'react';
-import { OperationDisplay, Props as OperationProps } from './OperationDisplay';
-import classes from './WorkspaceDisplay.module.css';
+import { ConnectionDisplay, ConnectionProps } from './ConnectionDisplay';
+import { OperationDisplay, OperationProps } from './OperationDisplay';
+import classes from './ProcessDisplay.module.css';
 
-export interface Props {
+export interface ProcessProps {
     operations: OperationProps[];
+    connections: ConnectionProps[];
 }
 
-export const ProcessDisplay: React.FC<Props> = props => {
-    const { operations } = props;
+export const ProcessDisplay: React.FC<ProcessProps> = props => {
+    const { connections, operations } = props;
 
     const viewBox = useMemo(() => determineViewBox(operations), operations);
 
@@ -16,7 +18,8 @@ export const ProcessDisplay: React.FC<Props> = props => {
             className={classes.root}
             viewBox={viewBox}
         >
-            {operations.map(operation => <OperationDisplay key={operation.id} {...operation} /> )}
+            {connections.map(connection => <ConnectionDisplay key={connection.id} {...connection} />)}
+            {operations.map(operation => <OperationDisplay key={operation.id} {...operation} />)}
         </svg>
     );
 }
