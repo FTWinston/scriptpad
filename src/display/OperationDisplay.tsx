@@ -3,7 +3,7 @@ import { IOperation } from '../data/IOperation';
 import { Vector2D } from '../data/Vector2D';
 import classes from './OperationDisplay.module.css';
 
-interface Props {
+export interface Props {
     id: OperationId
     position: Vector2D;
     width: number;
@@ -20,7 +20,7 @@ export const OperationDisplay: React.FC<Props> = props => {
         <g
             id={`operation-${props.id}`}
             className={classes.operation}
-            tabIndex={props.id}
+            tabIndex={0}
             transform={`translate(${props.position.x},${props.position.y})`}
         >
             <title>{props.name}</title>

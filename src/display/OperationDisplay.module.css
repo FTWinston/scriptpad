@@ -1,8 +1,9 @@
 .operation {
     cursor: pointer;
+}
 
-    --operation-bg: #333;
-    --operation-fg: #ddd;
+.operation:focus {
+    outline: none;
 }
 
 .background {
@@ -26,4 +27,12 @@
     alignment-baseline: central;
     fill: var(--operation-fg);
     font: bold 1px sans-serif;
+}
+
+.operation:focus .symbol {
+    fill: red;
+}
+
+.operation:focus .background {
+    opacity: 0.8;
 }

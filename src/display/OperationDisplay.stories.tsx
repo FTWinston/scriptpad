@@ -5,10 +5,6 @@ import { OperationDisplay } from './OperationDisplay';
 export default {
   title: 'Workspace/Operation',
   component: OperationDisplay,
-  parameters: {
-    // More on Story layout: https://storybook.js.org/docs/react/configure/story-layout
-    layout: 'fullscreen',
-  },
 } as ComponentMeta<typeof OperationDisplay>;
 
 const Template: ComponentStory<typeof OperationDisplay> = (args) => (

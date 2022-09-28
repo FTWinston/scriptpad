@@ -1,0 +1,5 @@
+.root {
+    --operation-bg: #333;
+    --operation-fg: #ddd;
+    background-color: #aaa;
+}
