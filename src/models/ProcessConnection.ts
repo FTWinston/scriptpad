@@ -1,5 +1,5 @@
 import { IProcessConnection } from '../data/IConnection';
-import { Value } from '../data/Value';
+import { Value, ValueType } from '../data/Value';
 import { Connection } from './Connection';
 import { Process } from './Process';
 
@@ -27,6 +27,16 @@ export class ProcessConnection extends Connection {
     }
 
     public type: 'process' = 'process';
+
+    public get valueType(): ValueType {
+        const inputType = this.process.inputs.get(this.input)
+
+        if (!inputType) {
+            throw new Error(`Trying to access unrecognised input "${this.input}" of process ${this.process.id}`);
+        }
+
+        return inputType;
+    }
 
     public getValue(): Value {
         const inputs = this.process.currentInputs;

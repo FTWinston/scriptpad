@@ -10,6 +10,7 @@ export function getFunction(id: FunctionId) {
 
 export interface IFunction {
     readonly id: FunctionId;
+    readonly symbol: string;
     inputs: ValueTypes;
     outputs: ValueTypes;
     performRun(inputs: Readonly<Record<string, Value>>, parameterValues: Readonly<Record<string, string>>): Record<string, Value>;
@@ -27,6 +28,7 @@ interface Initializer<
     TParameterDeclaration extends ParameterDeclaration
 > {
     id: FunctionId;
+    symbol: string;
     inputs: TInputs;
     outputs: TOutputs;
     parameters: ParameterDefinitions<TParameterDeclaration>;
@@ -40,6 +42,7 @@ export class CodeFunction<
 > implements IFunction {
     constructor(init: Initializer<TInputs, TOutputs, TParameterDeclaration>) {
         this.id = init.id;
+        this.symbol = init.symbol;
         this.inputs = init.inputs;
         this.outputs = init.outputs;
         this.parameters = init.parameters;
@@ -49,6 +52,7 @@ export class CodeFunction<
     }
 
     public readonly id: FunctionId;
+    public readonly symbol: string;
     public readonly inputs: TInputs;
     public readonly outputs: TOutputs;
     public readonly parameters: ParameterDefinitions<TParameterDeclaration>;

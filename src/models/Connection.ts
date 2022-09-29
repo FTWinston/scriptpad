@@ -1,5 +1,5 @@
 import { IConnection } from '../data/IConnection';
-import { Value } from '../data/Value';
+import { Value, ValueType } from '../data/Value';
 import { OperationConnection } from './OperationConnection';
 import { Process } from './Process';
 import { ProcessConnection } from './ProcessConnection';
@@ -8,6 +8,8 @@ export abstract class Connection {
     public abstract toJson(): IConnection;
 
     public abstract type: 'process' | 'operation';
+
+    public abstract get valueType(): ValueType;
 
     public abstract getValue(): Value;
 }

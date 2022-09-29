@@ -1,9 +1,8 @@
 import { useMemo } from 'react';
+import { Direction } from '../data/IShape';
 import { ValueType } from '../data/Value';
 import { Vector2D } from '../data/Vector2D';
 import classes from './ConnectionDisplay.module.css';
-
-export type Direction = 'U' | 'D' | 'L' | 'R';
 
 export interface Endpoint {
     position: Vector2D;

@@ -36,7 +36,7 @@ export class OperationConnection extends Connection {
 
     public type: 'operation' = 'operation';
 
-    public getType(): ValueType {
+    public get valueType(): ValueType {
         return this.from.outputs.get(this.output)!;
     }
 
