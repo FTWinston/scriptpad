@@ -19,3 +19,7 @@
     stroke-width: 0.0333;
     stroke: var(--background);
 }
+
+.endArrow {
+    fill: var(--connection);   
+}

@@ -52,7 +52,7 @@ Process.args = {
       },
       to: {
         facing: 'D',
-        position: { x: 1.5, y: 1.5 }
+        position: { x: 1.5, y: 1 }
       },
       type: 'sequence',
     },
@@ -60,11 +60,11 @@ Process.args = {
       id: '1_to_2',
       from: {
         facing: 'L',
-        position: { x: 1.5, y: 1.5 }
+        position: { x: 2, y: 1.5 }
       },
       to: {
         facing: 'R',
-        position: { x: 3.5, y: 1.5 }
+        position: { x: 3, y: 1.5 }
       },
       type: 'text',
     }

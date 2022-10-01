@@ -1,5 +1,6 @@
 .operation {
     cursor: pointer;
+    user-select: none;
 }
 
 .operation:focus {
