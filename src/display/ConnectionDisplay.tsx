@@ -102,15 +102,17 @@ function resolvePath(from: Endpoint, to: Endpoint): string {
 
     output += ` L ${inFrontOfEndPos.x} ${inFrontOfEndPos.y}`;
     
+    const shortenAmount = arrowLength * 0.99;
+
     switch (to.facing) {
         case 'U':
-            endPos.y += arrowLength; break;
+            endPos.y += shortenAmount; break;
         case 'D':
-            endPos.y -= arrowLength; break;
+            endPos.y -= shortenAmount; break;
         case 'L':
-            endPos.x += arrowLength; break;
+            endPos.x += shortenAmount; break;
         case 'R':
-            endPos.x -= arrowLength; break;
+            endPos.x -= shortenAmount; break;
     }
 
     output += ` L ${endPos.x} ${endPos.y}`;
