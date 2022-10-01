@@ -1,5 +1,4 @@
-
-export type Direction = 'U' | 'D' | 'L' | 'R';
+import { Direction } from './Vector2D';
 
 export interface IShape {
     width: number;

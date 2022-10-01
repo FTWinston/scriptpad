@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
-import { Direction } from '../data/IShape';
 import { ValueType } from '../data/Value';
-import { Vector2D } from '../data/Vector2D';
+import { add, Direction, dot, getStep, scale, subtract, Vector2D } from '../data/Vector2D';
 import classes from './ConnectionDisplay.module.css';
 
 export interface Endpoint {
@@ -41,54 +40,95 @@ export const ConnectionDisplay: React.FC<ConnectionProps> = props => {
                 className={`${classes.line} ${classes[props.type]}`}
             />
 
-            {secondPath}
-
             <path
                 d={endArrowData}
                 className={classes.endArrow}
             />
+
+            {secondPath}
         </g>
     );
 }
 
+const arrowWidth = 0.15;
+const arrowLength = 0.175;
+
+function resolveConnectionPoint(endpoint: Endpoint, type: 'in' | 'out'): Vector2D {
+    switch (endpoint.facing) {
+        case 'U':
+            return {
+                x: endpoint.position.x + 0.5,
+                y: endpoint.position.y + (type === 'in' ? 1 : 0),
+            };
+        case 'D':
+            return {
+                x: endpoint.position.x + 0.5,
+                y: endpoint.position.y + (type === 'in' ? 0 : 1),
+            };
+        case 'L':
+            return {
+                x: endpoint.position.x + (type === 'in' ? 1 : 0),
+                y: endpoint.position.y + 0.5,
+            };
+        case 'R':
+            return {
+                x: endpoint.position.x + (type === 'in' ? 0 : 1),
+                y: endpoint.position.y + 0.5,
+            };
+    }
+}
+
 function resolvePath(from: Endpoint, to: Endpoint): string {
-    let output = `M ${from.position.x} ${from.position.y}`;
+    const startPos = resolveConnectionPoint(from, 'out');
+    let endPos = resolveConnectionPoint(to, 'in');
 
-    // TODO: actually do elbow bracket stuff here
-    
-    let { x: endX, y: endY } = to.position;
+    let output = `M ${startPos.x} ${startPos.y}`;
 
-    const shortenEnd = 0.1;
+    const fromStep = getStep(from.facing);
+    const toStep = getStep(to.facing);
+
+    // Step half a square out from the starting point.
+    let currentPos = add(startPos, scale(fromStep, 0.5));
+
+    // We will end half a square out from the end point.
+    const inFrontOfEndPos = add(endPos, scale(toStep, -0.5));
+
+    // Keep moving currentPos in the direction of fromStep, while this leads even vaguely towards targetPos.
+    while (dot(subtract(inFrontOfEndPos, currentPos), fromStep) > 0) {
+        currentPos = add(currentPos, fromStep);
+    }
+
+    output += ` L ${currentPos.x} ${currentPos.y}`;
+
+    output += ` L ${inFrontOfEndPos.x} ${inFrontOfEndPos.y}`;
     
     switch (to.facing) {
         case 'U':
-            endY += shortenEnd; break;
+            endPos.y += arrowLength; break;
         case 'D':
-            endY -= shortenEnd; break;
+            endPos.y -= arrowLength; break;
         case 'L':
-            endX += shortenEnd; break;
+            endPos.x += arrowLength; break;
         case 'R':
-            endX -= shortenEnd; break;
+            endPos.x -= arrowLength; break;
     }
 
-    output += ` L ${endX} ${endY}`;
+    output += ` L ${endPos.x} ${endPos.y}`;
 
     return output;
 }
 
 function resolveEndArrow(endpoint: Endpoint): string {
-    const { x: endX, y: endY } = endpoint.position;
-    const width = 0.15;
-    const length = 0.15;
+    let { x: endX, y: endY } = resolveConnectionPoint(endpoint, 'in')
 
     switch (endpoint.facing) {
         case 'U':
-            return `M ${endX} ${endY} L ${endX - width} ${endY + length} L ${endX + width} ${endY + length} Z`;
+            return `M ${endX} ${endY} L ${endX - arrowWidth} ${endY + arrowLength} L ${endX + arrowWidth} ${endY + arrowLength} Z`;
         case 'D':
-            return `M ${endX} ${endY} L ${endX - width} ${endY - length} L ${endX + width} ${endY - length} Z`;
+            return `M ${endX} ${endY} L ${endX - arrowWidth} ${endY - arrowLength} L ${endX + arrowWidth} ${endY - arrowLength} Z`;
         case 'L':
-            return `M ${endX} ${endY} L ${endX + length} ${endY + width} L ${endX + length} ${endY - width} Z`;
+            return `M ${endX} ${endY} L ${endX + arrowLength} ${endY + arrowWidth} L ${endX + arrowLength} ${endY - arrowWidth} Z`;
         case 'R':
-            return `M ${endX} ${endY} L ${endX - length} ${endY + width} L ${endX - length} ${endY - width} Z`;
+            return `M ${endX} ${endY} L ${endX - arrowLength} ${endY + arrowWidth} L ${endX - arrowLength} ${endY - arrowWidth} Z`;
     }
 }
