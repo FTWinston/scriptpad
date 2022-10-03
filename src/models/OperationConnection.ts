@@ -1,6 +1,6 @@
 import { IOperationConnection } from '../data/IConnection';
 import { OperationId } from '../data/identifiers';
-import { Value, ValueType } from '../data/Value';
+import { RawValue, Value, ValueType } from '../data/Value';
 import { Connection } from './Connection';
 import { Operation } from './Operation';
 
@@ -40,7 +40,7 @@ export class OperationConnection extends Connection {
         return this.from.outputs.get(this.output)!;
     }
 
-    public getValue(): Value {
+    public getValue(): RawValue {
         const outputs = this.from.currentOutputs;
 
         if (outputs === null) {

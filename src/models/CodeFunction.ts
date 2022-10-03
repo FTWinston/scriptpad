@@ -1,6 +1,6 @@
 import { FunctionId } from '../data/identifiers';
-import { RawValuesFromTypes, ValuesFromTypes, ValueTypes, Value, unwrapValues, wrapValues, Values, TextValue } from '../data/Value';
-import { ParameterDeclaration, ParameterDefinitions, ParameterValues } from './FunctionParameter';
+import { RawValuesFromTypes, ValueTypes, RawValues } from '../data/Value';
+import { ParameterTypes, ParameterDefinitions, ParameterValues, RawParameters } from './FunctionParameter';
 
 const allFunctions = new Map<FunctionId, IFunction>();
 
@@ -11,41 +11,36 @@ export function getFunction(id: FunctionId) {
 export interface IFunction {
     readonly id: FunctionId;
     readonly symbol: string;
-    inputs: ValueTypes;
+    parameters: ParameterDefinitions<ParameterTypes>;
     outputs: ValueTypes;
-    performRun(inputs: Readonly<Record<string, Value>>, parameterValues: Readonly<Record<string, string>>): Record<string, Value>;
+    performRun(inputs: Readonly<RawValues>, parameterValues: Readonly<RawParameters>): RawValues;
 }
 
 type RunFunction<
-    TInputs extends ValueTypes,
+    TParameters extends ParameterTypes,
     TOutputs extends ValueTypes,
-    TParameterValues extends Record<string, string>
-> = (inputs: Readonly<RawValuesFromTypes<TInputs>>, parameters: TParameterValues) => RawValuesFromTypes<TOutputs>;
+> = (parameters: Readonly<ParameterValues<TParameters>>) => RawValuesFromTypes<TOutputs>;
 
 interface Initializer<
-    TInputs extends ValueTypes,
+    TParameters extends ParameterTypes,
     TOutputs extends ValueTypes,
-    TParameterDeclaration extends ParameterDeclaration
 > {
     id: FunctionId;
     symbol: string;
-    inputs: TInputs;
+    parameters: ParameterDefinitions<TParameters>;
     outputs: TOutputs;
-    parameters: ParameterDefinitions<TParameterDeclaration>;
-    run: RunFunction<TInputs, TOutputs, ParameterValues<TParameterDeclaration>>;
+    run: RunFunction<TParameters, TOutputs>;
 }
 
 export class CodeFunction<
-    TInputs extends ValueTypes,
-    TOutputs extends ValueTypes,
-    TParameterDeclaration extends ParameterDeclaration
+    TParameters extends ParameterTypes,
+    TOutputs extends ValueTypes
 > implements IFunction {
-    constructor(init: Initializer<TInputs, TOutputs, TParameterDeclaration>) {
+    constructor(init: Initializer<TParameters, TOutputs>) {
         this.id = init.id;
         this.symbol = init.symbol;
-        this.inputs = init.inputs;
-        this.outputs = init.outputs;
         this.parameters = init.parameters;
+        this.outputs = init.outputs;
         this.run = init.run;
 
         allFunctions.set(this.id, this);
@@ -53,21 +48,20 @@ export class CodeFunction<
 
     public readonly id: FunctionId;
     public readonly symbol: string;
-    public readonly inputs: TInputs;
+    public readonly parameters: ParameterDefinitions<TParameters>;
     public readonly outputs: TOutputs;
-    public readonly parameters: ParameterDefinitions<TParameterDeclaration>;
-    private readonly run: RunFunction<TInputs, TOutputs, ParameterValues<TParameterDeclaration>>;
+    private readonly run: RunFunction<TParameters, TOutputs>;
 
-    public performRun(inputs: Readonly<Values>, parameterValues: ParameterValues<TParameterDeclaration>): Readonly<Values> {
-        // Unwrap the value objects to just pass the underlying values into run
-        const inputValues = unwrapValues<TInputs>(inputs as Readonly<ValuesFromTypes<TInputs>>);
+    public performRun(inputs: Readonly<RawValues>, parameters: ParameterValues<TParameters>): Readonly<RawValues> {
+        // Combine inputs with configured parameter values.
+        const parameterValues: ParameterValues<TParameters> = {
+            ...inputs,
+            ...parameters
+        };
 
-        // TODO: ensure values have expected types?
+        // TODO: ensure all parameter values have expected types?
 
         // Actually run the code function
-        const outputValues = this.run(inputValues as unknown as RawValuesFromTypes<TInputs>, parameterValues);
-
-        // Wrap the raw output back up again into Value objects
-        return wrapValues<TOutputs>(outputValues) as Readonly<Values>; 
+        return this.run(parameterValues);
     }
 }

@@ -1,14 +1,14 @@
 import { OperationId, ProcessId } from '../data/identifiers';
 import { IOperation } from '../data/IOperation';
 import { Vector2D } from '../data/Vector2D';
-import { Values, ValueType } from '../data/Value';
+import { RawValues, ValueType } from '../data/Value';
 import { mapToObject } from '../services/maps';
 import { Connections } from './Connection';
 import { FunctionOperation } from './FunctionOperation';
 import { Process } from './Process';
 import { ProcessOperation } from './ProcessOperation';
 import { IShape } from '../data/IShape';
-import { possibleShapesByConnections } from './Shapes';
+import { possibleShapesByConnections } from './shapes';
 
 export abstract class Operation {
     constructor(
@@ -39,13 +39,13 @@ export abstract class Operation {
     
     public currentInputs: Connections = new Map();
 
-    private _currentOutputs: Values | null = null;
+    private _currentOutputs: RawValues | null = null;
 
-    public get currentOutputs(): Readonly<Values> | null { return this._currentOutputs }
+    public get currentOutputs(): Readonly<RawValues> | null { return this._currentOutputs }
 
     public clearCurrentOutputs() { this._currentOutputs = null; }
 
-    protected abstract perform(inputs: Readonly<Values>): Values;
+    protected abstract perform(inputs: Readonly<RawValues>): RawValues;
     
     public run() {
         const currentInputs = mapToObject(this.currentInputs, input => input.getValue());

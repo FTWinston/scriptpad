@@ -1,6 +1,6 @@
 import { OperationId, ProcessId } from '../data/identifiers';
 import { IProcess } from '../data/IProcess';
-import { Values, ValueType } from '../data/Value';
+import { RawValues, ValueType } from '../data/Value';
 import { Operation, operationFromJson } from './Operation';
 import { connectionFromJson } from './Connection';
 import { determineOperationExecutionOrder } from '../services/determineOperationExecutionOrder';
@@ -57,11 +57,11 @@ export class Process {
 
     private sortedOperations: Operation[] | null = null;
 
-    private _currentInputs: Readonly<Values> | null = null;
+    private _currentInputs: Readonly<RawValues> | null = null;
 
-    public get currentInputs(): Readonly<Values> | null { return this._currentInputs }
+    public get currentInputs(): Readonly<RawValues> | null { return this._currentInputs }
     
-    public run(inputs: Readonly<Values>): Values {
+    public run(inputs: Readonly<RawValues>): RawValues {
         this._currentInputs = inputs;
 
         if (this.sortedOperations === null) {

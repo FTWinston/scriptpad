@@ -1,7 +1,7 @@
 import { OperationId, ProcessId } from '../data/identifiers';
 import { IProcessOperation } from '../data/IOperation';
 import { Vector2D } from '../data/Vector2D';
-import { Values } from '../data/Value';
+import { RawValues } from '../data/Value';
 import { mapToObject } from '../services/maps';
 import { Operation } from './Operation';
 import { Process } from './Process';
@@ -54,7 +54,7 @@ export class ProcessOperation extends Operation {
         return new ProcessOperation(data.id, data.position, process);
     }
 
-    public perform(inputs: Readonly<Values>) {
+    public perform(inputs: Readonly<RawValues>) {
         return this.process.run(inputs);
     }
 }

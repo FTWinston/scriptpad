@@ -3,29 +3,25 @@ import { CodeFunction } from '../models/CodeFunction';
 import { ParameterValues } from '../models/FunctionParameter';
 import { escapeRegExp } from '../services/escapeRegExp';
 
-type Parameters = {
-    find: 'text'
-    replace: 'text'
-    matchCase: 'toggle'
-}
-
 type Inputs = {
-    replaceIn: 'text',
+    in: 'text',
+    find: 'text',
+    replace: 'text',
+    matchCase: 'toggle',
 }
 
 type Outputs = {
     result: 'text',
 }
 
-export default new CodeFunction<Inputs, Outputs, Parameters>({
+export default new CodeFunction<Inputs, Outputs>({
     id: 'replace',
-    inputs: {
-        replaceIn: 'text',
-    },
-    outputs: {
-        result: 'text',
-    },
+    symbol: 'R',
     parameters: {
+        in: {
+            type: 'text',
+            inputByDefault: true,
+        },
         find: {
             type: 'text',
             validation: /.+/
@@ -37,12 +33,15 @@ export default new CodeFunction<Inputs, Outputs, Parameters>({
             type: 'toggle'
         },
     },
-    run: (inputs: Readonly<RawValuesFromTypes<Inputs>>, parameters: ParameterValues<Parameters>): RawValuesFromTypes<Outputs> => {
-        const findValue = parameters.matchCase === 'true'
-            ? new RegExp(escapeRegExp(parameters.find), 'i')
-            : parameters.find;
+    outputs: {
+        result: 'text',
+    },
+    run: (inputs: Readonly<ParameterValues<Inputs>>): RawValuesFromTypes<Outputs> => {
+        const findValue = inputs.matchCase === 'true'
+            ? new RegExp(escapeRegExp(inputs.find), 'i')
+            : inputs.find;
 
-        const result = inputs.replaceIn.replaceAll(findValue, parameters.replace);
+        const result = inputs.in.replaceAll(findValue, inputs.replace);
         
         return { result };
     },
