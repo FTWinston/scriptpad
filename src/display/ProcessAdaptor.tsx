@@ -27,14 +27,12 @@ export const ProcessAdaptor: React.FC<Props> = ({ process }) => {
                 id: `${operation.id}_${name}}`,
                 type: connection.valueType,
                 from: {
-                    // TODO: determine this from connections and shape, somehow
                     facing: 'U',
-                    position: operation.position,
+                    position: connection.startPosition,
                 },
                 to: {
-                    // TODO: determine this from connections and shape, somehow
                     facing: 'D',
-                    position: operation.position,
+                    position: connection.getEndPosition(operation, name),
                 },
             })
         }

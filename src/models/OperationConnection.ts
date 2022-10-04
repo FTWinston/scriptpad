@@ -1,6 +1,7 @@
 import { IOperationConnection } from '../data/IConnection';
 import { OperationId } from '../data/identifiers';
 import { IOValue, IOType } from '../data/Values';
+import { Vector2D } from '../data/Vector2D';
 import { Connection } from './Connection';
 import { Operation } from './Operation';
 
@@ -10,8 +11,19 @@ export class OperationConnection extends Connection {
         public output: string,
     ) {
         super();
+
+        this.outputNumber = from.outputs.findIndex(connection => connection[0] === output);
     }
     
+    private outputNumber: number;
+
+    public get startPosition(): Vector2D {
+        return {
+            x: this.from.position.x + this.outputNumber,
+            y: this.from.position.y,
+        }
+    }
+
     public toJson(): IOperationConnection {
         return {
             type: this.type,
@@ -37,7 +49,7 @@ export class OperationConnection extends Connection {
     public type: 'operation' = 'operation';
 
     public get valueType(): IOType {
-        return this.from.outputs.get(this.output)!;
+        return this.from.outputs[this.outputNumber][1];
     }
 
     public getValue(): IOValue {
