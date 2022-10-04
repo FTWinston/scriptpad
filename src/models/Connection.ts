@@ -1,5 +1,5 @@
 import { IConnection } from '../data/IConnection';
-import { RawValue, ValueType } from '../data/Value';
+import { IOValue, IOType } from '../data/Values';
 import { OperationConnection } from './OperationConnection';
 import { Process } from './Process';
 import { ProcessConnection } from './ProcessConnection';
@@ -9,9 +9,9 @@ export abstract class Connection {
 
     public abstract type: 'process' | 'operation';
 
-    public abstract get valueType(): ValueType;
+    public abstract get valueType(): IOType;
 
-    public abstract getValue(): RawValue;
+    public abstract getValue(): IOValue;
 }
 
 export type Connections = Map<string, Connection>;

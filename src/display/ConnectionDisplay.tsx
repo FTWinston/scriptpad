@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { ValueType } from '../data/Value';
+import { IOType } from '../data/Values';
 import { add, Direction, dot, getStep, scale, subtract, Vector2D } from '../data/Vector2D';
 import classes from './ConnectionDisplay.module.css';
 
@@ -12,7 +12,7 @@ export interface ConnectionProps {
     id: string;
     from: Endpoint;
     to: Endpoint;
-    type: ValueType;
+    type: IOType;
 }
 
 export const ConnectionDisplay: React.FC<ConnectionProps> = props => {

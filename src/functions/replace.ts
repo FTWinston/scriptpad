@@ -1,9 +1,8 @@
-import { RawValuesFromTypes } from '../data/Value';
+import { ParameterValuesFromTypes, IOValuesFromTypes} from '../data/Values';
 import { CodeFunction } from '../models/CodeFunction';
-import { ParameterValues } from '../models/FunctionParameter';
 import { escapeRegExp } from '../services/escapeRegExp';
 
-type Inputs = {
+type Parameters = {
     in: 'text',
     find: 'text',
     replace: 'text',
@@ -14,7 +13,7 @@ type Outputs = {
     result: 'text',
 }
 
-export default new CodeFunction<Inputs, Outputs>({
+export default new CodeFunction<Parameters, Outputs>({
     id: 'replace',
     symbol: 'R',
     parameters: {
@@ -38,7 +37,7 @@ export default new CodeFunction<Inputs, Outputs>({
     outputs: {
         result: 'text',
     },
-    run: (inputs: Readonly<ParameterValues<Inputs>>): RawValuesFromTypes<Outputs> => {
+    run: (inputs: Readonly<ParameterValuesFromTypes<Parameters>>): IOValuesFromTypes<Outputs> => {
         const findValue = inputs.matchCase === 'true'
             ? new RegExp(escapeRegExp(inputs.find), 'i')
             : inputs.find;

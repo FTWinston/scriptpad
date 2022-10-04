@@ -1,6 +1,6 @@
 import { OperationId, ProcessId } from '../data/identifiers';
 import { IProcess } from '../data/IProcess';
-import { RawValues, ValueType } from '../data/Value';
+import { IOValues, IOType } from '../data/Values';
 import { Operation, operationFromJson } from './Operation';
 import { connectionFromJson } from './Connection';
 import { determineOperationExecutionOrder } from '../services/determineOperationExecutionOrder';
@@ -11,8 +11,8 @@ export class Process {
     constructor(
         public readonly id: ProcessId,
         private readonly _operations: Map<OperationId, Operation>,
-        public inputs: ReadonlyMap<string, ValueType>,
-        public outputs: ReadonlyMap<string, ValueType>,
+        public inputs: ReadonlyMap<string, IOType>,
+        public outputs: ReadonlyMap<string, IOType>,
         public outputConnections: Map<string, OperationConnection>
     ) {}
 
@@ -57,11 +57,11 @@ export class Process {
 
     private sortedOperations: Operation[] | null = null;
 
-    private _currentInputs: Readonly<RawValues> | null = null;
+    private _currentInputs: Readonly<IOValues> | null = null;
 
-    public get currentInputs(): Readonly<RawValues> | null { return this._currentInputs }
+    public get currentInputs(): Readonly<IOValues> | null { return this._currentInputs }
     
-    public run(inputs: Readonly<RawValues>): RawValues {
+    public run(inputs: Readonly<IOValues>): IOValues {
         this._currentInputs = inputs;
 
         if (this.sortedOperations === null) {

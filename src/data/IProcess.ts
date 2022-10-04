@@ -1,11 +1,11 @@
 import { IOperationConnection } from './IConnection';
 import { IOperation } from './IOperation';
-import { ValueTypes } from './Value';
+import { IOTypes } from './Values';
 
 export interface IProcess {
     id: string;
-    inputs: ValueTypes;
-    outputs: ValueTypes;
+    inputs: IOTypes;
+    outputs: IOTypes;
     operations: IOperation[];
     outputConnections: Record<string, IOperationConnection>;
 }

@@ -1,7 +1,7 @@
 import { OperationId, ProcessId } from '../data/identifiers';
 import { IOperation } from '../data/IOperation';
 import { Vector2D } from '../data/Vector2D';
-import { RawValues, ValueType } from '../data/Value';
+import { IOValues, IOType } from '../data/Values';
 import { mapToObject } from '../services/maps';
 import { Connections } from './Connection';
 import { FunctionOperation } from './FunctionOperation';
@@ -33,19 +33,19 @@ export abstract class Operation {
 
     public abstract shape: IShape;
 
-    public abstract get inputs(): ReadonlyMap<string, ValueType>;
+    public abstract get inputs(): Array<[string, IOType]>;
 
-    public abstract get outputs(): ReadonlyMap<string, ValueType>;
+    public abstract get outputs(): Array<[string, IOType]>;
     
     public currentInputs: Connections = new Map();
 
-    private _currentOutputs: RawValues | null = null;
+    private _currentOutputs: IOValues | null = null;
 
-    public get currentOutputs(): Readonly<RawValues> | null { return this._currentOutputs }
+    public get currentOutputs(): Readonly<IOValues> | null { return this._currentOutputs }
 
     public clearCurrentOutputs() { this._currentOutputs = null; }
 
-    protected abstract perform(inputs: Readonly<RawValues>): RawValues;
+    protected abstract perform(inputs: Readonly<IOValues>): IOValues;
     
     public run() {
         const currentInputs = mapToObject(this.currentInputs, input => input.getValue());

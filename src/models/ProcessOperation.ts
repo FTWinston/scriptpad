@@ -1,8 +1,8 @@
 import { OperationId, ProcessId } from '../data/identifiers';
 import { IProcessOperation } from '../data/IOperation';
 import { Vector2D } from '../data/Vector2D';
-import { RawValues } from '../data/Value';
-import { mapToObject } from '../services/maps';
+import { IOType, IOValues } from '../data/Values';
+import { mapToArray, mapToObject } from '../services/maps';
 import { Operation } from './Operation';
 import { Process } from './Process';
 import { IShape } from '../data/IShape';
@@ -14,6 +14,9 @@ export class ProcessOperation extends Operation {
         public readonly process: Process,
     ) {
         super(id, position);
+        
+        this.inputs = mapToArray(this.process.inputs, (type, id) => [id, type]);
+        this.outputs = mapToArray(this.process.outputs, (type, id) => [id, type]);
         
         this.shape = this.possibleShapes[0];
     }
@@ -30,9 +33,9 @@ export class ProcessOperation extends Operation {
         return this.process.inputs.size + this.process.outputs.size;
     }
 
-    public get inputs() { return this.process.inputs; }
-    
-    public get outputs() { return this.process.outputs; }
+    public readonly inputs: Array<[string, IOType]>;
+
+    public readonly outputs: Array<[string, IOType]>;
     
     public toJson(): IProcessOperation {
         return {
@@ -54,7 +57,7 @@ export class ProcessOperation extends Operation {
         return new ProcessOperation(data.id, data.position, process);
     }
 
-    public perform(inputs: Readonly<RawValues>) {
+    public perform(inputs: Readonly<IOValues>) {
         return this.process.run(inputs);
     }
 }

@@ -1,12 +1,11 @@
 import { OperationId } from '../data/identifiers';
 import { IFunctionOperation } from '../data/IOperation';
-import { RawValues, ValueType } from '../data/Value';
+import { IOValues, IOType, ParameterDefinition } from '../data/Values';
 import { getFunction, IFunction } from './CodeFunction';
 import { Operation } from './Operation';
-import { mapToObject, objectToMap } from '../services/maps';
+import { mapToObject, objectToArray } from '../services/maps';
 import { Vector2D } from '../data/Vector2D';
 import { IShape } from '../data/IShape';
-import { ParameterDefinition } from './FunctionParameter';
 
 export class FunctionOperation extends Operation {
     constructor(
@@ -19,8 +18,8 @@ export class FunctionOperation extends Operation {
 
         this.shape = this.possibleShapes[0];
 
-        this.inputs = objectToMap(this.functionToRun.parameters, filterDefaultInput);
-        this.outputs = objectToMap(this.functionToRun.outputs);
+        this.inputs = objectToArray(this.functionToRun.parameters, filterDefaultInput);
+        this.outputs = objectToArray(this.functionToRun.outputs, (value, key) => [key, value]);
     }
 
     public readonly type: 'function' = 'function';
@@ -35,9 +34,9 @@ export class FunctionOperation extends Operation {
         return Object.keys(this.functionToRun.parameters).length + Object.keys(this.functionToRun.outputs).length;
     }
 
-    public readonly inputs: ReadonlyMap<string, ValueType>;
+    public readonly inputs: Array<[string, IOType]>;
 
-    public readonly outputs: ReadonlyMap<string, ValueType>;
+    public readonly outputs: Array<[string, IOType]>;
     
     public toJson(): IFunctionOperation {
         return {
@@ -60,15 +59,15 @@ export class FunctionOperation extends Operation {
         return new FunctionOperation(data.id, data.position, functionToPerform, data.config);
     }
 
-    public perform(inputs: Readonly<RawValues>) {
+    public perform(inputs: Readonly<IOValues>) {
         return this.functionToRun.performRun(inputs, this.parameters);
     }
 }
 
-function filterDefaultInput(parameter: ParameterDefinition) {
-    if (parameter.type === 'choice' || parameter.type === 'toggle' || !parameter.inputByDefault) {
+function filterDefaultInput(definition: ParameterDefinition, id: string): [string, IOType] | undefined {
+    if (definition.type === 'choice' || definition.type === 'toggle' || !definition.inputByDefault) {
         return undefined;
     }
 
-    return parameter.type;
+    return [id, definition.type];
 }

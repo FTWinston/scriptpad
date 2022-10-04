@@ -1,5 +1,5 @@
 import { IProcessConnection } from '../data/IConnection';
-import { RawValue, ValueType } from '../data/Value';
+import { IOValue, IOType } from '../data/Values';
 import { Connection } from './Connection';
 import { Process } from './Process';
 
@@ -28,7 +28,7 @@ export class ProcessConnection extends Connection {
 
     public type: 'process' = 'process';
 
-    public get valueType(): ValueType {
+    public get valueType(): IOType {
         const inputType = this.process.inputs.get(this.input)
 
         if (!inputType) {
@@ -38,7 +38,7 @@ export class ProcessConnection extends Connection {
         return inputType;
     }
 
-    public getValue(): RawValue {
+    public getValue(): IOValue {
         const inputs = this.process.currentInputs;
 
         if (inputs === null) {
