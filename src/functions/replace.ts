@@ -24,10 +24,12 @@ export default new CodeFunction<Inputs, Outputs>({
         },
         find: {
             type: 'text',
+            inputByDefault: false,
             validation: /.+/
         },
         replace: {
-            type: 'text'
+            type: 'text',
+            inputByDefault: false,
         },
         matchCase: {
             type: 'toggle'

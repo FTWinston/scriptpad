@@ -9,13 +9,13 @@ export interface ChoiceParameterDefinition {
 
 export interface TextParameterDefinition {
     readonly type: 'text';
-    readonly inputByDefault?: true;
+    readonly inputByDefault: boolean;
     readonly validation?: RegExp;
 }
 
 export interface SequenceParameterDefinition {
     readonly type: 'sequence';
-    readonly inputByDefault?: true;
+    readonly inputByDefault: boolean;
     readonly validation?: RegExp;
 }
 

@@ -66,13 +66,9 @@ export class FunctionOperation extends Operation {
 }
 
 function filterDefaultInput(parameter: ParameterDefinition) {
-    if (parameter.type === 'choice' || parameter.type === 'toggle') {
+    if (parameter.type === 'choice' || parameter.type === 'toggle' || !parameter.inputByDefault) {
         return undefined;
     }
 
-    if (parameter.inputByDefault === true) {
-        return parameter.type;
-    }
-
-    return undefined;
+    return parameter.type;
 }
