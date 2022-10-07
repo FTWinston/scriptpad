@@ -8,7 +8,7 @@ export default {
 } as ComponentMeta<typeof OperationDisplay>;
 
 const Template: ComponentStory<typeof OperationDisplay> = (args) => (
-  <svg viewBox="0.9 0.9 1.2 1.2" style={{maxWidth: '400px', maxHeight: '400px', '--operation-bg': '#333', '--operation-fg': '#ddd', '--operation-fg-focus': '#f00'} as React.CSSProperties}>
+  <svg viewBox="0.75 0.75 3.25 1.5" style={{maxWidth: '400px', maxHeight: '400px', '--operation-bg': '#333', '--operation-fg': '#ddd', '--operation-fg-focus': '#f00'} as React.CSSProperties}>
     <OperationDisplay {...args} />
   </svg>
 );
@@ -25,6 +25,8 @@ Function.args = {
   },
   width: 1,
   height: 1,
+  inputTypes: ['text'],
+  outputTypes: ['text'],
 };
 
 export const Process = Template.bind({});
@@ -39,4 +41,22 @@ Process.args = {
   },
   width: 1,
   height: 1,
+  inputTypes: ['text'],
+  outputTypes: ['text'],
+};
+
+export const Wide = Template.bind({});
+Wide.args = {
+  id: 2,
+  type: 'function',
+  name: 'Wide function',
+  symbol: 'W',
+  position: {
+    x: 1,
+    y: 1,
+  },
+  width: 3,
+  height: 1,
+  inputTypes: ['text', 'sequence', 'text'],
+  outputTypes: ['sequence', 'text'],
 };

@@ -1,6 +1,8 @@
 import { OperationId } from '../data/identifiers';
 import { IOperation } from '../data/IOperation';
+import { IOType } from '../data/Values';
 import { Vector2D } from '../data/Vector2D';
+import { ConnectorDisplay } from './ConnectorDisplay';
 import classes from './OperationDisplay.module.css';
 
 export interface OperationProps {
@@ -11,6 +13,8 @@ export interface OperationProps {
     name: string;
     symbol: string;
     type: IOperation['type'];
+    inputTypes: IOType[];
+    outputTypes: IOType[];
 }
 
 export const OperationDisplay: React.FC<OperationProps> = props => {
@@ -39,6 +43,9 @@ export const OperationDisplay: React.FC<OperationProps> = props => {
             >
                 {props.symbol}
             </text>
+
+            {props.inputTypes.map((type, index) => <ConnectorDisplay key={index} attachment="in" connected={true} offset={index} type={type} />)}
+            {props.outputTypes.map((type, index) => <ConnectorDisplay key={index} attachment="out" connected={true} offset={index} type={type} />)}
         </g>
     );
 }

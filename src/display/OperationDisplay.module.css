@@ -17,7 +17,7 @@
 
 .processBackground {
     stroke: var(--operation-bg);
-    stroke-linejoin: square;
+    stroke-linejoin: square; /* invalid value */
     stroke-width: 0.1;
     stroke-dasharray: .05,.95;
     stroke-dashoffset: .025;
