@@ -1,15 +1,22 @@
-.connector.text {
-    fill: var(--connection);
-}
-
-.connector.sequence {
-    stroke-width: 0.0333;
+.connector {
+    stroke-width: 0.01;
     stroke: var(--connection);
-    fill: var(--background);
 }
 
-.connected {}
+.connected.text {
+    fill: var(--connector-text);
+}
 
-.disconnected {
-    opacity: 0.75;
+.connected.sequence {
+    fill: var(--connector-sequence);
+}
+
+.disconnected.text {
+    fill: var(--background);
+    stroke: var(--connector-text);
+}
+
+.disconnected.sequence {
+    fill: var(--background);
+    stroke: var(--connector-sequence);
 }

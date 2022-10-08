@@ -1,5 +1,4 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-
 import { OperationDisplay } from './OperationDisplay';
 
 export default {
@@ -8,7 +7,7 @@ export default {
 } as ComponentMeta<typeof OperationDisplay>;
 
 const Template: ComponentStory<typeof OperationDisplay> = (args) => (
-  <svg viewBox="0.75 0.75 3.25 1.5" style={{maxWidth: '400px', maxHeight: '400px', '--operation-bg': '#333', '--operation-fg': '#ddd', '--operation-fg-focus': '#f00'} as React.CSSProperties}>
+  <svg viewBox="0.75 0.75 3.25 1.5" style={{maxWidth: '400px', maxHeight: '400px', '--background': '#aaa', '--operation-bg': '#333', '--operation-fg': '#ddd', '--operation-fg-focus': '#f00'} as React.CSSProperties}>
     <OperationDisplay {...args} />
   </svg>
 );
@@ -25,8 +24,8 @@ Function.args = {
   },
   width: 1,
   height: 1,
-  inputTypes: ['text'],
-  outputTypes: ['text'],
+  inputs: [{ type: 'text', connected: true }],
+  outputs: [{ type: 'text', connected: true }],
 };
 
 export const Process = Template.bind({});
@@ -41,8 +40,8 @@ Process.args = {
   },
   width: 1,
   height: 1,
-  inputTypes: ['text'],
-  outputTypes: ['text'],
+  inputs: [{ type: 'text', connected: true }],
+  outputs: [{ type: 'text', connected: true }],
 };
 
 export const Wide = Template.bind({});
@@ -57,6 +56,6 @@ Wide.args = {
   },
   width: 3,
   height: 1,
-  inputTypes: ['text', 'sequence', 'text'],
-  outputTypes: ['sequence', 'text'],
+  inputs: [{ type: 'text', connected: true }, { type: 'sequence', connected: true }, { type: 'text', connected: true }],
+  outputs: [{ type: 'sequence', connected: true }, { type: 'text', connected: true }],
 };

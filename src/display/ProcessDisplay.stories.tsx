@@ -29,6 +29,8 @@ Process.args = {
       },
       width: 1,
       height: 1,
+      inputs: [{ type: 'sequence', connected: true }],
+      outputs: [{ type: 'text', connected: true }],
     },
     {
       id: 2,
@@ -41,6 +43,8 @@ Process.args = {
       },
       width: 1,
       height: 1,
+      inputs: [{ type: 'text', connected: true }],
+      outputs: [{ type: 'text', connected: true }],
     },
     {
       id: 3,
@@ -53,6 +57,8 @@ Process.args = {
       },
       width: 2,
       height: 1,
+      inputs: [{ type: 'text', connected: true }, { type: 'text', connected: true }],
+      outputs: [{ type: 'text', connected: false }],
     }
   ],
   connections: [
@@ -71,11 +77,11 @@ Process.args = {
     {
       id: '1_to_2',
       from: {
-        facing: 'R',
+        facing: 'D',
         position: { x: 1, y: 1 }
       },
       to: {
-        facing: 'R',
+        facing: 'D',
         position: { x: 3, y: 1 }
       },
       type: 'text',
@@ -95,7 +101,7 @@ Process.args = {
     {
       id: '2_to_3',
       from: {
-        facing: 'R',
+        facing: 'D',
         position: { x: 3, y: 1 }
       },
       to: {

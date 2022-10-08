@@ -17,7 +17,6 @@
 
 .processBackground {
     stroke: var(--operation-bg);
-    stroke-linejoin: square; /* invalid value */
     stroke-width: 0.1;
     stroke-dasharray: .05,.95;
     stroke-dashoffset: .025;
@@ -27,7 +26,7 @@
     text-anchor: middle;
     alignment-baseline: central;
     fill: var(--operation-fg);
-    font: bold 1px sans-serif;
+    font: bold 0.825px sans-serif;
 }
 
 .operation:focus .symbol {

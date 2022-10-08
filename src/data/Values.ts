@@ -1,4 +1,4 @@
-// There's a lot of duplication here, because parameters can have types that IO values cannot.
+// There's a lot of almost-duplication here, because parameters can have types that IO values cannot.
 // So a lot of these definitions end up being done twice, for clarity.
 
 export interface ToggleParameterDefinition {

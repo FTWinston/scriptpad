@@ -2,24 +2,21 @@
     
 }
 
-.line {
+.line1 {
     fill: transparent;
     stroke: var(--connection);
+    stroke-width: 0.0533;
 }
 
-.line.text {
-    stroke-width: 0.05;
-}
-
-.line.sequence {
-    stroke-width: 0.1;
-}
-
-.sequenceLine2 {
+.line2 {
+    fill: transparent;
     stroke-width: 0.0333;
-    stroke: var(--background);
 }
 
-.endArrow {
-    fill: var(--connection);   
+.line2.text {
+    stroke: var(--connector-text);
+}
+
+.line2.sequence {
+    stroke: var(--connector-sequence);
 }

@@ -5,6 +5,30 @@ export interface Vector2D {
 
 export type Direction = 'U' | 'D' | 'L' | 'R';
 
+export function offset(point: Vector2D, direction: Direction, distance: number) {
+    const output = {
+        x: point.x,
+        y: point.y
+    };
+
+    switch (direction) {
+        case 'U':
+            output.y -= distance;
+            break;
+        case 'D':
+            output.y += distance;
+            break;
+        case 'L':
+            output.x -= distance;
+            break;
+        case 'R':
+            output.x += distance;
+            break;
+    }
+
+    return output;
+}
+
 export function getStep(direction: Direction): Vector2D {
     switch (direction) {
         case 'U':
