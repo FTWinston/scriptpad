@@ -28,14 +28,8 @@ export const ProcessAdaptor: React.FC<Props> = ({ process }) => {
             connections.push({
                 id: `${operation.id}_${name}}`,
                 type: connection.valueType,
-                from: {
-                    facing: 'D',
-                    position: connection.startPosition,
-                },
-                to: {
-                    facing: 'D',
-                    position: connection.getEndPosition(operation, name),
-                },
+                from: connection.startPosition,
+                to: connection.getEndPosition(operation, name),
             })
         }
     }

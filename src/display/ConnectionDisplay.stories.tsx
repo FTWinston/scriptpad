@@ -16,91 +16,49 @@ const Template: ComponentStory<typeof ConnectionDisplay> = (args) => (
 
 export const Down = Template.bind({});
 Down.args = {
-  from: {
-    facing: 'D',
-    position: { x: 0, y: 0 }
-  },
-  to: {
-    facing: 'D',
-    position: { x: 0, y: 2 }
-  },
+  from: { x: 0, y: 0 },
+  to: { x: 0, y: 2 },
   type: 'text',
 };
 
 export const RightDown = Template.bind({});
 RightDown.args = {
-  from: {
-    facing: 'D',
-    position: { x: 0, y: 0 }
-  },
-  to: {
-    facing: 'D',
-    position: { x: 1, y: 2 }
-  },
+  from: { x: 0, y: 0 },
+  to: { x: 1, y: 2 },
   type: 'text',
 };
 
 export const LeftDown = Template.bind({});
 LeftDown.args = {
-  from: {
-    facing: 'D',
-    position: { x: 1, y: 0 }
-  },
-  to: {
-    facing: 'D',
-    position: { x: 0, y: 2 }
-  },
+  from: { x: 1, y: 0 },
+  to: { x: 0, y: 2 },
   type: 'text',
 };
 
 export const Right = Template.bind({});
 Right.args = {
-  from: {
-    facing: 'D',
-    position: { x: 0, y: 1 }
-  },
-  to: {
-    facing: 'D',
-    position: { x: 1, y: 1 }
-  },
+  from: { x: 0, y: 1 },
+  to: { x: 1, y: 1 },
   type: 'text',
 };
 
 export const Left = Template.bind({});
 Left.args = {
-  from: {
-    facing: 'D',
-    position: { x: 1, y: 1 }
-  },
-  to: {
-    facing: 'D',
-    position: { x: 0, y: 1 }
-  },
+  from: { x: 1, y: 1 },
+  to: { x: 0, y: 1 },
   type: 'text',
 };
 
 export const RightUp = Template.bind({});
 RightUp.args = {
-  from: {
-    facing: 'D',
-    position: { x: 0, y: 2 }
-  },
-  to: {
-    facing: 'D',
-    position: { x: 1, y: 1 }
-  },
+  from: { x: 0, y: 2 },
+  to: { x: 1, y: 1 },
   type: 'text',
 };
 
 export const LeftUp = Template.bind({});
 LeftUp.args = {
-  from: {
-    facing: 'D',
-    position: { x: 1, y: 2 }
-  },
-  to: {
-    facing: 'D',
-    position: { x: 0, y: 1 }
-  },
+  from: { x: 1, y: 2 },
+  to: { x: 0, y: 1 },
   type: 'text',
 };

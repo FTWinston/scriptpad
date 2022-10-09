@@ -64,50 +64,26 @@ Process.args = {
   connections: [
     {
       id: 'in_to_1',
-      from: {
-        facing: 'D',
-        position: { x: 1, y: -1 }
-      },
-      to: {
-        facing: 'D',
-        position: { x: 1, y: 1 }
-      },
+      from: { x: 1, y: -1 },
+      to: { x: 1, y: 1 },
       type: 'sequence',
     },
     {
       id: '1_to_2',
-      from: {
-        facing: 'D',
-        position: { x: 1, y: 1 }
-      },
-      to: {
-        facing: 'D',
-        position: { x: 3, y: 1 }
-      },
+      from: { x: 1, y: 1 },
+      to: { x: 3, y: 1 },
       type: 'text',
     },
     {
       id: '1_to_3',
-      from: {
-        facing: 'D',
-        position: { x: 1, y: 1 }
-      },
-      to: {
-        facing: 'D',
-        position: { x: 3, y: 3 }
-      },
+      from: { x: 1, y: 1 },
+      to: { x: 3, y: 3 },
       type: 'text',
     },
     {
       id: '2_to_3',
-      from: {
-        facing: 'D',
-        position: { x: 3, y: 1 }
-      },
-      to: {
-        facing: 'D',
-        position: { x: 4, y: 3 }
-      },
+      from: { x: 3, y: 1 },
+      to: { x: 4, y: 3 },
       type: 'text',
     }
   ],

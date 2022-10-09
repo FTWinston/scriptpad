@@ -3,15 +3,10 @@ import { IOType } from '../data/Values';
 import { add, Direction, dot, getStep, offset, scale, subtract, Vector2D } from '../data/Vector2D';
 import classes from './ConnectionDisplay.module.css';
 
-export interface Endpoint {
-    position: Vector2D;
-    facing: Direction;
-}
-
 export interface ConnectionProps {
     id: string;
-    from: Endpoint;
-    to: Endpoint;
+    from: Vector2D;
+    to: Vector2D;
     type: IOType;
 }
 
@@ -38,29 +33,11 @@ export const ConnectionDisplay: React.FC<ConnectionProps> = props => {
     );
 }
 
-function resolveConnectionPoint(endpoint: Endpoint, type: 'in' | 'out'): Vector2D {
-    switch (endpoint.facing) {
-        case 'U':
-            return {
-                x: endpoint.position.x + 0.5,
-                y: endpoint.position.y + (type === 'in' ? 1 : 0),
-            };
-        case 'D':
-            return {
-                x: endpoint.position.x + 0.5,
-                y: endpoint.position.y + (type === 'in' ? 0 : 1),
-            };
-        case 'L':
-            return {
-                x: endpoint.position.x + (type === 'in' ? 1 : 0),
-                y: endpoint.position.y + 0.5,
-            };
-        case 'R':
-            return {
-                x: endpoint.position.x + (type === 'in' ? 0 : 1),
-                y: endpoint.position.y + 0.5,
-            };
-    }
+function offsetConnectionPoint(endpoint: Vector2D, type: 'in' | 'out'): Vector2D {
+    return {
+        x: endpoint.x + 0.5,
+        y: endpoint.y + (type === 'in' ? 0 : 1),
+    };
 }
 
 const cornerRadius = 0.125;
@@ -86,12 +63,12 @@ function resolveCorner(point: Vector2D, from: Direction, to: Direction) {
     return ` L ${fromPoint.x} ${fromPoint.y} A ${cornerRadius} ${cornerRadius} 0 0 ${sweep} ${toPoint.x} ${toPoint.y}`;
 }
 
-function resolvePath(from: Endpoint, to: Endpoint): string {
-    const startPos = resolveConnectionPoint(from, 'out');
-    const endPos = resolveConnectionPoint(to, 'in');
+function resolvePath(from: Vector2D, to: Vector2D): string {
+    const startPos = offsetConnectionPoint(from, 'out');
+    const endPos = offsetConnectionPoint(to, 'in');
 
-    const fromStep = getStep(from.facing);
-    const toStep = getStep(to.facing);
+    const fromStep = getStep('D');
+    const toStep = getStep('D');
 
     // Step half a square out from the starting point.
     let inFrontOfStartPos = add(startPos, scale(fromStep, 0.5));
@@ -114,15 +91,15 @@ function resolvePath(from: Endpoint, to: Endpoint): string {
             const midX = (inFrontOfStartPos.x + inFrontOfEndPos.x) / 2;
 
             // 4 corners
-            output += resolveCorner(inFrontOfStartPos, from.facing, sideways);
+            output += resolveCorner(inFrontOfStartPos, 'D', sideways);
             output += resolveCorner({ x: midX, y: inFrontOfStartPos.y }, sideways, 'U');
             output += resolveCorner({ x: midX, y: inFrontOfEndPos.y }, 'U', sideways);
-            output += resolveCorner(inFrontOfEndPos, sideways, to.facing);
+            output += resolveCorner(inFrontOfEndPos, sideways, 'D');
         }
         else {
             // 2 corners
-            output += resolveCorner(inFrontOfStartPos, from.facing, sideways);
-            output += resolveCorner(inFrontOfEndPos, sideways, to.facing);
+            output += resolveCorner(inFrontOfStartPos, 'D', sideways);
+            output += resolveCorner(inFrontOfEndPos, sideways, 'D');
         }
     }
 
