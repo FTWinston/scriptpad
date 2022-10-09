@@ -42,7 +42,7 @@ export class Process {
             const operation = operations[i];
             const inputData = data.operations[i].inputs;
 
-            operation.currentInputs = objectToMap(inputData, input => connectionFromJson(input, process));
+            operation.inputConnections = objectToMap(inputData, input => connectionFromJson(input, process));
         }
 
         return process;

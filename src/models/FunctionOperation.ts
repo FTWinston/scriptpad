@@ -45,7 +45,7 @@ export class FunctionOperation extends Operation {
             position: this.position,
             function: this.functionToRun.id,
             config: this.parameters,
-            inputs: mapToObject(this.currentInputs, input => input.toJson()),
+            inputs: mapToObject(this.inputConnections, input => input.toJson()),
         };
     }
     

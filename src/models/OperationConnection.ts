@@ -13,6 +13,8 @@ export class OperationConnection extends Connection {
         super();
 
         this.outputNumber = from.outputs.findIndex(connection => connection[0] === output);
+
+        from.outputConnections.set(output, this);
     }
     
     private outputNumber: number;

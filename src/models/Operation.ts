@@ -37,7 +37,9 @@ export abstract class Operation {
 
     public abstract get outputs(): Array<[string, IOType]>;
     
-    public currentInputs: Connections = new Map();
+    public inputConnections: Connections = new Map();
+
+    public outputConnections: Connections = new Map();
 
     private _currentOutputs: IOValues | null = null;
 
@@ -48,7 +50,7 @@ export abstract class Operation {
     protected abstract perform(inputs: Readonly<IOValues>): IOValues;
     
     public run() {
-        const currentInputs = mapToObject(this.currentInputs, input => input.getValue());
+        const currentInputs = mapToObject(this.inputConnections, input => input.getValue());
 
         this._currentOutputs = this.perform(currentInputs);
     }

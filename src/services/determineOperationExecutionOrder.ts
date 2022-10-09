@@ -13,7 +13,7 @@ export function determineOperationExecutionOrder(operations: ReadonlyMap<unknown
 }
 
 function getInputOperationsFromConnections(operation: Operation) {
-    const operationInputs = [...operation.currentInputs.values()]
+    const operationInputs = [...operation.inputConnections.values()]
         .filter(input => input.type === 'operation') as OperationConnection[];
 
     return operationInputs

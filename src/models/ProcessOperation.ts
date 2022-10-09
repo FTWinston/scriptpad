@@ -43,7 +43,7 @@ export class ProcessOperation extends Operation {
             id: this.id,
             position: this.position,
             process: this.process.id,
-            inputs: mapToObject(this.currentInputs, input => input.toJson()),
+            inputs: mapToObject(this.inputConnections, input => input.toJson()),
         };
     }
     
