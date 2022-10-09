@@ -38,6 +38,10 @@ export default new CodeFunction<Parameters, Outputs>({
         result: 'text',
     },
     run: (inputs: Readonly<ParameterValuesFromTypes<Parameters>>): IOValuesFromTypes<Outputs> => {
+        if (inputs.find.length === 0) {
+            return { result: inputs.in };
+        }
+        
         const findValue = inputs.matchCase === 'true'
             ? new RegExp(escapeRegExp(inputs.find), 'i')
             : inputs.find;

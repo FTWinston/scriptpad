@@ -32,6 +32,8 @@ export const ProcessAdaptor: React.FC<Props> = ({ process }) => {
                 to: connection.getEndPosition(operation, name),
             })
         }
+
+        // TODO: process outputs?
     }
 
     return (
