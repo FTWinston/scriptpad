@@ -29,7 +29,7 @@ export const ProcessAdaptor: React.FC<Props> = ({ process }) => {
                 id: `${operation.id}_${name}}`,
                 type: connection.valueType,
                 from: connection.startPosition,
-                to: connection.getEndPosition(operation, name),
+                to: operation.getInputPosition(name),
             })
         }
 

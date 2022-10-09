@@ -1,5 +1,4 @@
 import { IOperationConnection } from '../data/IConnection';
-import { OperationId } from '../data/identifiers';
 import { IOValue, IOType } from '../data/Values';
 import { Vector2D } from '../data/Vector2D';
 import { Connection } from './Connection';
@@ -32,20 +31,6 @@ export class OperationConnection extends Connection {
             from: this.from.id,
             output: this.output,
         };
-    }
-
-    public static fromJson(data: IOperationConnection, operations: ReadonlyMap<OperationId, Operation>): OperationConnection {
-        const from = operations.get(data.from);
-
-        if (!from) {
-            throw new Error(`Unrecognised operation ID: ${data.from}`);
-        }
-
-        if (!Object.hasOwn(from.outputs, data.output)) {
-            throw new Error(`Operation output "${data.output}" not recognised for operation ${from.id}`);
-        }
-
-        return new OperationConnection(from, data.output);
     }
 
     public type: 'operation' = 'operation';

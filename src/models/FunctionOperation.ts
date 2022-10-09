@@ -1,7 +1,7 @@
 import { OperationId } from '../data/identifiers';
 import { IFunctionOperation } from '../data/IOperation';
 import { IOValues, IOType, ParameterDefinition } from '../data/Values';
-import { getFunction, IFunction } from './CodeFunction';
+import type { IFunction } from './CodeFunction';
 import { Operation } from './Operation';
 import { mapToObject, objectToArray } from '../services/maps';
 import { Vector2D } from '../data/Vector2D';
@@ -44,16 +44,6 @@ export class FunctionOperation extends Operation {
         };
     }
     
-    public static fromJson(data: IFunctionOperation) {
-        const functionToPerform = getFunction(data.function);
-
-        if (!functionToPerform) {
-            throw new Error(`Unrecognised function: ${data.function}`);
-        }
-
-        return new FunctionOperation(data.id, data.position, functionToPerform, data.config);
-    }
-
     public perform(inputs: Readonly<IOValues>) {
         return this.functionToRun.performRun(inputs, this.parameters);
     }

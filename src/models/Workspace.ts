@@ -1,6 +1,7 @@
 import { ProcessId } from '../data/identifiers';
 import { IWorkspace } from '../data/IWorkspace';
 import { determineProcessImportOrder } from '../services/determineProcessImportOrder';
+import { processFromJson } from '../services/processFromJson';
 import { Process } from './Process';
 
 export class Workspace {
@@ -21,7 +22,7 @@ export class Workspace {
         const processes = new Map<ProcessId, Process>();
 
         for (const processData of data.processes) {
-            const process = Process.fromJson(processData, processes);
+            const process = processFromJson(processData, processes);
             processes.set(process.id, process);
         }
 

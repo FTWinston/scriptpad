@@ -1,4 +1,4 @@
-import { OperationId, ProcessId } from '../data/identifiers';
+import { OperationId } from '../data/identifiers';
 import { IProcessOperation } from '../data/IOperation';
 import { Vector2D } from '../data/Vector2D';
 import { IOType, IOValues } from '../data/Values';
@@ -42,16 +42,6 @@ export class ProcessOperation extends Operation {
         };
     }
     
-    public static fromJson(data: IProcessOperation, processesById: ReadonlyMap<ProcessId, Process>) {
-        const process = processesById.get(data.process);
-
-        if (!process) {
-            throw new Error(`Unrecognised process: ${data.process}`);
-        }
-
-        return new ProcessOperation(data.id, data.position, process);
-    }
-
     public perform(inputs: Readonly<IOValues>) {
         return this.process.run(inputs);
     }

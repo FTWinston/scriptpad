@@ -1,12 +1,9 @@
-import { OperationId, ProcessId } from '../data/identifiers';
+import { OperationId } from '../data/identifiers';
 import { IOperation } from '../data/IOperation';
-import { Vector2D } from '../data/Vector2D';
+import { add, Vector2D } from '../data/Vector2D';
 import { IOValues, IOType } from '../data/Values';
 import { mapToObject } from '../services/maps';
 import { Connections } from './Connection';
-import { FunctionOperation } from './FunctionOperation';
-import { Process } from './Process';
-import { ProcessOperation } from './ProcessOperation';
 
 export abstract class Operation {
     constructor(
@@ -45,13 +42,11 @@ export abstract class Operation {
 
         this._currentOutputs = this.perform(currentInputs);
     }
-}
+    
+    public getInputPosition(name: string): Vector2D {
+        const inputNumber = this.inputs
+            .findIndex(input => input[0] === name);
 
-export function operationFromJson(data: IOperation, processesById: ReadonlyMap<ProcessId, Process>) {
-    if (data.type === 'function') {
-        return FunctionOperation.fromJson(data);
-    }
-    else { // if (data.type === 'process') {
-        return ProcessOperation.fromJson(data, processesById);
+        return add(this.position, { x: inputNumber, y: 0 });
     }
 }

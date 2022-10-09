@@ -1,6 +1,5 @@
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-import { Process } from '../models/Process';
-
+import { processFromJson } from '../services/processFromJson';
 import { ProcessAdaptor } from './ProcessAdaptor';
 
 export default {
@@ -18,7 +17,7 @@ const Template: ComponentStory<typeof ProcessAdaptor> = (args) => (
 
 export const SimpleProcess = Template.bind({});
 SimpleProcess.args = {
-  process: Process.fromJson({
+  process: processFromJson({
     id: 'My process',
     operations: [
       {

@@ -1,5 +1,5 @@
 import { Operation } from '../models/Operation';
-import { OperationConnection } from '../models/OperationConnection';
+import type { OperationConnection } from '../models/OperationConnection';
 import { sortDependencyArray } from './sortDependencyArray';
 
 export function determineOperationExecutionOrder(operations: ReadonlyMap<unknown, Operation>): Operation[] {

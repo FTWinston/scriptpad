@@ -1,11 +1,10 @@
 import { OperationId, ProcessId } from '../data/identifiers';
 import { IProcess } from '../data/IProcess';
 import { IOValues, IOType } from '../data/Values';
-import { Operation, operationFromJson } from './Operation';
-import { connectionFromJson } from './Connection';
+import { Operation } from './Operation';
 import { determineOperationExecutionOrder } from '../services/determineOperationExecutionOrder';
 import { OperationConnection } from './OperationConnection';
-import { arrayToMap, mapToArray, mapToObject, objectToMap } from '../services/maps';
+import { mapToArray, mapToObject } from '../services/maps';
 
 export class Process {
     constructor(
@@ -24,28 +23,6 @@ export class Process {
             outputConnections: mapToObject(this.outputConnections, output => output.toJson()),
             operations: mapToArray(this.operations, operation => operation.toJson()),
         };
-    }
-   
-    public static fromJson(data: IProcess, otherProcesses: ReadonlyMap<ProcessId, Process>) {
-        const operations = data.operations
-                .map(operation => operationFromJson(operation, otherProcesses));
-        
-        const operationMap = arrayToMap<OperationId, Operation>(operations);
-        const inputs = objectToMap(data.inputs);
-        const outputs = objectToMap(data.outputs);
-        const outputConnections = objectToMap(data.outputConnections, output => OperationConnection.fromJson(output, operationMap));
-
-        const process = new Process(data.id, operationMap, inputs, outputs, outputConnections);
-
-        // We can only populate input connections once we have all the operations.
-        for (let i = 0; i < operations.length; i++) {
-            const operation = operations[i];
-            const inputData = data.operations[i].inputs;
-
-            operation.inputConnections = objectToMap(inputData, input => connectionFromJson(input, process));
-        }
-
-        return process;
     }
 
     public get operations(): ReadonlyMap<OperationId, Operation> { return this._operations; }
