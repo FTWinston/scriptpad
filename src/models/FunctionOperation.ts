@@ -5,7 +5,6 @@ import { getFunction, IFunction } from './CodeFunction';
 import { Operation } from './Operation';
 import { mapToObject, objectToArray } from '../services/maps';
 import { Vector2D } from '../data/Vector2D';
-import { IShape } from '../data/IShape';
 
 export class FunctionOperation extends Operation {
     constructor(
@@ -16,10 +15,8 @@ export class FunctionOperation extends Operation {
     ) {
         super(id, position);
 
-        this.shape = this.possibleShapes[0];
-
-        this.inputs = objectToArray(this.functionToRun.parameters, filterDefaultInput);
-        this.outputs = objectToArray(this.functionToRun.outputs, (value, key) => [key, value]);
+        this.inputs = objectToArray(functionToRun.parameters, filterDefaultInput);
+        this.outputs = objectToArray(functionToRun.outputs, (value, key) => [key, value]);
     }
 
     public readonly type: 'function' = 'function';
@@ -27,8 +24,6 @@ export class FunctionOperation extends Operation {
     public get name() { return this.functionToRun.id; }
 
     public get symbol() { return this.functionToRun.symbol; }
-
-    public shape: IShape;
 
     public get numConnections() {
         return Object.keys(this.functionToRun.parameters).length + Object.keys(this.functionToRun.outputs).length;

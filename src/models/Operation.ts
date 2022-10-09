@@ -7,8 +7,6 @@ import { Connections } from './Connection';
 import { FunctionOperation } from './FunctionOperation';
 import { Process } from './Process';
 import { ProcessOperation } from './ProcessOperation';
-import { IShape } from '../data/IShape';
-import { possibleShapesByConnections } from './shapes';
 
 export abstract class Operation {
     constructor(
@@ -25,13 +23,6 @@ export abstract class Operation {
     public abstract get symbol(): string;
 
     public abstract get numConnections(): number;
-
-    public get possibleShapes() {
-        return possibleShapesByConnections.get(this.numConnections)
-            ?? possibleShapesByConnections.get(2)!
-    }
-
-    public abstract shape: IShape;
 
     public abstract get inputs(): Array<[string, IOType]>;
 

@@ -5,7 +5,6 @@ import { IOType, IOValues } from '../data/Values';
 import { mapToArray, mapToObject } from '../services/maps';
 import { Operation } from './Operation';
 import { Process } from './Process';
-import { IShape } from '../data/IShape';
 
 export class ProcessOperation extends Operation {
     constructor(
@@ -17,8 +16,6 @@ export class ProcessOperation extends Operation {
         
         this.inputs = mapToArray(this.process.inputs, (type, id) => [id, type]);
         this.outputs = mapToArray(this.process.outputs, (type, id) => [id, type]);
-        
-        this.shape = this.possibleShapes[0];
     }
 
     public readonly type: 'process' = 'process';
@@ -26,8 +23,6 @@ export class ProcessOperation extends Operation {
     public get name() { return this.process.id; }
 
     public get symbol() { return this.process.id.charAt(0); } // TODO: allow this to be specified?
-
-    public shape: IShape;
 
     public get numConnections() {
         return this.process.inputs.size + this.process.outputs.size;
