@@ -11,6 +11,7 @@ import { OperationConnection } from '../models/OperationConnection';
 import { Process } from '../models/Process';
 import { ProcessConnection } from '../models/ProcessConnection';
 import { ProcessOperation } from '../models/ProcessOperation';
+import '../functions'; // Side Effect: load the actual functions!
 
 function connectionFromJson(data: IConnection, process: Process): Connection {
     if (data.type === 'operation') {
@@ -28,7 +29,9 @@ function operationConnectionFromJson(data: IOperationConnection, operations: Rea
         throw new Error(`Unrecognised operation ID: ${data.from}`);
     }
 
-    if (!Object.hasOwn(from.outputs, data.output)) {
+    // TODO: outputsByName here also?
+    //if (!Object.hasOwn(from.outputs, data.output)) {
+    if (!from.outputs.some(output => output[0] === data.output)) {
         throw new Error(`Operation output "${data.output}" not recognised for operation ${from.id}`);
     }
 
