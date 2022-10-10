@@ -15,7 +15,7 @@ type Outputs = {
 
 export default new CodeFunction<Parameters, Outputs>({
     id: 'replace',
-    symbol: 'R',
+    symbol: 'RPL',
     parameters: {
         in: {
             type: 'text',

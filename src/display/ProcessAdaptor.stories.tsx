@@ -35,7 +35,7 @@ SimpleProcess.args = {
             input: 'content',
           },
         },
-        position: { x: 1, y: 1 },
+        position: { x: 1, y: 2 },
       }
     ],
     inputs: { content: 'text' },

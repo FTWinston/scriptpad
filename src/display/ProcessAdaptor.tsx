@@ -26,14 +26,21 @@ export const ProcessAdaptor: React.FC<Props> = ({ process }) => {
         
         for (const [name, connection] of operation.inputConnections) {
             connections.push({
-                id: `${operation.id}_${name}}`,
+                id: `${operation.id}_${name}`,
                 type: connection.valueType,
                 from: connection.startPosition,
                 to: operation.getInputPosition(name),
             })
         }
+    }
 
-        // TODO: process outputs?
+    for (const [name, connection] of process.outputConnections.entries()) {
+        connections.push({
+            id: `${process.id}_${name}`,
+            type: connection.valueType,
+            from: connection.startPosition,
+            to: process.getOutputPosition(name),
+        })
     }
 
     return (

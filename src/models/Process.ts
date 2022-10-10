@@ -4,7 +4,7 @@ import { IOValues, IOType } from '../data/Values';
 import { Operation } from './Operation';
 import { determineOperationExecutionOrder } from '../services/determineOperationExecutionOrder';
 import { OperationConnection } from './OperationConnection';
-import { mapToArray, mapToObject } from '../services/maps';
+import { getMaxValue, mapToArray, mapToObject } from '../services/maps';
 
 export class Process {
     constructor(
@@ -23,6 +23,13 @@ export class Process {
             outputConnections: mapToObject(this.outputConnections, output => output.toJson()),
             operations: mapToArray(this.operations, operation => operation.toJson()),
         };
+    }
+
+    public getOutputPosition(name: string) {
+        return {
+            x: 1, // TODO: why is this.outputs a map, meaning it has no order?
+            y: getMaxValue(this.operations, operation => operation.position.y) + 2,
+        }
     }
 
     public get operations(): ReadonlyMap<OperationId, Operation> { return this._operations; }

@@ -45,11 +45,11 @@ function determineViewBox(operations: OperationProps[]) {
         }
     }
 
-    const padding = 1;
-    minX = Math.floor(minX - padding);
-    minY = Math.floor(minY - padding);
-    const width = Math.ceil(maxX + padding) - minX;
-    const height = Math.ceil(maxY + padding) - minY;
+    const padding = 0.6;
+    minX = minX - padding;
+    minY = minY - padding;
+    const width = maxX + padding - minX;
+    const height = maxY + padding - minY;
 
     return `${minX} ${minY} ${width} ${height}`;
 }
