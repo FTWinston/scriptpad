@@ -1,18 +1,11 @@
-import { ComponentStoryFn, Meta, StoryObj } from '@storybook/react';
-import React, { ComponentProps } from 'react';
-
+import { Meta, StoryObj } from '@storybook/react';
+import { ComponentProps } from 'react';
 import { ConnectionDisplay } from './ConnectionDisplay';
 
 export default {
   title: 'Workspace/Connection',
   component: ConnectionDisplay,
 } as Meta<typeof ConnectionDisplay>;
-
-const Template: ComponentStoryFn<typeof ConnectionDisplay> = (args) => (
-  <svg viewBox="0 0 4 4" style={{maxWidth: '600px', maxHeight: '600px', '--connection': 'black' } as React.CSSProperties}>
-      <ConnectionDisplay {...args} />
-  </svg>
-);
 
 export const Down: StoryObj<ComponentProps<typeof ConnectionDisplay>> = {
   render: (args) => (
