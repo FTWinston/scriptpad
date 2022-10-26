@@ -1,12 +1,14 @@
 import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
 import type { SxProps } from '@mui/material/styles';
+import { Process } from '../models/Process';
 import { InputList, Props as InputListProps } from './InputList';
 import { OutputList } from './OutputList';
 import { Parameter } from './Parameter';
+import { ProcessEditor } from './ProcessEditor';
 
 interface Props extends InputListProps {
     outputs: Parameter[];
+    process: Process;
 }
 
 const rootStyle: SxProps = {
@@ -43,7 +45,9 @@ export const Workspace: React.FC<Props> = props => {
                 {...inputProps}
             />
 
-            <Paper elevation={3} />
+            <ProcessEditor
+                process={props.process}
+            />
 
             <OutputList
                 sx={ioListStyle}
