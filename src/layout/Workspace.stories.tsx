@@ -1,7 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { ComponentProps, useState } from 'react';
 import { Workspace } from './Workspace';
-import type { Parameter } from './Parameter';
 import { processFromJson } from '../services/processFromJson';
 
 export default {
@@ -15,30 +14,28 @@ export default {
 
 export const Simple: StoryObj<ComponentProps<typeof Workspace>> = {
     render: (args) => {
-        const [inputs, setInputs] = useState<Parameter[]>(args.inputs);
+        const [inputs, setInputs] = useState<Record<string, string>>(args.inputs);
 
-        const setInput = (index: number, value: string) => {
+        const setInput = (name: string, value: string) => {
             setInputs(inputs => {
-                const newInputs = [...inputs];
-                newInputs[index].value = value;
-                return newInputs;
+                return {
+                    ...inputs,
+                    [name]: value
+                };
             })
         }
 
         const addInput = () => {
-            setInputs(inputs => ([
+            setInputs(inputs => ({
                 ...inputs,
-                {
-                    name: 'new input',
-                    value: '',
-                }
-            ]))
+                'new input': '',
+            }))
         }
 
-        const removeInput = (index: number) => {
+        const removeInput = (name: string) => {
             setInputs(inputs => {
-                const newInputs = [...inputs];
-                newInputs.splice(index, 1);
+                const newInputs = { ...inputs };
+                delete newInputs[name];
                 return newInputs;
             })
         }
@@ -54,18 +51,12 @@ export const Simple: StoryObj<ComponentProps<typeof Workspace>> = {
         );
     },
     args: {
-        inputs: [
-            {
-                name: 'Input',
-                value: '',
-            }
-        ],
-        outputs: [
-            {
-                name: 'Output',
-                value: '',
-            }
-        ],
+        inputs: {
+            'Input': ''
+        },
+        outputs: {
+            'Output': ''
+        },
         process: processFromJson({
             id: 'My process',
             operations: [
@@ -103,31 +94,15 @@ export const Simple: StoryObj<ComponentProps<typeof Workspace>> = {
 export const Multiple: StoryObj<ComponentProps<typeof Workspace>> = {
     ...Simple,
     args: {
-        inputs: [
-            {
-                name: 'Input 1',
-                value: '',
-            },
-            {
-                name: 'Input 2',
-                value: 'Some val',
-            },
-            {
-                name: 'Input 3',
-                value: 'Yo',
-            }
-        ],
-        outputs: [
-            {
-                name: 'Output 1',
-                value: 'Something',
-            },
-            {
-                name: 'Output 2',
-                value: 'Something else',
-            }
-        ],
-        
+        inputs: {
+            'Input 1': '',
+            'Input 2': 'Some val',
+            'Input 3': 'Yo'
+        },
+        outputs: {
+            'Output 1': 'Something',
+            'Output 2': 'Something else',
+        },
         process: processFromJson({
             id: 'My process',
             operations: [

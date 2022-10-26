@@ -3,11 +3,10 @@ import type { SxProps } from '@mui/material/styles';
 import { Process } from '../models/Process';
 import { InputList, Props as InputListProps } from './InputList';
 import { OutputList } from './OutputList';
-import { Parameter } from './Parameter';
 import { ProcessEditor } from './ProcessEditor';
 
 interface Props extends InputListProps {
-    outputs: Parameter[];
+    outputs: Record<string, string>;
     process: Process;
 }
 
