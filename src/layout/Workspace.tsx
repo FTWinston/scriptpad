@@ -1,45 +1,53 @@
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import { useState } from 'react';
-import { InputText } from './InputText';
-import { OutputText } from './OutputText';
+import type { SxProps } from '@mui/material/styles';
+import { InputList, Props as InputListProps } from './InputList';
+import { OutputList } from './OutputList';
+import { Parameter } from './Parameter';
 
-interface Parameter {
-    name: string;
-    value: string;
-}
-
-interface Props {
-    inputs: Parameter[];
+interface Props extends InputListProps {
     outputs: Parameter[];
 }
 
+const rootStyle: SxProps = {
+    display: 'flex',
+    gap: 1,
+    padding: 1,
+    backgroundColor: 'background.default',
+    minHeight: 'calc(100vh - 1em)',
+    alignItems: 'stretch',
+    '& > *': {
+      width: '30vw',
+      flexGrow: 1,
+    }
+}
+
+const ioListStyle: SxProps = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 1,
+    /*
+    '& > *': {
+        flexGrow: 1,
+    }
+    */
+}
+
 export const Workspace: React.FC<Props> = props => {
-    const [input, setInput] = useState('');
+    const { outputs, ...inputProps } = props;
 
     return (
-        <Box sx={{
-          display: 'flex',
-          '& > :not(style)': {
-            m: 1,
-            width: '30vw',
-            minHeight: '80vh',
-          }
-        }}> 
-            <Box>
-                <InputText
-                    label="Input"
-                    value={input}
-                    onChange={setInput}
-                />
-                <button>add input</button>
-            </Box>
+        <Box sx={rootStyle}>
+            <InputList
+                sx={ioListStyle}
+                {...inputProps}
+            />
 
-            <Paper />
+            <Paper elevation={3} />
 
-            <OutputText
-                label="Output"
-                value={input}
+            <OutputList
+                sx={ioListStyle}
+                outputs={outputs}
             />
         </Box>
     );

@@ -1,15 +1,20 @@
 import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import TabIcon from '@mui/icons-material/KeyboardTab';
 import ReturnIcon from '@mui/icons-material/KeyboardReturn';
-import DeleteIcon from '@mui/icons-material/Delete';
+import ClearIcon from '@mui/icons-material/Delete';
+import DeleteIcon from '@mui/icons-material/DeleteForever';
+import type { SxProps } from '@mui/material/styles';
 import { useRef } from 'react';
 
 interface Props {
     label: string;
     value: string;
+    canRemove: boolean;
     onChange: (value: string) => void;
+    remove: () => void;
 }
 
 function insertAtCursor(input: HTMLInputElement, textToInsert: string) {
@@ -18,6 +23,18 @@ function insertAtCursor(input: HTMLInputElement, textToInsert: string) {
     }
 
     return input.value.substring(0, input.selectionStart) + textToInsert + input.value.substring(input.selectionStart);
+}
+
+const rootStyle: SxProps = {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'stretch'
+}
+
+const iconBarStyle: SxProps = {
+    position: 'absolute',
+    right: 8,
+    top: 8
 }
 
 export const InputText: React.FC<Props> = props => {
@@ -38,41 +55,60 @@ export const InputText: React.FC<Props> = props => {
         }
     }
 
+    const valueIsEmpty = props.value === '';
+    const clearOrDelete = props.canRemove && valueIsEmpty
+        ? (
+            <IconButton
+                title="remove this input"
+                color="warning"
+                onClick={() => props.remove()}
+            >
+                <DeleteIcon />
+            </IconButton>
+        )
+        : (
+            <IconButton
+                title="clear all text"
+                color="primary"
+                disabled={valueIsEmpty}
+                onClick={() => props.onChange('')}
+            >
+                <ClearIcon />
+            </IconButton>
+        )
+
     return (
-        <Box sx={{position: 'relative'}}>
+        <Paper sx={rootStyle}>
             <TextField
                 inputRef={inputRef}
                 label={props.label}
                 multiline
                 fullWidth
                 variant="outlined"
-                minRows={8}
+                minRows={6}
                 value={props.value}
                 onChange={e => props.onChange(e.target.value)}
             />
             
-            <Box sx={{position: 'absolute', right: 8, top: 8}}>
+            <Box sx={iconBarStyle}>
                 <IconButton
                     title="insert tab character"
+                    color="primary"
                     onClick={insertText('\t')}
                 >
                     <TabIcon />
                 </IconButton>
 
                 <IconButton
-                    title="insert line break character"
+                    title="insert new line character"
+                    color="primary"
                     onClick={insertText('\n')}
                 >
                     <ReturnIcon />
                 </IconButton>
 
-                <IconButton
-                    title="clear all text"
-                    onClick={() => props.onChange('')}
-                >
-                    <DeleteIcon />
-                </IconButton>
+                {clearOrDelete}
             </Box>
-        </Box>
+        </Paper>
     );
 }
