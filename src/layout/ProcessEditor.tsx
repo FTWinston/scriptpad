@@ -1,15 +1,17 @@
 import Paper from '@mui/material/Paper';
 import type { SxProps } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
-import { ProcessAdaptor } from '../display/ProcessAdaptor';
-import { Process } from '../models/Process';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { useState } from 'react';
 import Fab from '@mui/material/Fab';
+import { useState } from 'react';
+import { ProcessDisplay } from '../display/ProcessDisplay';
+import type { OperationProps } from '../display/OperationDisplay';
+import type { ConnectionProps } from '../display/ConnectionDisplay';
 
 export interface Props {
-    process: Process;
+    operations: OperationProps[];
+    connections: ConnectionProps[];
 }
 
 const rootStyle: SxProps = {
@@ -29,13 +31,6 @@ const fabStyle: SxProps = {
     right: 16,
 }
 
-const menuButtonStyle: SxProps = {
-    position: 'absolute',
-    bottom: 16,
-    left: 16,
-}
-
-
 export const ProcessEditor: React.FC<Props> = props => {
     const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const open = Boolean(menuAnchor);
@@ -46,8 +41,9 @@ export const ProcessEditor: React.FC<Props> = props => {
 
     return (
         <Paper sx={rootStyle}>
-            <ProcessAdaptor
-                process={props.process}
+            <ProcessDisplay
+                operations={props.operations}
+                connections={props.connections}
             />
                
             <Fab

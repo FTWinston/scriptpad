@@ -12,6 +12,8 @@ import { Process } from '../models/Process';
 import { ProcessConnection } from '../models/ProcessConnection';
 import { ProcessOperation } from '../models/ProcessOperation';
 import '../functions'; // Side Effect: load the actual functions!
+import { IWorkspace } from '../data/IWorkspace';
+import { Workspace } from '../models/Workspace';
 
 function connectionFromJson(data: IConnection, process: Process): Connection {
     if (data.type === 'operation') {
@@ -68,7 +70,7 @@ function operationFromJson(data: IOperation, processesById: ReadonlyMap<ProcessI
     }
 }
 
-export function processFromJson(data: IProcess, otherProcesses: ReadonlyMap<ProcessId, Process>) {
+function processFromJson(data: IProcess, otherProcesses: ReadonlyMap<ProcessId, Process>) {
     const operations = data.operations
             .map(operation => operationFromJson(operation, otherProcesses));
     
@@ -88,4 +90,21 @@ export function processFromJson(data: IProcess, otherProcesses: ReadonlyMap<Proc
     }
 
     return process;
+}
+
+export function workspaceFromJson(data: IWorkspace) {
+    const processes = new Map<ProcessId, Process>();
+
+    for (const processData of data.processes) {
+        const process = processFromJson(processData, processes);
+        processes.set(process.id, process);
+    }
+
+    const entryProcess = processes.get(data.entryProcess);
+
+    if (!entryProcess) {
+        throw new Error(`Entry process is not part of workspace: ${data.entryProcess}`);
+    }
+
+    return new Workspace(processes, entryProcess);
 }

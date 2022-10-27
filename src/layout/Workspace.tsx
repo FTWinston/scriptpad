@@ -1,13 +1,14 @@
 import Box from '@mui/material/Box';
 import type { SxProps } from '@mui/material/styles';
-import { Process } from '../models/Process';
-import { InputList, Props as InputListProps } from './InputList';
+import { useLayoutEffect, useReducer } from 'react';
+import { Workspace as WorkspaceData } from '../models/Workspace';
+import { InputList } from './InputList';
 import { OutputList } from './OutputList';
 import { ProcessEditor } from './ProcessEditor';
+import { emptyState, workspaceReducer } from './workspaceReducer';
 
-interface Props extends InputListProps {
-    outputs: Record<string, string>;
-    process: Process;
+interface Props {
+    workspace: WorkspaceData;
 }
 
 const rootStyle: SxProps = {
@@ -35,22 +36,34 @@ const ioListStyle: SxProps = {
 }
 
 export const Workspace: React.FC<Props> = props => {
-    const { outputs, ...inputProps } = props;
+    const [state, dispatch] = useReducer(workspaceReducer, emptyState);
 
+    const { workspace } = props;
+
+    // On startup, or if the workspace ever changes, load all data from the workspace.
+    // This is the only time (outside of the reducer) that we access it.
+    useLayoutEffect(
+        () => dispatch({ type: 'load', workspace }), [workspace]
+    );
+    
     return (
         <Box sx={rootStyle}>
             <InputList
                 sx={ioListStyle}
-                {...inputProps}
+                inputs={state.inputValues}
+                addInput={() => dispatch({ type: 'addInput' })}
+                removeInput={(name) => dispatch({ type: 'removeInput', name })}
+                setInput={(name, value) => dispatch({ type: 'setInput', name, value })}
             />
 
             <ProcessEditor
-                process={props.process}
+                operations={state.operations}
+                connections={state.connections}
             />
 
             <OutputList
                 sx={ioListStyle}
-                outputs={outputs}
+                outputs={state.outputValues}
             />
         </Box>
     );
