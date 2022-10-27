@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import CopyIcon from '@mui/icons-material/ContentCopy';
+import DeleteIcon from '@mui/icons-material/DeleteForever';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import type { SxProps } from '@mui/material/styles';
@@ -8,6 +9,8 @@ import type { SxProps } from '@mui/material/styles';
 interface Props {
     label: string;
     value: string;
+    canRemove: boolean;
+    remove: () => void;
 }
 
 const rootStyle: SxProps = {
@@ -28,6 +31,28 @@ const iconBarStyle: SxProps = {
 }
 
 export const OutputText: React.FC<Props> = props => {
+    const valueIsEmpty = props.value === '';
+    const copyOrDelete = props.canRemove && valueIsEmpty
+        ? (
+            <IconButton
+                title="remove this output"
+                color="warning"
+                onClick={() => props.remove()}
+            >
+                <DeleteIcon />
+            </IconButton>
+        )
+        : (
+            <IconButton
+                color="primary"
+                title="copy text to clipboard"
+                disabled={valueIsEmpty}
+                onClick={() => navigator.clipboard.writeText(props.value)}
+            >
+                <CopyIcon />
+            </IconButton >
+        )
+
     return (
         <Paper sx={rootStyle}>
             <TextField
@@ -44,13 +69,7 @@ export const OutputText: React.FC<Props> = props => {
             />
 
             <Box sx={iconBarStyle}>
-                <IconButton
-                    color="primary"
-                    title="copy text to clipboard"
-                    onClick={() => navigator.clipboard.writeText(props.value)}
-                >
-                    <ContentCopyIcon />
-                </IconButton >
+                {copyOrDelete}
             </Box>
         </Paper>
     );

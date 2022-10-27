@@ -68,6 +68,30 @@ export function mapToMap<TKey extends MapKey, TValueFrom, TValueTo>(
     return result;
 }
 
+export function objectToObject<TKey extends MapKey, TValue, TResult>(
+    object: Readonly<Record<TKey, TValue>>,
+    transform: (value: TValue, key: TKey) => TResult | undefined
+): Record<TKey, TResult>;
+export function objectToObject<TKey extends MapKey, TValue>(
+    object: Readonly<Record<TKey, TValue>>
+): Record<TKey, TValue>;
+export function objectToObject<TKey extends MapKey, TValue, TResult>(
+    object: Readonly<Record<TKey, TValue>>,
+    transform?: (value: TValue, key: TKey) => TResult | undefined
+): Record<TKey, TValue | TResult> {
+    const result = {} as Record<TKey, TValue | TResult>;
+
+    for (const [key, sourceValue] of Object.entries<TValue>(object)) {
+        const destinationValue = transform === undefined ? sourceValue : transform(sourceValue, key as TKey);
+
+        if (destinationValue !== undefined) {
+            result[key as TKey] = destinationValue;
+        }
+    }
+
+    return result;
+}
+
 export function arrayToMap<TKey, TValue extends Identifiable<TKey>>(
     items: readonly TValue[]
 ): Map<TKey, TValue> {

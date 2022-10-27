@@ -50,10 +50,10 @@ export const Workspace: React.FC<Props> = props => {
         <Box sx={rootStyle}>
             <InputList
                 sx={ioListStyle}
-                inputs={state.inputValues}
-                addInput={() => dispatch({ type: 'addInput' })}
-                removeInput={(name) => dispatch({ type: 'removeInput', name })}
-                setInput={(name, value) => dispatch({ type: 'setInput', name, value })}
+                entries={state.inputValues}
+                addEntry={() => dispatch({ type: 'addInput' })}
+                removeEntry={(name) => dispatch({ type: 'removeInput', name })}
+                setValue={(name, value) => dispatch({ type: 'setInput', name, value })}
             />
 
             <ProcessEditor
@@ -63,7 +63,9 @@ export const Workspace: React.FC<Props> = props => {
 
             <OutputList
                 sx={ioListStyle}
-                outputs={state.outputValues}
+                entries={state.outputValues}
+                addEntry={() => dispatch({ type: 'addOutput' })}
+                removeEntry={(name) => dispatch({ type: 'removeOutput', name })}
             />
         </Box>
     );

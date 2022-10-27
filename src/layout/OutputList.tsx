@@ -1,24 +1,38 @@
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import type { SxProps } from '@mui/material/styles';
 import { OutputText } from './OutputText';
+import type { ParameterData } from './workspaceReducer';
 
 export interface Props {
     sx?: SxProps;
-    outputs: Record<string, string>;
+    entries: Record<string, ParameterData>;
+    addEntry: () => void;
+    removeEntry: (name: string) => void;
 }
 
 export const OutputList: React.FC<Props> = props => {
-    const outputEntries = Object.entries(props.outputs);
+    const outputEntries = Object.entries(props.entries);
 
     return (
         <Box sx={props.sx}>
-            {outputEntries.map(([name, value]) => (
+            {outputEntries.map(([name, data]) => (
                 <OutputText
                     key={name}
                     label={name}
-                    value={value}
+                    value={data.value}
+                    canRemove={data.canRemove}
+                    remove={() => props.removeEntry(name)}
                 />
             ))}
+            
+            <Button
+                variant="outlined"
+                color="primary"
+                onClick={props.addEntry}
+            >
+                add output
+            </Button>
         </Box>
     );
 }

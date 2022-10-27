@@ -11,7 +11,7 @@ export interface ProcessProps {
 export const ProcessDisplay: React.FC<ProcessProps> = props => {
     const { connections, operations } = props;
 
-    const viewBox = useMemo(() => determineViewBox(operations), operations);
+    const viewBox = useMemo(() => determineViewBox(operations), [operations]);
 
     return (
         <svg

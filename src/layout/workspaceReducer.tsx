@@ -1,15 +1,20 @@
 import type { ConnectionProps } from '../display/ConnectionDisplay';
 import type { OperationProps } from '../display/OperationDisplay';
-import { Connection } from '../models/Connection';
-import { Operation } from '../models/Operation';
 import { Process } from '../models/Process';
 import { Workspace } from '../models/Workspace';
-import { mapToObject } from '../services/maps';
+import { getUniqueName } from '../services/getUniqueName';
+import { mapToObject, objectToObject } from '../services/maps';
+import { propsFromProcess } from '../services/propsFromProcess';
+
+export interface ParameterData {
+    value: string;
+    canRemove: boolean;
+}
 
 export interface WorkspaceState {
     workspace: Workspace;
-    inputValues: Record<string, string>;
-    outputValues: Record<string, string>;
+    inputValues: Record<string, ParameterData>;
+    outputValues: Record<string, ParameterData>;
     operations: OperationProps[];
     connections: ConnectionProps[];
 }
@@ -35,97 +40,82 @@ export type WorkspaceAction = {
     type: 'removeInput';
     name: string;
 } | {
+    type: 'addOutput';
+} | {
+    type: 'removeOutput';
+    name: string;
+} | {
     type: 'run';
 }
 
-function propsFromOperation(operation: Operation): OperationProps {
-    return {
-        id: operation.id,
-        type: operation.type,
-        symbol: operation.symbol,
-        name: operation.name,
-        width: Math.max(operation.inputs.length, operation.outputs.length, 2),
-        height: 1,
-        position: operation.position,
-        inputs: operation.inputs.map(input => ({ type: input[1], connected: operation.inputConnections.has(input[0]) })),
-        outputs: operation.outputs.map(output => ({ type: output[1], connected: operation.outputConnections.has(output[0]) })),
+function canRemoveInput(process: Process, input: string) {
+    if (process.inputs.size <= 1) {
+        return false;
     }
+    
+    // TODO: return false if input is connected
+
+    return true;
 }
 
-function propsFromConnection(operation: Operation, connectionName: string, connection: Connection): ConnectionProps {
-    return {
-        id: `${operation.id}_${connectionName}`,
-        type: connection.valueType,
-        from: connection.startPosition,
-        to: operation.getInputPosition(connectionName),
+function canRemoveOutput(process: Process, output: string) {
+    if (process.outputs.size <= 1) {
+        return false;
     }
+    
+    // TODO: return false if output is connected
+
+    return true;
 }
 
-function propsFromOutputConnection(process: Process, connectionName: string, connection: Connection): ConnectionProps {
-    return {
-        id: `${process.id}_${connectionName}`,
-        type: connection.valueType,
-        from: connection.startPosition,
-        to: process.getOutputPosition(connectionName),
-    }
+function refreshInputValues(state: WorkspaceState) {
+    return objectToObject(state.inputValues, ({ value }, name) => ({ value, canRemove: canRemoveInput(state.workspace.entryProcess, name) }))
 }
 
-function propsFromProcess(process: Process) {
-    const operations: OperationProps[] = [];
-    const connections: ConnectionProps[] = [];
-
-    for (const operation of process.operations.values()) {
-        operations.push(propsFromOperation(operation));
-        
-        for (const [name, connection] of operation.inputConnections) {
-            connections.push(propsFromConnection(operation, name, connection));
-        }
-    }
-
-    for (const [name, connection] of process.outputConnections.entries()) {
-        connections.push(propsFromOutputConnection(process, name, connection));
-    }
-
-    return {
-        operations,
-        connections,
-    };
+function refreshOutputValues(state: WorkspaceState) {
+    return objectToObject(state.outputValues, ({ value }, name) => ({ value, canRemove: canRemoveOutput(state.workspace.entryProcess, name) }))
 }
 
 export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction): WorkspaceState {
+    const process = state.workspace.entryProcess;
+
     switch (action.type) {
         case 'load': {
-            const { operations, connections } = propsFromProcess(action.workspace.entryProcess);
+            const newProcess = action.workspace.entryProcess;
+            const { operations, connections } = propsFromProcess(newProcess);
 
             return {
                 workspace: action.workspace,
-                inputValues: mapToObject(action.workspace.entryProcess.inputs, () => ''),
-                outputValues: mapToObject(action.workspace.entryProcess.outputs, () => ''),
+                inputValues: mapToObject(newProcess.inputs, (_type, name) => ({ value: '', canRemove: canRemoveInput(newProcess, name) })),
+                outputValues: mapToObject(newProcess.outputs, (_type, name) => ({ value: '', canRemove: canRemoveInput(newProcess, name) })),
                 operations,
                 connections,
             }
         }
         case 'setInput':
+            const inputValues = refreshInputValues(state);
+            inputValues[action.name] = { value: '', canRemove: canRemoveInput(process, action.name) };
+
             return {
                 ...state,
-                inputValues: {
-                    ...state.inputValues,
-                    [action.name]: action.value,
-                }
+                inputValues,
             }
         case 'addInput': {
-            // TODO: amend state.workspace.entryProcess.inputs ... only that's readonly
+            const newName = getUniqueName(process.inputs, 'Input');
+            process.inputs.set(newName, 'text');
+            
+            const inputValues = refreshInputValues(state);
+            inputValues[newName] = { value: '', canRemove: canRemoveInput(process, newName) };
+            
             return {
                 ...state,
-                inputValues: {
-                    ...state.inputValues,
-                    'new input': '',
-                }
+                inputValues,
             }
         }
         case 'removeInput': {
-            // TODO: amend state.workspace.entryProcess.inputs ... only that's readonly
-            const inputValues = { ...state.inputValues };
+            process.inputs.delete(action.name);
+
+            const inputValues = refreshInputValues(state);
             delete inputValues[action.name];
 
             return {
@@ -133,10 +123,36 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
                 inputValues
             }
         }
-        case 'run':
+        case 'addOutput': {
+            const newName = getUniqueName(process.outputs, 'Output');
+            process.outputs.set(newName, 'text');
+            
+            const outputValues = refreshOutputValues(state);
+            outputValues[newName] = { value: '', canRemove: canRemoveOutput(process, newName) };
+
             return {
                 ...state,
-                outputValues: state.workspace.entryProcess.run(state.inputValues) as Record<string, string>, // TODO: what about string[] types?
+                outputValues,
+            }
+        }
+        case 'removeOutput': {
+            process.outputs.delete(action.name);
+
+            const outputValues = refreshOutputValues(state);
+            delete outputValues[action.name];
+
+            return {
+                ...state,
+                outputValues
+            }
+        }
+        case 'run':
+            const justInputValues = objectToObject(state.inputValues, value => value.value);
+            const justOutputValues = process.run(justInputValues) as Record<string, string>; // TODO: what about string[] types?
+
+            return {
+                ...state,
+                outputValues: objectToObject(justOutputValues, (value, name) => ({ value, canRemove: canRemoveOutput(process, name) })),
             }
     }
 }

@@ -10,8 +10,8 @@ export class Process {
     constructor(
         public readonly id: ProcessId,
         private readonly _operations: Map<OperationId, Operation>,
-        public inputs: ReadonlyMap<string, IOType>,
-        public outputs: ReadonlyMap<string, IOType>,
+        public inputs: Map<string, IOType>,
+        public outputs: Map<string, IOType>,
         public outputConnections: Map<string, OperationConnection>
     ) {}
 
@@ -44,7 +44,9 @@ export class Process {
     private _currentInputs: Readonly<IOValues> | null = null;
 
     public get currentInputs(): Readonly<IOValues> | null { return this._currentInputs }
-    
+
+    public isOutputConnected(name: string) { return this.outputConnections.has(name); }
+
     public run(inputs: Readonly<IOValues>): IOValues {
         this._currentInputs = inputs;
 
