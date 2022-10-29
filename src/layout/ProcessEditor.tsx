@@ -1,9 +1,9 @@
 import Paper from '@mui/material/Paper';
 import type { SxProps } from '@mui/material/styles';
-import AddIcon from '@mui/icons-material/Add';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Fab from '@mui/material/Fab';
+import AddIcon from '@mui/icons-material/Add';
 import { useState } from 'react';
 import { ProcessDisplay } from '../display/ProcessDisplay';
 import type { OperationProps } from '../display/OperationDisplay';
@@ -29,6 +29,8 @@ const fabStyle: SxProps = {
     position: 'absolute',
     bottom: 16,
     right: 16,
+    display: 'flex',
+    gap: 2,
 }
 
 export const ProcessEditor: React.FC<Props> = props => {
@@ -45,7 +47,7 @@ export const ProcessEditor: React.FC<Props> = props => {
                 operations={props.operations}
                 connections={props.connections}
             />
-               
+
             <Fab
                 color="secondary"
                 id="add-op-button"

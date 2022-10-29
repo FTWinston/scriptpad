@@ -45,7 +45,8 @@ export type WorkspaceAction = {
     type: 'removeOutput';
     name: string;
 } | {
-    type: 'run';
+    type: 'setOutputs';
+    values: Record<string, string>;
 }
 
 function canRemoveInput(process: Process, input: string) {
@@ -76,6 +77,7 @@ function refreshOutputValues(state: WorkspaceState) {
     return objectToObject(state.outputValues, ({ value }, name) => ({ value, canRemove: canRemoveOutput(state.workspace.entryProcess, name) }))
 }
 
+
 export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction): WorkspaceState {
     const process = state.workspace.entryProcess;
 
@@ -94,7 +96,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
         }
         case 'setInput':
             const inputValues = refreshInputValues(state);
-            inputValues[action.name] = { value: '', canRemove: canRemoveInput(process, action.name) };
+            inputValues[action.name] = { value: action.value, canRemove: canRemoveInput(process, action.name) };
 
             return {
                 ...state,
@@ -146,13 +148,10 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
                 outputValues
             }
         }
-        case 'run':
-            const justInputValues = objectToObject(state.inputValues, value => value.value);
-            const justOutputValues = process.run(justInputValues) as Record<string, string>; // TODO: what about string[] types?
-
+        case 'setOutputs':
             return {
                 ...state,
-                outputValues: objectToObject(justOutputValues, (value, name) => ({ value, canRemove: canRemoveOutput(process, name) })),
+                outputValues: objectToObject(action.values, (value, name) => ({ value, canRemove: canRemoveOutput(process, name) })),
             }
     }
 }

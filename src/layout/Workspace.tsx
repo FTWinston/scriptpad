@@ -1,7 +1,8 @@
 import Box from '@mui/material/Box';
 import type { SxProps } from '@mui/material/styles';
-import { useLayoutEffect, useReducer } from 'react';
+import { useEffect, useLayoutEffect, useReducer } from 'react';
 import { Workspace as WorkspaceData } from '../models/Workspace';
+import { objectToObject } from '../services/maps';
 import { InputList } from './InputList';
 import { OutputList } from './OutputList';
 import { ProcessEditor } from './ProcessEditor';
@@ -46,6 +47,18 @@ export const Workspace: React.FC<Props> = props => {
         () => dispatch({ type: 'load', workspace }), [workspace]
     );
     
+    // Whenever the state changes, wait until it hasn't changed for short while, then run the process.
+    // Don't do this on account of the outputs changing, or it'll just re-run forever.
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            const justInputValues = objectToObject(state.inputValues, value => value.value);
+            const justOutputValues = state.workspace.entryProcess.run(justInputValues) as Record<string, string>; // TODO: what about string[] types?
+            dispatch({ type: 'setOutputs', values: justOutputValues });
+        }, 500);
+
+        return () => clearTimeout(timeout);
+    }, [state.inputValues, state.operations, state.inputValues]);
+
     return (
         <Box sx={rootStyle}>
             <InputList

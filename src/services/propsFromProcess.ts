@@ -52,7 +52,6 @@ export function propsFromProcess(process: Process) {
         connections.push(propsFromOutputConnection(process, name, connection));
     }
 
-    console.log('parsed stuff from process:', { operations, connections });
     return {
         operations,
         connections,
