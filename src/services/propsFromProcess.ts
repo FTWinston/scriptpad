@@ -1,5 +1,5 @@
 import type { ConnectionProps } from '../display/ConnectionDisplay';
-import type { OperationProps } from '../display/OperationDisplay';
+import type { IOProps, OperationProps } from '../display/OperationDisplay';
 import { Connection } from '../models/Connection';
 import { Operation } from '../models/Operation';
 import { Process } from '../models/Process';
@@ -22,7 +22,7 @@ function propsFromConnection(operation: Operation, connectionName: string, conne
     return {
         id: `${operation.id}_${connectionName}`,
         type: connection.valueType,
-        from: connection.startPosition,
+        from: connection.startPosition, // TODO: make this undefined for process inputs?
         to: operation.getInputPosition(connectionName),
     }
 }
@@ -32,8 +32,34 @@ function propsFromOutputConnection(process: Process, connectionName: string, con
         id: `${process.id}_${connectionName}`,
         type: connection.valueType,
         from: connection.startPosition,
-        to: process.getOutputPosition(connectionName),
+        to: process.getOutputPosition(connectionName), // TODO: make this undefined?
     }
+}
+
+export function inputsFromProcess(process: Process): IOProps[] {
+    const results: IOProps[] = [];
+
+    for (const [name, type] of process.inputs.entries()) {
+        results.push({
+            type,
+            connected: process.isInputConnected(name),
+        });
+    }
+
+    return results;
+}
+
+export function outputsFromProcess(process: Process): IOProps[] {
+    const results: IOProps[] = [];
+
+    for (const [name, type] of process.outputs.entries()) {
+        results.push({
+            type,
+            connected: process.isOutputConnected(name),
+        });
+    }
+
+    return results;
 }
 
 export function propsFromProcess(process: Process) {
@@ -55,5 +81,7 @@ export function propsFromProcess(process: Process) {
     return {
         operations,
         connections,
+        inputs: inputsFromProcess(process),
+        outputs: outputsFromProcess(process),
     };
 }

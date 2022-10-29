@@ -47,17 +47,17 @@ export const Workspace: React.FC<Props> = props => {
         () => dispatch({ type: 'load', workspace }), [workspace]
     );
     
-    // Whenever the state changes, wait until it hasn't changed for short while, then run the process.
+    // Whenever an input or the entry process (view!?) changes, wait until it hasn't changed for short while, then run the process.
     // Don't do this on account of the outputs changing, or it'll just re-run forever.
     useEffect(() => {
         const timeout = setTimeout(() => {
             const justInputValues = objectToObject(state.inputValues, value => value.value);
             const justOutputValues = state.workspace.entryProcess.run(justInputValues) as Record<string, string>; // TODO: what about string[] types?
-            dispatch({ type: 'setOutputs', values: justOutputValues });
+            dispatch({ type: 'setOutputValues', values: justOutputValues });
         }, 500);
 
         return () => clearTimeout(timeout);
-    }, [state.inputValues, state.operations, state.inputValues]);
+    }, [state.inputValues, state.view]);
 
     return (
         <Box sx={rootStyle}>
@@ -69,10 +69,7 @@ export const Workspace: React.FC<Props> = props => {
                 setValue={(name, value) => dispatch({ type: 'setInput', name, value })}
             />
 
-            <ProcessEditor
-                operations={state.operations}
-                connections={state.connections}
-            />
+            <ProcessEditor {...state.view} />
 
             <OutputList
                 sx={ioListStyle}

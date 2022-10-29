@@ -4,7 +4,7 @@ import { Vector2D } from '../data/Vector2D';
 import { ConnectorDisplay, ConnectorProps } from './ConnectorDisplay';
 import classes from './OperationDisplay.module.css';
 
-type IOProps = Pick<ConnectorProps, 'type' | 'connected'>;
+export type IOProps = Pick<ConnectorProps, 'type' | 'connected'>;
 
 export interface OperationProps {
     id: OperationId;
@@ -45,8 +45,8 @@ export const OperationDisplay: React.FC<OperationProps> = props => {
                 {props.symbol}
             </text>
 
-            {props.inputs.map((connector, index) => <ConnectorDisplay key={index} attachment="in" connected={connector.connected} offset={index} type={connector.type} />)}
-            {props.outputs.map((connector, index) => <ConnectorDisplay key={index} attachment="out" connected={connector.connected} offset={index} type={connector.type} />)}
+            {props.inputs.map((connector, index) => <ConnectorDisplay key={index} attachment="in" connected={connector.connected} xOffset={index} type={connector.type} />)}
+            {props.outputs.map((connector, index) => <ConnectorDisplay key={index} attachment="out" connected={connector.connected} xOffset={index} type={connector.type} />)}
         </g>
     );
 }

@@ -1,10 +1,10 @@
 import type { ConnectionProps } from '../display/ConnectionDisplay';
-import type { OperationProps } from '../display/OperationDisplay';
+import type { IOProps, OperationProps } from '../display/OperationDisplay';
 import { Process } from '../models/Process';
 import { Workspace } from '../models/Workspace';
 import { getUniqueName } from '../services/getUniqueName';
 import { mapToObject, objectToObject } from '../services/maps';
-import { propsFromProcess } from '../services/propsFromProcess';
+import { inputsFromProcess, outputsFromProcess, propsFromProcess } from '../services/propsFromProcess';
 
 export interface ParameterData {
     value: string;
@@ -15,16 +15,24 @@ export interface WorkspaceState {
     workspace: Workspace;
     inputValues: Record<string, ParameterData>;
     outputValues: Record<string, ParameterData>;
-    operations: OperationProps[];
-    connections: ConnectionProps[];
+    view: {
+        operations: OperationProps[];
+        connections: ConnectionProps[];
+        inputs: IOProps[];
+        outputs: IOProps[];
+    }
 }
 
 export const emptyState: WorkspaceState = {
     workspace: {} as unknown as Workspace, // This object should never be accessed. Right?
     inputValues: {},
     outputValues: {},
-    operations: [],
-    connections: [],
+    view: {
+        operations: [],
+        connections: [],
+        inputs: [],
+        outputs: [],
+    },
 }
 
 export type WorkspaceAction = {
@@ -45,7 +53,7 @@ export type WorkspaceAction = {
     type: 'removeOutput';
     name: string;
 } | {
-    type: 'setOutputs';
+    type: 'setOutputValues';
     values: Record<string, string>;
 }
 
@@ -84,14 +92,12 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
     switch (action.type) {
         case 'load': {
             const newProcess = action.workspace.entryProcess;
-            const { operations, connections } = propsFromProcess(newProcess);
 
             return {
                 workspace: action.workspace,
                 inputValues: mapToObject(newProcess.inputs, (_type, name) => ({ value: '', canRemove: canRemoveInput(newProcess, name) })),
                 outputValues: mapToObject(newProcess.outputs, (_type, name) => ({ value: '', canRemove: canRemoveInput(newProcess, name) })),
-                operations,
-                connections,
+                view: propsFromProcess(newProcess),
             }
         }
         case 'setInput':
@@ -112,6 +118,10 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             return {
                 ...state,
                 inputValues,
+                view: {
+                    ...state.view,
+                    inputs: inputsFromProcess(process),
+                }
             }
         }
         case 'removeInput': {
@@ -122,7 +132,11 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
 
             return {
                 ...state,
-                inputValues
+                inputValues,
+                view: {
+                    ...state.view,
+                    inputs: inputsFromProcess(process),
+                }
             }
         }
         case 'addOutput': {
@@ -135,6 +149,10 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             return {
                 ...state,
                 outputValues,
+                view: {
+                    ...state.view,
+                    outputs: outputsFromProcess(process),
+                }
             }
         }
         case 'removeOutput': {
@@ -145,13 +163,22 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
 
             return {
                 ...state,
-                outputValues
+                outputValues,
+                view: {
+                    ...state.view,
+                    outputs: outputsFromProcess(process),
+                }
             }
         }
-        case 'setOutputs':
+        case 'setOutputValues':
+            // Any unconnected output won't get a value here. Ensure that we don't accidentally lose these from the output display,
+            // cos the process will run as a result of adding a new output, and that would just remove it again.
             return {
                 ...state,
-                outputValues: objectToObject(action.values, (value, name) => ({ value, canRemove: canRemoveOutput(process, name) })),
+                outputValues: {
+                    ...objectToObject(state.outputValues, (_value, name) => ({ value: '', canRemove: canRemoveOutput(process, name) })),
+                    ...objectToObject(action.values, (value, name) => ({ value, canRemove: canRemoveOutput(process, name) }))
+                },
             }
     }
 }

@@ -1,16 +1,13 @@
 import { IProcessConnection } from '../data/IConnection';
 import { IOValue, IOType } from '../data/Values';
 import { Vector2D } from '../data/Vector2D';
-import { Connection } from './Connection';
 import { Process } from './Process';
 
-export class ProcessConnection extends Connection {
+export class ProcessConnection {
     constructor(
         public input: string,
         private readonly process: Process,
     ) {
-        super();
-
         // TODO: inputs are a map, outputs are an array!? Make this more efficient.
         this.inputNumber = [...process.inputs.keys()].findIndex(key => key === input);
     }

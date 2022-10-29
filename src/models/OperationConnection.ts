@@ -1,16 +1,13 @@
 import { IOperationConnection } from '../data/IConnection';
 import { IOValue, IOType } from '../data/Values';
 import { Vector2D } from '../data/Vector2D';
-import { Connection } from './Connection';
 import { Operation } from './Operation';
 
-export class OperationConnection extends Connection {
+export class OperationConnection {
     constructor(
         public from: Operation,
         public output: string,
     ) {
-        super();
-
         this.outputNumber = from.outputs.findIndex(connection => connection[0] === output);
 
         from.outputConnections.set(output, this);

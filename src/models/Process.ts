@@ -27,7 +27,7 @@ export class Process {
 
     public getOutputPosition(name: string) {
         return {
-            x: 1, // TODO: why is this.outputs a map, meaning it has no order?
+            x: [...this.outputs.keys()].indexOf(name) + 1,
             y: getMaxValue(this.operations, operation => operation.position.y) + 2,
         }
     }
@@ -44,6 +44,13 @@ export class Process {
     private _currentInputs: Readonly<IOValues> | null = null;
 
     public get currentInputs(): Readonly<IOValues> | null { return this._currentInputs }
+
+    public isInputConnected(name: string) {
+        return [...this.operations.values()]
+            .some(op => [...op.inputConnections.values()]
+                            .some(con => con.type === 'process' && con.input === name)
+            );
+    }
 
     public isOutputConnected(name: string) { return this.outputConnections.has(name); }
 

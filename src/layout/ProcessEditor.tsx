@@ -5,13 +5,9 @@ import MenuItem from '@mui/material/MenuItem';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import { useState } from 'react';
-import { ProcessDisplay } from '../display/ProcessDisplay';
-import type { OperationProps } from '../display/OperationDisplay';
-import type { ConnectionProps } from '../display/ConnectionDisplay';
+import { ProcessDisplay, ProcessProps } from '../display/ProcessDisplay';
 
-export interface Props {
-    operations: OperationProps[];
-    connections: ConnectionProps[];
+export interface Props extends ProcessProps {
 }
 
 const rootStyle: SxProps = {
@@ -41,12 +37,11 @@ export const ProcessEditor: React.FC<Props> = props => {
         return () => { setMenuAnchor(null); /* props.addOperation(name); */ };
     }
 
+    const { ...displayProps } = props;
+
     return (
         <Paper sx={rootStyle}>
-            <ProcessDisplay
-                operations={props.operations}
-                connections={props.connections}
-            />
+            <ProcessDisplay {...displayProps} />
 
             <Fab
                 color="secondary"
