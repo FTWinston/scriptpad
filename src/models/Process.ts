@@ -25,6 +25,13 @@ export class Process {
         };
     }
 
+    public getInputPosition(name: string) {
+        return {
+            x: [...this.inputs.keys()].indexOf(name) + 1,
+            y: 1,
+        }
+    }
+
     public getOutputPosition(name: string) {
         return {
             x: [...this.outputs.keys()].indexOf(name) + 1,

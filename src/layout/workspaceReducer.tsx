@@ -1,5 +1,6 @@
 import type { ConnectionProps } from '../display/ConnectionDisplay';
-import type { IOProps, OperationProps } from '../display/OperationDisplay';
+import type { IOProps } from '../display/IODisplay';
+import type { OperationProps } from '../display/OperationDisplay';
 import { Process } from '../models/Process';
 import { Workspace } from '../models/Workspace';
 import { getUniqueName } from '../services/getUniqueName';

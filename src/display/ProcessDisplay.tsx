@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { ConnectionDisplay, ConnectionProps } from './ConnectionDisplay';
-import { ConnectorDisplay } from './ConnectorDisplay';
-import { IOProps, OperationDisplay, OperationProps } from './OperationDisplay';
+import { IODisplay, IOProps } from './IODisplay';
+import { OperationDisplay, OperationProps } from './OperationDisplay';
 import classes from './ProcessDisplay.module.css';
 
 export interface ProcessProps {
@@ -23,16 +23,8 @@ export const ProcessDisplay: React.FC<ProcessProps> = props => {
         >
             {connections.map(connection => <ConnectionDisplay key={connection.id} {...connection} />)}
             {operations.map(operation => <OperationDisplay key={operation.id} {...operation} />)}
-            {inputs.map((io, index) => <ConnectorDisplay key={index} type={io.type} connected={io.connected} attachment="in" xOffset={index + 1} yOffset={1} />)}
-            {/*
-                TODO: how do we determine the yOffset for inputs and outputs?
-                Ideally we want these to fit not to the VIEW BOX attribute, but to a calculated viewbox, based on the svg's size.
-                See e.g. https://stackoverflow.com/questions/23664967/determining-the-svg-viewport-in-global-root-coordinates
-
-                Also... why are we calculating these HERE, and also in propsFromProcess, for corresponding connectors? Seems iffy.
-            */
-            }
-            {outputs.map((io, index) => <ConnectorDisplay key={index} type={io.type} connected={io.connected} attachment="out" xOffset={index + 1} yOffset={3} />)}
+            {inputs.map((io, index) => <IODisplay key={index} {...io} />)}
+            {outputs.map((io, index) => <IODisplay key={index} {...io} />)}
         </svg>
     );
 }

@@ -1,10 +1,15 @@
 import { OperationId } from '../data/identifiers';
 import { IOperation } from '../data/IOperation';
+import { IOType } from '../data/Values';
 import { Vector2D } from '../data/Vector2D';
-import { ConnectorDisplay, ConnectorProps } from './ConnectorDisplay';
+import { ConnectorDisplay } from './ConnectorDisplay';
+import type { IOProps } from './IODisplay';
 import classes from './OperationDisplay.module.css';
 
-export type IOProps = Pick<ConnectorProps, 'type' | 'connected'>;
+export type ConnectorProps = {
+    type: IOType;
+    connected: boolean;
+}
 
 export interface OperationProps {
     id: OperationId;
@@ -14,8 +19,8 @@ export interface OperationProps {
     name: string;
     symbol: string;
     type: IOperation['type'];
-    inputs: IOProps[];
-    outputs: IOProps[];
+    inputs: ConnectorProps[];
+    outputs: ConnectorProps[];
 }
 
 export const OperationDisplay: React.FC<OperationProps> = props => {
@@ -45,8 +50,8 @@ export const OperationDisplay: React.FC<OperationProps> = props => {
                 {props.symbol}
             </text>
 
-            {props.inputs.map((connector, index) => <ConnectorDisplay key={index} attachment="in" connected={connector.connected} xOffset={index} type={connector.type} />)}
-            {props.outputs.map((connector, index) => <ConnectorDisplay key={index} attachment="out" connected={connector.connected} xOffset={index} type={connector.type} />)}
+            {props.inputs.map((connector, index) => <ConnectorDisplay key={index} attachment="in" connected={connector.connected} offset={index} type={connector.type} />)}
+            {props.outputs.map((connector, index) => <ConnectorDisplay key={index} attachment="out" connected={connector.connected} offset={index} type={connector.type} />)}
         </g>
     );
 }

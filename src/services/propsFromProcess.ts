@@ -1,5 +1,6 @@
 import type { ConnectionProps } from '../display/ConnectionDisplay';
-import type { IOProps, OperationProps } from '../display/OperationDisplay';
+import type { IOProps } from '../display/IODisplay';
+import type { OperationProps } from '../display/OperationDisplay';
 import { Connection } from '../models/Connection';
 import { Operation } from '../models/Operation';
 import { Process } from '../models/Process';
@@ -22,7 +23,7 @@ function propsFromConnection(operation: Operation, connectionName: string, conne
     return {
         id: `${operation.id}_${connectionName}`,
         type: connection.valueType,
-        from: connection.startPosition, // TODO: make this undefined for process inputs?
+        from: connection.startPosition,
         to: operation.getInputPosition(connectionName),
     }
 }
@@ -32,7 +33,7 @@ function propsFromOutputConnection(process: Process, connectionName: string, con
         id: `${process.id}_${connectionName}`,
         type: connection.valueType,
         from: connection.startPosition,
-        to: process.getOutputPosition(connectionName), // TODO: make this undefined?
+        to: process.getOutputPosition(connectionName),
     }
 }
 
@@ -43,6 +44,7 @@ export function inputsFromProcess(process: Process): IOProps[] {
         results.push({
             type,
             connected: process.isInputConnected(name),
+            position: process.getInputPosition(name),
         });
     }
 
@@ -56,6 +58,7 @@ export function outputsFromProcess(process: Process): IOProps[] {
         results.push({
             type,
             connected: process.isOutputConnected(name),
+            position: process.getOutputPosition(name),
         });
     }
 

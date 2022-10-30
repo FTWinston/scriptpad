@@ -4,8 +4,7 @@ import classes from './ConnectorDisplay.module.css';
 export interface ConnectorProps {
     type: IOType;
     attachment: 'in' | 'out';
-    xOffset: number;
-    yOffset: number;
+    offset: number;
     connected: boolean;
 }
 
@@ -16,7 +15,7 @@ export const ConnectorDisplay: React.FC<ConnectorProps> = props => {
 
     return (
         <path
-            d={resolvePath(props.xOffset, props.yOffset, props.attachment)}
+            d={resolvePath(props.offset, props.attachment)}
             className={`${classes.connector} ${typeClass} ${connectedClass} ${attachmentClass}`}
         />
     )
@@ -25,7 +24,7 @@ export const ConnectorDisplay: React.FC<ConnectorProps> = props => {
 const arrowWidth = 0.15;
 const arrowLength = 0.175;
 
-function resolvePath(xOffset: number, yOffset: number, attachment: 'in' | 'out'): string {
-    yOffset += attachment === 'in' ? -0.9125 : 0.0875;
+function resolvePath(xOffset: number,  attachment: 'in' | 'out'): string {
+    const yOffset = attachment === 'in' ? -0.9125 : 0.0875;
     return `M ${0.5 + xOffset - arrowWidth} ${yOffset + 1 - arrowLength} L ${0.5 + xOffset} ${yOffset + 1} L ${0.5 + xOffset + arrowWidth} ${yOffset + 1 - arrowLength} Z`;
 }
