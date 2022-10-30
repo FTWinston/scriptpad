@@ -57,7 +57,7 @@ export const Workspace: React.FC<Props> = props => {
         }, 500);
 
         return () => clearTimeout(timeout);
-    }, [state.inputValues, state.view]);
+    }, [state.lastFunctionalChange]);
 
     return (
         <Box sx={rootStyle}>
@@ -69,7 +69,12 @@ export const Workspace: React.FC<Props> = props => {
                 setValue={(name, value) => dispatch({ type: 'setInput', name, value })}
             />
 
-            <ProcessEditor {...state.view} />
+            <ProcessEditor
+                operations={state.operations}
+                connections={state.connections}
+                inputs={state.inputs}
+                outputs={state.outputs}
+            />
 
             <OutputList
                 sx={ioListStyle}

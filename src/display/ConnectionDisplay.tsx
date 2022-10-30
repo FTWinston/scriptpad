@@ -3,19 +3,48 @@ import { IOType } from '../data/Values';
 import { add, Direction, dot, getStep, offset, scale, subtract, Vector2D } from '../data/Vector2D';
 import classes from './ConnectionDisplay.module.css';
 
-export interface ConnectionProps {
+interface BaseConnectionProps {
     id: string;
-    from: Vector2D;
-    to: Vector2D;
     type: IOType;
 }
 
+interface InternalConnectionProps extends BaseConnectionProps {
+    kind: 'internal';
+    from: Vector2D;
+    to: Vector2D;
+}
+
+interface InputConnectionProps extends BaseConnectionProps {
+    kind: 'in';
+    from: number;
+    to: Vector2D;
+}
+
+interface OutputConnectionProps extends BaseConnectionProps {
+    kind: 'out';
+    from: Vector2D;
+    to: number;
+}
+
+export type ConnectionProps = InternalConnectionProps | InputConnectionProps | OutputConnectionProps;
+
 export const ConnectionDisplay: React.FC<ConnectionProps> = props => {
-    const { from, to } = props;
+    // TODO: we could have props (or a context) for the Y extent here, rather than using -100 / 100.
+    // That would mean that any elbow connectors actually went in the right place!
 
     const pathData = useMemo(
-        () => resolvePath(from, to),
-        [from, to]
+        () => {
+            const from: Vector2D = props.kind === 'in'
+                ? { x: props.from, y: -100 }
+                : props.from;
+
+            const to: Vector2D = props.kind === 'out'
+                ? { x: props.to, y: 100 }
+                : props.to;
+
+            return resolvePath(from, to)
+        },
+        [props.from, props.to]
     );
 
     return (

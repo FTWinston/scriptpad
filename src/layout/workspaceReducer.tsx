@@ -13,26 +13,24 @@ export interface ParameterData {
 
 export interface WorkspaceState {
     workspace: Workspace;
+    lastFunctionalChange: number;
     inputValues: Record<string, ParameterData>;
     outputValues: Record<string, ParameterData>;
-    view: {
-        operations: OperationProps[];
-        connections: ConnectionProps[];
-        inputs: IOProps[];
-        outputs: IOProps[];
-    }
+    operations: OperationProps[];
+    connections: ConnectionProps[];
+    inputs: IOProps[];
+    outputs: IOProps[];
 }
 
 export const emptyState: WorkspaceState = {
     workspace: {} as unknown as Workspace, // This object should never be accessed. Right?
+    lastFunctionalChange: Date.now(),
     inputValues: {},
     outputValues: {},
-    view: {
-        operations: [],
-        connections: [],
-        inputs: [],
-        outputs: [],
-    },
+    operations: [],
+    connections: [],
+    inputs: [],
+    outputs: [],
 }
 
 export type WorkspaceAction = {
@@ -95,9 +93,10 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
 
             return {
                 workspace: action.workspace,
+                lastFunctionalChange: Date.now(),
                 inputValues: mapToObject(newProcess.inputs, (_type, name) => ({ value: '', canRemove: canRemoveInput(newProcess, name) })),
                 outputValues: mapToObject(newProcess.outputs, (_type, name) => ({ value: '', canRemove: canRemoveInput(newProcess, name) })),
-                view: propsFromProcess(newProcess),
+                ...propsFromProcess(newProcess),
             }
         }
         case 'setInput':
@@ -106,6 +105,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
 
             return {
                 ...state,
+                lastFunctionalChange: Date.now(),
                 inputValues,
             }
         case 'addInput': {
@@ -117,11 +117,9 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             
             return {
                 ...state,
+                lastFunctionalChange: Date.now(),
                 inputValues,
-                view: {
-                    ...state.view,
-                    inputs: inputsFromProcess(process),
-                }
+                inputs: inputsFromProcess(process),
             }
         }
         case 'removeInput': {
@@ -132,11 +130,9 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
 
             return {
                 ...state,
+                lastFunctionalChange: Date.now(),
                 inputValues,
-                view: {
-                    ...state.view,
-                    inputs: inputsFromProcess(process),
-                }
+                inputs: inputsFromProcess(process),
             }
         }
         case 'addOutput': {
@@ -148,11 +144,9 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
 
             return {
                 ...state,
+                lastFunctionalChange: Date.now(),
                 outputValues,
-                view: {
-                    ...state.view,
-                    outputs: outputsFromProcess(process),
-                }
+                outputs: outputsFromProcess(process),
             }
         }
         case 'removeOutput': {
@@ -163,11 +157,9 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
 
             return {
                 ...state,
+                lastFunctionalChange: Date.now(),
                 outputValues,
-                view: {
-                    ...state.view,
-                    outputs: outputsFromProcess(process),
-                }
+                outputs: outputsFromProcess(process),
             }
         }
         case 'setOutputValues':
