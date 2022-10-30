@@ -33,7 +33,7 @@ function determineViewBox(operations: OperationProps[], numInputs: number, numOu
     let maxX = Math.max(numInputs, numOutputs) + 1;
     let maxY = Number.MIN_SAFE_INTEGER;
     let minX = Number.MAX_SAFE_INTEGER;
-    let minY = Number.MAX_SAFE_INTEGER;
+    let minY = -0.15;
 
     for (const operation of operations) {
         if (operation.position.x + operation.width > maxX) {
@@ -45,16 +45,13 @@ function determineViewBox(operations: OperationProps[], numInputs: number, numOu
         if (operation.position.y + operation.height > maxY) {
             maxY = operation.position.y + operation.height;
         }
-        if (operation.position.y < minY) {
-            minY = operation.position.y;
-        }
     }
 
-    const padding = 0.6;
-    minX = minX - padding;
-    minY = minY - padding;
-    const width = maxX + padding - minX;
-    const height = maxY + padding - minY;
+    const xPadding = 0.6;
+    minX = minX - xPadding;
+    maxY += 1.15;
+    const width = Math.max(maxX + xPadding - minX, 1);
+    const height = Math.max(maxY - minY, 1);
 
     return `${minX} ${minY} ${width} ${height}`;
 }

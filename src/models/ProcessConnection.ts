@@ -17,7 +17,7 @@ export class ProcessConnection {
     public get startPosition(): Vector2D {
         return {
             x: (this.inputNumber * 2) + 1,
-            y: 0,
+            y: -1,
         }
     }
 

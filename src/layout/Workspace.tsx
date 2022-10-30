@@ -6,7 +6,7 @@ import { objectToObject } from '../services/maps';
 import { InputList } from './InputList';
 import { OutputList } from './OutputList';
 import { ProcessEditor } from './ProcessEditor';
-import { emptyState, workspaceReducer } from './workspaceReducer';
+import { emptyState, workspaceReducer } from '../services/workspaceReducer';
 
 interface Props {
     workspace: WorkspaceData;

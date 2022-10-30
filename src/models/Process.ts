@@ -28,7 +28,7 @@ export class Process {
     public getInputPosition(name: string) {
         return {
             x: [...this.inputs.keys()].indexOf(name) + 1,
-            y: 1,
+            y: 0,
         }
     }
 

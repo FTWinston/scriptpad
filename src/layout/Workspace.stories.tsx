@@ -34,7 +34,7 @@ export const Simple: StoryObj<ComponentProps<typeof Workspace>> = {
                                     input: 'content',
                                 },
                             },
-                            position: { x: 1, y: 2 },
+                            position: { x: 1, y: 1 },
                         }
                     ],
                     inputs: { content: 'text' },

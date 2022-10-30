@@ -3,9 +3,9 @@ import type { IOProps } from '../display/IODisplay';
 import type { OperationProps } from '../display/OperationDisplay';
 import { Process } from '../models/Process';
 import { Workspace } from '../models/Workspace';
-import { getUniqueName } from '../services/getUniqueName';
-import { mapToObject, objectToObject } from '../services/maps';
-import { inputsFromProcess, outputsFromProcess, propsFromProcess } from '../services/propsFromProcess';
+import { getUniqueName } from './getUniqueName';
+import { mapToObject, objectToObject } from './maps';
+import { inputsFromProcess, outputsFromProcess, propsFromProcess } from './propsFromProcess';
 
 export interface ParameterData {
     value: string;

@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import type { SxProps } from '@mui/material/styles';
 import { InputText } from './InputText';
-import type { ParameterData } from './workspaceReducer';
+import type { ParameterData } from '../services/workspaceReducer';
 
 export interface Props {
     sx?: SxProps;
