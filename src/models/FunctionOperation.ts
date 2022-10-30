@@ -15,6 +15,8 @@ export class FunctionOperation extends Operation {
     ) {
         super(id, position);
 
+        // TODO: inputs never changes from default. We need do that when something is marked as an input.
+        // TODO: We also need to be able to load that information from saved data!
         this.inputs = objectToArray(functionToRun.parameters, filterDefaultInput);
         this.outputs = objectToArray(functionToRun.outputs, (value, key) => [key, value]);
     }

@@ -44,6 +44,10 @@ export abstract class Operation {
     }
     
     public getInputPosition(name: string): Vector2D {
+        // TODO: this seemingly returning -1?
+        // Presumably cos it doesn't specify that these ARE inputs! How do we do that?
+        console.log('getInputPosition', name);
+
         const inputNumber = this.inputs
             .findIndex(input => input[0] === name);
 

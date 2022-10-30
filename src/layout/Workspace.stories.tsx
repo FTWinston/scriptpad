@@ -64,24 +64,30 @@ export const Multiple: StoryObj<ComponentProps<typeof Workspace>> = {
                             id: 1,
                             type: 'function',
                             function: 'replace',
-                            config: {            
-                                find: 'this',
-                                replace: 'that',
+                            config: {
                                 matchCase: 'false',
                             },
                             inputs: {
                                 'in': {
                                     type: 'process',
-                                    input: 'content',
+                                    input: 'lookIn',
                                 },
+                                'find': {
+                                    type: 'process',
+                                    input: 'findMe',
+                                },
+                                'replace': {
+                                    type: 'process',
+                                    input: 'replaceMe',
+                                }
                             },
-                            position: { x: 1, y: 2 },
+                            position: { x: 1, y: 1 },
                         }
                     ],
-                    inputs: { content: 'text', someValue: 'text', someOther: 'text' },
+                    inputs: { lookIn: 'text', findMe: 'text', replaceMe: 'text' },
                     outputs: { result1: 'text', output2: 'text' },
                     outputConnections: {
-                        'content': {
+                        'result1': {
                             type: 'operation',
                             from: 1,
                             output: 'result',
