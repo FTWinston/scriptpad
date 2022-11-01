@@ -1,6 +1,8 @@
+import { OperationId } from '../data/identifiers';
 import type { ConnectionProps } from '../display/ConnectionDisplay';
 import type { IOProps } from '../display/IODisplay';
 import type { OperationProps } from '../display/OperationDisplay';
+import { OperationConfigProps } from '../layout/OperationConfigEditor';
 import { Process } from '../models/Process';
 import { Workspace } from '../models/Workspace';
 import { getUniqueName } from './getUniqueName';
@@ -21,6 +23,7 @@ export interface WorkspaceState {
     connections: ConnectionProps[];
     inputs: IOProps[];
     outputs: IOProps[];
+    editOperationConfig: OperationConfigProps | null;
 }
 
 export const emptyState: WorkspaceState = {
@@ -32,6 +35,7 @@ export const emptyState: WorkspaceState = {
     connections: [],
     inputs: [],
     outputs: [],
+    editOperationConfig: null,
 }
 
 export type WorkspaceAction = {
@@ -54,6 +58,9 @@ export type WorkspaceAction = {
 } | {
     type: 'setOutputValues';
     values: Record<string, string>;
+} | {
+    type: 'editOperation';
+    id: OperationId | null;
 }
 
 function canRemoveInput(process: Process, input: string) {
@@ -95,6 +102,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             return {
                 workspace: action.workspace,
                 lastFunctionalChange: Date.now(),
+                editOperationConfig: null,
                 inputValues: mapToObject(newProcess.inputs, (_type, name) => ({ value: '', canRemove: canRemoveInput(newProcess, name) })),
                 outputValues: mapToObject(newProcess.outputs, (_type, name) => ({ value: '', canRemove: canRemoveInput(newProcess, name) })),
                 ...propsFromProcess(newProcess),
@@ -172,6 +180,22 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
                     ...objectToObject(state.outputValues, (_value, name) => ({ value: '', canRemove: canRemoveOutput(process, name) })),
                     ...objectToObject(action.values, (value, name) => ({ value, canRemove: canRemoveOutput(process, name) }))
                 },
+            }
+        case 'editOperation':
+            const operation = action.id === null
+                ? null
+                : process.operations.get(action.id) ?? null;
+
+            return {
+                ...state,
+                editOperationConfig: operation === null
+                    ? null
+                    : {
+                        id: operation.id,
+                        name: operation.name,
+                        symbol: operation.symbol,
+                        type: operation.type,
+                    }
             }
     }
 }

@@ -11,13 +11,12 @@ export class FunctionOperation extends Operation {
         id: OperationId,
         position: Vector2D,
         public readonly functionToRun: IFunction,
-        public parameters: Record<string, string> = {},
+        public config: Record<string, string> = {},
     ) {
         super(id, position);
 
-        // TODO: inputs never changes from default. We need do that when something is marked as an input.
-        // TODO: We also need to be able to load that information from saved data!
-        this.inputs = objectToArray(functionToRun.parameters, filterDefaultInput);
+        // TODO: inputs never changes from default. We need do that when something is changed from an input to a config, or vice versa.
+        this.inputs = objectToArray(functionToRun.parameters, (definition, id) => filterInputs(definition, id, config));
         this.outputs = objectToArray(functionToRun.outputs, (value, key) => [key, value]);
     }
 
@@ -41,18 +40,26 @@ export class FunctionOperation extends Operation {
             id: this.id,
             position: this.position,
             function: this.functionToRun.id,
-            config: this.parameters,
+            config: this.config,
             inputs: mapToObject(this.inputConnections, input => input.toJson()),
         };
     }
     
     public perform(inputs: Readonly<IOValues>) {
-        return this.functionToRun.performRun(inputs, this.parameters);
+        return this.functionToRun.performRun(inputs, this.config);
     }
 }
 
-function filterDefaultInput(definition: ParameterDefinition, id: string): [string, IOType] | undefined {
+function filterDefaultInputs(definition: ParameterDefinition, id: string): [string, IOType] | undefined {
     if (definition.type === 'choice' || definition.type === 'toggle' || !definition.inputByDefault) {
+        return undefined;
+    }
+
+    return [id, definition.type];
+}
+
+function filterInputs(definition: ParameterDefinition, id: string, config: Record<string, string>): [string, IOType] | undefined {
+    if (config[id] !== undefined || definition.type === 'choice' || definition.type === 'toggle') {
         return undefined;
     }
 

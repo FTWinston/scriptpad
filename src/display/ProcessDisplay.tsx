@@ -1,14 +1,18 @@
 import { useMemo } from 'react';
+import { OperationId } from '../data/identifiers';
 import { ConnectionDisplay, ConnectionProps } from './ConnectionDisplay';
 import { IODisplay, IOProps } from './IODisplay';
 import { OperationDisplay, OperationProps } from './OperationDisplay';
 import classes from './ProcessDisplay.module.css';
 
+type OperationDataProps = Omit<OperationProps, 'onOpen'>;
+
 export interface ProcessProps {
-    operations: OperationProps[];
+    operations: OperationDataProps[];
     connections: ConnectionProps[];
     inputs: IOProps[];
     outputs: IOProps[];
+    onOpenOperation: (id: OperationId) => void;
 }
 
 export const ProcessDisplay: React.FC<ProcessProps> = props => {
@@ -22,14 +26,14 @@ export const ProcessDisplay: React.FC<ProcessProps> = props => {
             viewBox={viewBox}
         >
             {connections.map(connection => <ConnectionDisplay key={connection.id} {...connection} />)}
-            {operations.map(operation => <OperationDisplay key={operation.id} {...operation} />)}
+            {operations.map(operation => <OperationDisplay key={operation.id} {...operation} onOpen={() => props.onOpenOperation(operation.id)} />)}
             {inputs.map((io, index) => <IODisplay key={index} {...io} />)}
             {outputs.map((io, index) => <IODisplay key={index} {...io} />)}
         </svg>
     );
 }
 
-function determineViewBox(operations: OperationProps[], numInputs: number, numOutputs: number) {
+function determineViewBox(operations: OperationDataProps[], numInputs: number, numOutputs: number) {
     let maxX = Math.max(numInputs, numOutputs) + 1;
     let maxY = Number.MIN_SAFE_INTEGER;
     let minX = Number.MAX_SAFE_INTEGER;

@@ -21,6 +21,7 @@ export interface OperationProps {
     type: IOperation['type'];
     inputs: ConnectorProps[];
     outputs: ConnectorProps[];
+    onOpen: () => void;
 }
 
 export const OperationDisplay: React.FC<OperationProps> = props => {
@@ -32,6 +33,8 @@ export const OperationDisplay: React.FC<OperationProps> = props => {
             className={classes.operation}
             tabIndex={0}
             transform={`translate(${props.position.x},${props.position.y})`}
+            onClick={props.onOpen}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { props.onOpen(); }}}
         >
             <title>{props.name}</title>
 

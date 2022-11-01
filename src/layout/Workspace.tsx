@@ -74,6 +74,8 @@ export const Workspace: React.FC<Props> = props => {
                 connections={state.connections}
                 inputs={state.inputs}
                 outputs={state.outputs}
+                setEditOperation={id => dispatch({ type: 'editOperation', id })}
+                editOperationConfig={state.editOperationConfig}
             />
 
             <OutputList
