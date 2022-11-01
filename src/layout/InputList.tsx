@@ -22,6 +22,7 @@ export const InputList: React.FC<Props> = props => {
                     key={name}
                     label={name}
                     value={data.value}
+                    minRows={6}
                     canRemove={data.canRemove}
                     onChange={value => props.setValue(name, value)}
                     remove={() => props.removeEntry(name)}

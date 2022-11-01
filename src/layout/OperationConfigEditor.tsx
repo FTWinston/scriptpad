@@ -4,13 +4,16 @@ import { OperationId } from '../data/identifiers';
 import { ParameterDefinition } from '../data/Values';
 import { ConfigParameterEdit } from './ConfigParameterEdit';
 
-export interface OperationConfigProps {
+export interface OperationConfigData {
     id: OperationId;
     name: string;
     symbol: string;
     config: Record<string, string>;
     parameters: Record<string, ParameterDefinition>;
-    setConfig: (id: string, value: string | null) => void;
+}
+
+interface OperationConfigProps extends OperationConfigData {
+    setConfigValue: (id: string, value: string | null) => void;
 }
 
 const rootStyle: SxProps = {
@@ -20,6 +23,7 @@ const rootStyle: SxProps = {
 const listStyle: SxProps = {
     display: 'flex',
     flexDirection: 'column',
+    gap: 1.5,
 };
 
 export const OperationConfigEditor: React.FC<OperationConfigProps> = props => {
@@ -29,13 +33,15 @@ export const OperationConfigEditor: React.FC<OperationConfigProps> = props => {
             id={id}
             definition={definition}
             fixedValue={Object.hasOwn(props.config, id) ? props.config[id] : null}
-            setFixedValue={value => props.setConfig(id, value)}
+            setFixedValue={value => props.setConfigValue(id, value)}
         />
     ));
 
     return (
         <Box sx={rootStyle}>
             <p>Edit config for <strong>{props.name}</strong> operation #{props.id} here!</p>
+
+            <p>Each parameter can be a dynamic <em>input</em>, or a fixed <em>config</em> value.</p>
             
             <Box sx={listStyle}>
                 {configValues}

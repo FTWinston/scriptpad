@@ -14,9 +14,7 @@ export class FunctionOperation extends Operation {
         config: Record<string, string> = {},
     ) {
         super(id, position, config);
-
-        // TODO: inputs never changes from default. We need do that when something is changed from an input to a config, or vice versa.
-        this.inputs = objectToArray(functionToRun.parameters, (definition, id) => filterInputs(definition, id, config));
+        this.updateInputs();
         this.outputs = objectToArray(functionToRun.outputs, (value, key) => [key, value]);
     }
 
@@ -28,10 +26,16 @@ export class FunctionOperation extends Operation {
 
     public get parameters(): Record<string, ParameterDefinition> { return this.functionToRun.parameters; }
 
-    public readonly inputs: Array<[string, IOType]>;
+    private _inputs: Array<[string, IOType]> = [];
+    public get inputs() { return this._inputs; }
 
     public readonly outputs: Array<[string, IOType]>;
-    
+
+    protected updateInputs() {
+        // Update which things count as inputs, based on them not being in the config
+        this._inputs = objectToArray(this.parameters, (definition, id) => filterInputs(definition, id, this.config));
+    }
+
     public toJson(): IFunctionOperation {
         return {
             type: this.type,

@@ -11,7 +11,7 @@ export type ConnectorProps = {
     connected: boolean;
 }
 
-export interface OperationProps {
+export interface OperationData {
     id: OperationId;
     position: Vector2D;
     width: number;
@@ -21,6 +21,9 @@ export interface OperationProps {
     type: IOperation['type'];
     inputs: ConnectorProps[];
     outputs: ConnectorProps[];
+}
+
+interface OperationProps extends OperationData {
     onOpen: () => void;
 }
 

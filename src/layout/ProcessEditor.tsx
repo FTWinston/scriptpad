@@ -7,12 +7,13 @@ import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 import { ProcessDisplay, ProcessProps } from '../display/ProcessDisplay';
 import { OperationId } from '../data/identifiers';
-import { OperationConfigEditor, OperationConfigProps } from './OperationConfigEditor';
+import { OperationConfigEditor, OperationConfigData } from './OperationConfigEditor';
 import Drawer from '@mui/material/Drawer';
 
 export interface Props extends Omit<ProcessProps, 'onOpenOperation'> {
     setEditOperation: (id: OperationId | null) => void;
-    editOperationConfig: OperationConfigProps | null;
+    editOperation: OperationConfigData | null;
+    setOperationConfigValue: (operationId: OperationId, config: string, value: string | null) => void;
 }
 
 const rootStyle: SxProps = {
@@ -42,7 +43,7 @@ export const ProcessEditor: React.FC<Props> = props => {
         return () => { setMenuAnchor(null); /* props.addOperation(name); */ };
     }
 
-    const { setEditOperation, editOperationConfig, ...displayProps } = props;
+    const { setEditOperation, editOperation: editOperationConfig, ...displayProps } = props;
 
     const [configDrawerShowing, showConfigDrawer] = useState(false);
 
@@ -53,11 +54,12 @@ export const ProcessEditor: React.FC<Props> = props => {
             showConfigDrawer(shouldShowConfig);
         }
     }, [shouldShowConfig])
-
-    const configEditor = props.editOperationConfig
+    
+    const configEditor = editOperationConfig
         ? (
             <OperationConfigEditor
-                {...props.editOperationConfig}
+                {...editOperationConfig}
+                setConfigValue={(config, value) => props.setOperationConfigValue(editOperationConfig.id, config, value)}
             />
         )
         : undefined;

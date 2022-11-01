@@ -10,7 +10,8 @@ export abstract class Operation {
         public readonly id: OperationId,
         public position: Readonly<Vector2D>,
         private _config: Record<string, string>,
-    ) {}
+    ) {
+    }
 
     public abstract toJson(): IOperation;
 
@@ -20,13 +21,23 @@ export abstract class Operation {
 
     public abstract get symbol(): string;
 
-    public abstract get inputs(): Array<[string, IOType]>;
+    public abstract get inputs(): ReadonlyArray<[string, IOType]>;
 
     public abstract get outputs(): Array<[string, IOType]>;
     
     public abstract get parameters(): Record<string, ParameterDefinition>;
 
-    public get config(): Record<string, string> { return this._config; }
+    public get config(): Readonly<Record<string, string>> { return this._config; }
+
+    public setConfig(config: Record<string, string>) {
+        this._config = config;
+
+        this.updateInputs();
+
+        // TODO: drop any incoming connections that point at parameters that aren't inputs.
+    }
+
+    protected abstract updateInputs(): void;
 
     public inputConnections: Connections = new Map();
 

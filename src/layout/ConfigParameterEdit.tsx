@@ -1,10 +1,9 @@
-import Box from '@mui/material/Box';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormLabel from '@mui/material/FormLabel';
-import { SxProps } from '@mui/material/styles';
-import TextField from '@mui/material/TextField';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import InputIcon from '@mui/icons-material/VerticalAlignBottom';
+import ConfigIcon from '@mui/icons-material/TextRotationNone';
 import { ParameterDefinition } from '../data/Values';
+import { InputText } from './InputText';
 
 export interface Props {
     id: string;
@@ -13,28 +12,33 @@ export interface Props {
     setFixedValue: (value: string | null) => void;
 }
 
-const rootStyle: SxProps = {
-    margin: 1,
-    display: 'flex',
-    flexDirection: 'column',
-};
-
 export const ConfigParameterEdit: React.FC<Props> = props => {
-        
     return (
-        <Box component="fieldset" sx={rootStyle}>
-            <FormLabel component="legend">{props.id}</FormLabel>
-            <FormControlLabel
-                control={<Checkbox checked={props.fixedValue !== null} onChange={e => props.setFixedValue(e.currentTarget.checked ? '' : null)} />}
-                label="Use fixed value"
-            />
-            <TextField
-                label="Value"
-                disabled={props.fixedValue === null}
-                variant="outlined"
-                value={props.fixedValue}
-                onChange={e => props.setFixedValue(e.currentTarget.value)}
-            />
-        </Box>
+        <InputText
+            label={props.id}
+            value={props.fixedValue ?? ''}
+            onChange={props.setFixedValue}
+            canRemove={false}
+            disabled={props.fixedValue === null}
+            placeholder={props.fixedValue === null ? 'This is an input, it doesn\'t have a fixed value.' : undefined}
+            remove={() => {}}
+            startAdornment={(
+                <ToggleButtonGroup
+                    value={props.fixedValue === null ? 'input' : 'config'}
+                    size="small"
+                    color="secondary"
+                    exclusive
+                    onChange={(_e, value) => props.setFixedValue(value === 'input' ? null : '')}
+                    aria-label="parameter type"
+                >
+                    <ToggleButton value="input" aria-label="dynamic input value">
+                        <InputIcon />
+                    </ToggleButton>
+                    <ToggleButton value="config" aria-label="fixed configuration value">
+                        <ConfigIcon />
+                    </ToggleButton>
+                </ToggleButtonGroup>
+            )}
+        />
     );
 }

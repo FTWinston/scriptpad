@@ -8,13 +8,18 @@ import ClearIcon from '@mui/icons-material/Delete';
 import DeleteIcon from '@mui/icons-material/DeleteForever';
 import type { SxProps } from '@mui/material/styles';
 import { useRef } from 'react';
+import InputAdornment from '@mui/material/InputAdornment';
 
 interface Props {
     label: string;
+    minRows?: number;
+    placeholder?: string;
+    disabled?: boolean;
     value: string;
-    canRemove: boolean;
     onChange: (value: string) => void;
+    canRemove: boolean;
     remove: () => void;
+    startAdornment?: React.ReactNode;
 }
 
 function insertAtCursor(input: HTMLInputElement, textToInsert: string) {
@@ -37,6 +42,11 @@ const iconBarStyle: SxProps = {
     top: 8
 }
 
+const adornmentStyle: SxProps = {
+    alignSelf: 'baseline',
+    marginTop: '0.7em',
+}
+
 export const InputText: React.FC<Props> = props => {
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -50,7 +60,7 @@ export const InputText: React.FC<Props> = props => {
             props.onChange(insertAtCursor(inputRef.current, text));
             inputRef.current.focus();
             inputRef.current.selectionStart = inputRef.current.selectionEnd = nextCursorPos;
-            // TODO: useLayoutEffet to set this AFTER the text changes. I guess?
+            // TODO: useLayoutEffect to set this AFTER the text changes. I guess?
             // And a ref to detect when we just clicked a button?
         }
     }
@@ -62,6 +72,7 @@ export const InputText: React.FC<Props> = props => {
                 title="remove this input"
                 color="warning"
                 onClick={() => props.remove()}
+                disabled={props.disabled}
             >
                 <DeleteIcon />
             </IconButton>
@@ -70,7 +81,7 @@ export const InputText: React.FC<Props> = props => {
             <IconButton
                 title="clear all text"
                 color="primary"
-                disabled={valueIsEmpty}
+                disabled={valueIsEmpty || props.disabled}
                 onClick={() => props.onChange('')}
             >
                 <ClearIcon />
@@ -82,12 +93,19 @@ export const InputText: React.FC<Props> = props => {
             <TextField
                 inputRef={inputRef}
                 label={props.label}
+                placeholder={props.placeholder}
+                disabled={props.disabled}
                 multiline
                 fullWidth
                 variant="outlined"
-                minRows={6}
+                minRows={props.minRows}
                 value={props.value}
                 onChange={e => props.onChange(e.target.value)}
+                InputProps={{
+                    startAdornment: props.startAdornment
+                        ? <InputAdornment position="start" sx={adornmentStyle}>{props.startAdornment}</InputAdornment>
+                        : undefined,
+                }}
             />
             
             <Box sx={iconBarStyle}>
@@ -95,6 +113,7 @@ export const InputText: React.FC<Props> = props => {
                     title="insert tab character"
                     color="primary"
                     onClick={insertText('\t')}
+                    disabled={props.disabled}
                 >
                     <TabIcon />
                 </IconButton>
@@ -103,6 +122,7 @@ export const InputText: React.FC<Props> = props => {
                     title="insert new line character"
                     color="primary"
                     onClick={insertText('\n')}
+                    disabled={props.disabled}
                 >
                     <ReturnIcon />
                 </IconButton>

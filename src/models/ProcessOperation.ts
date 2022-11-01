@@ -31,6 +31,9 @@ export class ProcessOperation extends Operation {
     
     public get parameters(): Record<string, ParameterDefinition> { return {}; /* TODO: user processes to allow "parameters" to be configured as inputs or as configs. */ }
     
+    protected updateInputs() {    
+    }
+
     public toJson(): IProcessOperation {
         return {
             type: this.type,

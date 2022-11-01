@@ -1,8 +1,8 @@
 import { OperationId } from '../data/identifiers';
 import type { ConnectionProps } from '../display/ConnectionDisplay';
 import type { IOProps } from '../display/IODisplay';
-import type { OperationProps } from '../display/OperationDisplay';
-import { OperationConfigProps } from '../layout/OperationConfigEditor';
+import type { OperationData } from '../display/OperationDisplay';
+import { OperationConfigData } from '../layout/OperationConfigEditor';
 import { Process } from '../models/Process';
 import { Workspace } from '../models/Workspace';
 import { getUniqueName } from './getUniqueName';
@@ -23,7 +23,7 @@ export interface WorkspaceState {
     connections: ConnectionProps[];
     inputs: IOProps[];
     outputs: IOProps[];
-    editOperationConfig: OperationConfigProps | null;
+    editOperation: OperationConfigData | null;
 }
 
 export const emptyState: WorkspaceState = {
@@ -35,7 +35,7 @@ export const emptyState: WorkspaceState = {
     connections: [],
     inputs: [],
     outputs: [],
-    editOperationConfig: null,
+    editOperation: null,
 }
 
 export type WorkspaceAction = {
@@ -59,8 +59,13 @@ export type WorkspaceAction = {
     type: 'setOutputValues';
     values: Record<string, string>;
 } | {
-    type: 'editOperation';
+    type: 'setEditOperation';
     id: OperationId | null;
+} | {
+    type: 'setOperationConfigValue';
+    operationId: OperationId;
+    config: string;
+    value: string | null;
 }
 
 function canRemoveInput(process: Process, input: string) {
@@ -102,7 +107,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             return {
                 workspace: action.workspace,
                 lastFunctionalChange: Date.now(),
-                editOperationConfig: null,
+                editOperation: null,
                 inputValues: mapToObject(newProcess.inputs, (_type, name) => ({ value: '', canRemove: canRemoveInput(newProcess, name) })),
                 outputValues: mapToObject(newProcess.outputs, (_type, name) => ({ value: '', canRemove: canRemoveInput(newProcess, name) })),
                 ...propsFromProcess(newProcess),
@@ -181,22 +186,69 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
                     ...objectToObject(action.values, (value, name) => ({ value, canRemove: canRemoveOutput(process, name) }))
                 },
             }
-        case 'editOperation':
+        case 'setEditOperation': {
             const operation = action.id === null
                 ? null
                 : process.operations.get(action.id) ?? null;
 
+            let newEditOperation = operation === null
+                ? null
+                : {
+                    id: operation.id,
+                    name: operation.name,
+                    symbol: operation.symbol,
+                    parameters: operation.parameters,
+                    config: { ...operation.config }
+                };
+
+            let updatedProcessDisplay: Partial<WorkspaceState> = {};
+
+            let changedPrevConfig = false;
+
+            if (state.editOperation) {
+                // User has just finished editing an operation's config.
+                // Apply the updated config to the actual operation being edited now.
+                const operation = process.operations.get(state.editOperation.id);
+                if (operation) {
+                    operation.setConfig(state.editOperation.config);
+
+                    updatedProcessDisplay = propsFromProcess(process),
+
+                    changedPrevConfig = true;
+                }
+            }
+
             return {
                 ...state,
-                editOperationConfig: operation === null
-                    ? null
-                    : {
-                        id: operation.id,
-                        name: operation.name,
-                        symbol: operation.symbol,
-                        parameters: operation.parameters,
-                        config: { ...operation.config }
-                    }
+                ...updatedProcessDisplay,
+                lastFunctionalChange: changedPrevConfig ? Date.now() : state.lastFunctionalChange,
+                editOperation: newEditOperation,
+            }
+        }
+        case 'setOperationConfigValue':
+            if (state.editOperation?.id !== action.operationId) {
+                return state;
+            }
+
+            // We update the "currently editing" operation config, but don't apply this
+            // to the real operation's config until we finish editing.
+            const config = {
+                ...state.editOperation.config,
+            };
+
+            if (action.value === null) {
+                delete config[action.config];
+            }
+            else {
+                config[action.config] = action.value;
+            }
+
+            return {
+                ...state,
+                editOperation: {
+                    ...state.editOperation,
+                    config,
+                }
             }
     }
 }

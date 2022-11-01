@@ -1,11 +1,11 @@
 import type { ConnectionProps } from '../display/ConnectionDisplay';
 import type { IOProps } from '../display/IODisplay';
-import type { OperationProps } from '../display/OperationDisplay';
+import type { OperationData } from '../display/OperationDisplay';
 import { Connection } from '../models/Connection';
 import { Operation } from '../models/Operation';
 import { Process } from '../models/Process';
 
-function propsFromOperation(operation: Operation): OperationProps {
+function propsFromOperation(operation: Operation): OperationData {
     return {
         id: operation.id,
         type: operation.type,
