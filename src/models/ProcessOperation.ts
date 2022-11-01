@@ -1,7 +1,7 @@
 import { OperationId } from '../data/identifiers';
 import { IProcessOperation } from '../data/IOperation';
 import { Vector2D } from '../data/Vector2D';
-import { IOType, IOValues } from '../data/Values';
+import { IOType, IOValues, ParameterDefinition } from '../data/Values';
 import { mapToArray, mapToObject } from '../services/maps';
 import { Operation } from './Operation';
 import { Process } from './Process';
@@ -11,8 +11,9 @@ export class ProcessOperation extends Operation {
         id: OperationId,
         position: Vector2D,
         public readonly process: Process,
+        config: Record<string, string> = {},
     ) {
-        super(id, position);
+        super(id, position, config);
         
         this.inputs = mapToArray(this.process.inputs, (type, id) => [id, type]);
         this.outputs = mapToArray(this.process.outputs, (type, id) => [id, type]);
@@ -24,13 +25,11 @@ export class ProcessOperation extends Operation {
 
     public get symbol() { return this.process.id.charAt(0); } // TODO: allow this to be specified?
 
-    public get numConnections() {
-        return this.process.inputs.size + this.process.outputs.size;
-    }
-
     public readonly inputs: Array<[string, IOType]>;
 
     public readonly outputs: Array<[string, IOType]>;
+    
+    public get parameters(): Record<string, ParameterDefinition> { return {}; /* TODO: user processes to allow "parameters" to be configured as inputs or as configs. */ }
     
     public toJson(): IProcessOperation {
         return {

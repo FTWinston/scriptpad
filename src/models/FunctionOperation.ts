@@ -11,9 +11,9 @@ export class FunctionOperation extends Operation {
         id: OperationId,
         position: Vector2D,
         public readonly functionToRun: IFunction,
-        public config: Record<string, string> = {},
+        config: Record<string, string> = {},
     ) {
-        super(id, position);
+        super(id, position, config);
 
         // TODO: inputs never changes from default. We need do that when something is changed from an input to a config, or vice versa.
         this.inputs = objectToArray(functionToRun.parameters, (definition, id) => filterInputs(definition, id, config));
@@ -26,9 +26,7 @@ export class FunctionOperation extends Operation {
 
     public get symbol() { return this.functionToRun.symbol; }
 
-    public get numConnections() {
-        return Object.keys(this.functionToRun.parameters).length + Object.keys(this.functionToRun.outputs).length;
-    }
+    public get parameters(): Record<string, ParameterDefinition> { return this.functionToRun.parameters; }
 
     public readonly inputs: Array<[string, IOType]>;
 

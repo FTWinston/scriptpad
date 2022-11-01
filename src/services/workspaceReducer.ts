@@ -194,7 +194,8 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
                         id: operation.id,
                         name: operation.name,
                         symbol: operation.symbol,
-                        type: operation.type,
+                        parameters: operation.parameters,
+                        config: { ...operation.config }
                     }
             }
     }

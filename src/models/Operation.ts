@@ -1,7 +1,7 @@
 import { OperationId } from '../data/identifiers';
 import { IOperation } from '../data/IOperation';
 import { add, Vector2D } from '../data/Vector2D';
-import { IOValues, IOType } from '../data/Values';
+import { IOValues, IOType, ParameterDefinition } from '../data/Values';
 import { mapToObject } from '../services/maps';
 import { Connections } from './Connection';
 
@@ -9,6 +9,7 @@ export abstract class Operation {
     constructor(
         public readonly id: OperationId,
         public position: Readonly<Vector2D>,
+        private _config: Record<string, string>,
     ) {}
 
     public abstract toJson(): IOperation;
@@ -19,12 +20,14 @@ export abstract class Operation {
 
     public abstract get symbol(): string;
 
-    public abstract get numConnections(): number;
-
     public abstract get inputs(): Array<[string, IOType]>;
 
     public abstract get outputs(): Array<[string, IOType]>;
     
+    public abstract get parameters(): Record<string, ParameterDefinition>;
+
+    public get config(): Record<string, string> { return this._config; }
+
     public inputConnections: Connections = new Map();
 
     public outputConnections: Connections = new Map();
