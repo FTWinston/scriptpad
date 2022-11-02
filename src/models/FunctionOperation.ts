@@ -1,6 +1,6 @@
 import { OperationId } from '../data/identifiers';
 import { IFunctionOperation } from '../data/IOperation';
-import { IOValues, IOType, ParameterDefinition } from '../data/Values';
+import { IOValues, IOType, ParameterDefinition, SequenceParameterDefinition, TextParameterDefinition, canBeInput } from '../data/Values';
 import type { IFunction } from './CodeFunction';
 import { Operation } from './Operation';
 import { mapToObject, objectToArray } from '../services/maps';
@@ -52,18 +52,18 @@ export class FunctionOperation extends Operation {
     }
 }
 
-function filterDefaultInputs(definition: ParameterDefinition, id: string): [string, IOType] | undefined {
-    if (definition.type === 'choice' || definition.type === 'toggle' || !definition.inputByDefault) {
+function filterDefaultInputs(parameter: ParameterDefinition, id: string): [string, IOType] | undefined {
+    if (!canBeInput(parameter) || !parameter.inputByDefault) {
         return undefined;
     }
 
-    return [id, definition.type];
+    return [id, parameter.type];
 }
 
-function filterInputs(definition: ParameterDefinition, id: string, config: Record<string, string>): [string, IOType] | undefined {
-    if (config[id] !== undefined || definition.type === 'choice' || definition.type === 'toggle') {
+function filterInputs(parameter: ParameterDefinition, id: string, config: Record<string, string>): [string, IOType] | undefined {
+    if (config[id] !== undefined || !canBeInput(parameter)) {
         return undefined;
     }
 
-    return [id, definition.type];
+    return [id, parameter.type];
 }

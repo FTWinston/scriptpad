@@ -34,7 +34,12 @@ export abstract class Operation {
 
         this.updateInputs();
 
-        // TODO: drop any incoming connections that point at parameters that aren't inputs.
+        // Drop any input connections that reference config parameters, because those are no longer inputs.
+        for (const inputName of this.inputConnections.keys()) {
+            if (Object.hasOwn(config, inputName)) {
+                this.inputConnections.delete(inputName);
+            }
+        }
     }
 
     protected abstract updateInputs(): void;

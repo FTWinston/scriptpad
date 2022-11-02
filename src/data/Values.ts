@@ -25,6 +25,10 @@ export interface SequenceParameterDefinition {
 // Type name and any configuration options for each each type of parameter
 export type ParameterDefinition = ToggleParameterDefinition | ChoiceParameterDefinition | TextParameterDefinition | SequenceParameterDefinition;
 
+export function canBeInput(parameter: ParameterDefinition): parameter is TextParameterDefinition | SequenceParameterDefinition {
+    return parameter.type === 'text' || parameter.type === 'sequence';
+}
+
 // Just the type names
 export type ParameterType = ParameterDefinition['type'];
 export type IOType = 'text' | 'sequence';

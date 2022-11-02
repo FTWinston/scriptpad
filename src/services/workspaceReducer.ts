@@ -19,7 +19,7 @@ export interface WorkspaceState {
     lastFunctionalChange: number;
     inputValues: Record<string, ParameterData>;
     outputValues: Record<string, ParameterData>;
-    operations: OperationProps[];
+    operations: OperationData[];
     connections: ConnectionProps[];
     inputs: IOProps[];
     outputs: IOProps[];
@@ -73,7 +73,9 @@ function canRemoveInput(process: Process, input: string) {
         return false;
     }
     
-    // TODO: return false if input is connected
+    if (process.isInputConnected(input)) {
+        return false;
+    }
 
     return true;
 }
@@ -83,7 +85,9 @@ function canRemoveOutput(process: Process, output: string) {
         return false;
     }
     
-    // TODO: return false if output is connected
+    if (process.isOutputConnected(output)) {
+        return false;
+    }
 
     return true;
 }
@@ -205,6 +209,8 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
 
             let changedPrevConfig = false;
 
+            let inputValues = state.inputValues;
+
             if (state.editOperation) {
                 // User has just finished editing an operation's config.
                 // Apply the updated config to the actual operation being edited now.
@@ -215,17 +221,22 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
                     updatedProcessDisplay = propsFromProcess(process),
 
                     changedPrevConfig = true;
+
+                    // If a parameter has been changed from input to config, and it was connected to a process input,
+                    // it would now be able to be removed, whereas it wouldn't previously.
+                    inputValues = refreshInputValues(state);
                 }
             }
 
             return {
                 ...state,
                 ...updatedProcessDisplay,
+                inputValues,
                 lastFunctionalChange: changedPrevConfig ? Date.now() : state.lastFunctionalChange,
                 editOperation: newEditOperation,
             }
         }
-        case 'setOperationConfigValue':
+        case 'setOperationConfigValue': {
             if (state.editOperation?.id !== action.operationId) {
                 return state;
             }
@@ -249,6 +260,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
                     ...state.editOperation,
                     config,
                 }
-            }
+            };
+        }
     }
 }
