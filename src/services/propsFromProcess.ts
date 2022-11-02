@@ -66,7 +66,7 @@ export function outputsFromProcess(process: Process): IOProps[] {
 }
 
 export function propsFromProcess(process: Process) {
-    const operations: OperationProps[] = [];
+    const operations: OperationData[] = [];
     const connections: ConnectionProps[] = [];
 
     for (const operation of process.operations.values()) {

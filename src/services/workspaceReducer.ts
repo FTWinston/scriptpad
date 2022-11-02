@@ -1,4 +1,5 @@
 import { OperationId } from '../data/identifiers';
+import { canBeInput } from '../data/Values';
 import type { ConnectionProps } from '../display/ConnectionDisplay';
 import type { IOProps } from '../display/IODisplay';
 import type { OperationData } from '../display/OperationDisplay';
@@ -248,6 +249,12 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             };
 
             if (action.value === null) {
+                // Don't allow a config to change to an input if it's of a type that can't.
+                const parameter = state.editOperation.parameters[action.config];
+                if (!parameter || !canBeInput(parameter)) {
+                    return state;
+                }
+                
                 delete config[action.config];
             }
             else {
