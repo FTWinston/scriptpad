@@ -1,29 +1,54 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
+import { gsap, Power3 } from 'gsap';
 import { OperationId } from '../data/identifiers';
 import { ConnectionDisplay, ConnectionProps } from './ConnectionDisplay';
 import { IODisplay, IOProps } from './IODisplay';
-import { OperationDisplay, OperationProps } from './OperationDisplay';
+import { OperationDisplay, OperationData } from './OperationDisplay';
 import classes from './ProcessDisplay.module.css';
 
-type OperationDataProps = Omit<OperationProps, 'onOpen'>;
-
 export interface ProcessProps {
-    operations: OperationDataProps[];
+    operations: OperationData[];
     connections: ConnectionProps[];
     inputs: IOProps[];
     outputs: IOProps[];
     onOpenOperation: (id: OperationId) => void;
 }
 
+const emptyViewBox = '0 0 1 1';
+
 export const ProcessDisplay: React.FC<ProcessProps> = props => {
     const { connections, operations, inputs, outputs } = props;
 
-    const viewBox = useMemo(() => determineViewBox(operations, inputs.length, outputs.length), [operations, inputs.length, outputs.length]);
+    const svgRef = useRef<SVGSVGElement>(null);
+    const nextViewBox = useMemo(() => determineViewBox(operations, inputs.length, outputs.length), [operations, inputs.length, outputs.length]);
+    const viewBoxRef = useRef(nextViewBox);
 
+    // Account for changes to viewBox.
+    if (nextViewBox !== viewBoxRef.current) {
+        if (viewBoxRef.current === emptyViewBox) {
+            // Initial render is empty, so don't animate from that: jump straight to the first "proper" viewbox.
+            viewBoxRef.current = nextViewBox;
+        }
+        else {
+            // Use gsap to animate any (non-initial) viewbox changes.
+            gsap.to(svgRef.current, {
+                attr: {
+                    viewBox: nextViewBox,
+                },
+                duration: 1,
+                ease: Power3.easeInOut,
+                onComplete: () => {
+                    viewBoxRef.current = nextViewBox;
+                },
+            });
+        }
+    }
+    
     return (
         <svg
+            ref={svgRef}
             className={classes.root}
-            viewBox={viewBox}
+            viewBox={viewBoxRef.current}
         >
             {connections.map(connection => <ConnectionDisplay key={connection.id} {...connection} />)}
             {operations.map(operation => <OperationDisplay key={operation.id} {...operation} onOpen={() => props.onOpenOperation(operation.id)} />)}
@@ -33,7 +58,11 @@ export const ProcessDisplay: React.FC<ProcessProps> = props => {
     );
 }
 
-function determineViewBox(operations: OperationDataProps[], numInputs: number, numOutputs: number) {
+function determineViewBox(operations: OperationData[], numInputs: number, numOutputs: number) {
+    if (operations.length === 0) {
+        return emptyViewBox;
+    }
+
     let maxX = Math.max(numInputs, numOutputs) + 1;
     let maxY = Number.MIN_SAFE_INTEGER;
     let minX = Number.MAX_SAFE_INTEGER;
