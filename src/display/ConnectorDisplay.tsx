@@ -6,6 +6,7 @@ export interface ConnectorProps {
     attachment: 'in' | 'out';
     offset: number;
     connected: boolean;
+    onClick?: () => void;
 }
 
 export const ConnectorDisplay: React.FC<ConnectorProps> = props => {
@@ -17,6 +18,8 @@ export const ConnectorDisplay: React.FC<ConnectorProps> = props => {
         <path
             d={resolvePath(props.offset, props.attachment)}
             className={`${classes.connector} ${typeClass} ${connectedClass} ${attachmentClass}`}
+            tabIndex={0}
+            onClick={props.onClick}
         />
     )
 }

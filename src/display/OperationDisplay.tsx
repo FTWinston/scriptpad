@@ -24,7 +24,9 @@ export interface OperationData {
 }
 
 interface OperationProps extends OperationData {
-    onOpen: () => void;
+    onClicked: () => void;
+    onInputClicked: (index: number) => void;
+    onOutputClicked: (index: number) => void;
 }
 
 export const OperationDisplay: React.FC<OperationProps> = props => {
@@ -34,10 +36,7 @@ export const OperationDisplay: React.FC<OperationProps> = props => {
         <g
             id={`operation-${props.id}`}
             className={classes.operation + (props.validConnections ? '' : ` ${classes.invalid}`)}
-            tabIndex={0}
             transform={`translate(${props.position.x},${props.position.y})`}
-            onClick={props.onOpen}
-            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { props.onOpen(); }}}
         >
             <title>{props.name}</title>
 
@@ -45,6 +44,9 @@ export const OperationDisplay: React.FC<OperationProps> = props => {
                 className={`${classes.background} ${classes[typeBackground]}`}
                 width={props.width}
                 height={props.height}
+                onClick={props.onClicked}
+                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { props.onClicked(); }}}
+                tabIndex={0}
             />
 
             <text
@@ -56,8 +58,26 @@ export const OperationDisplay: React.FC<OperationProps> = props => {
                 {props.symbol}
             </text>
 
-            {props.inputs.map((connector, index) => <ConnectorDisplay key={index} attachment="in" connected={connector.connected} offset={index} type={connector.type} />)}
-            {props.outputs.map((connector, index) => <ConnectorDisplay key={index} attachment="out" connected={connector.connected} offset={index} type={connector.type} />)}
+            {props.inputs.map((connector, index) => (
+                <ConnectorDisplay
+                    key={index}
+                    attachment="in"
+                    connected={connector.connected}
+                    offset={index}
+                    type={connector.type}
+                    onClick={() => props.onInputClicked(index)}
+                />
+            ))}
+            {props.outputs.map((connector, index) => (
+                <ConnectorDisplay
+                    key={index}
+                    attachment="out"
+                    connected={connector.connected}
+                    offset={index}
+                    type={connector.type}
+                    onClick={() => props.onInputClicked(index)}
+                />
+            ))}
         </g>
     );
 }

@@ -5,13 +5,29 @@ import { ConnectionDisplay, ConnectionProps } from './ConnectionDisplay';
 import { IODisplay, IOProps } from './IODisplay';
 import { OperationDisplay, OperationData } from './OperationDisplay';
 import classes from './ProcessDisplay.module.css';
+import Box from '@mui/material/Box';
+import { SxProps, Theme } from '@mui/material/styles';
 
-export interface ProcessProps {
+export interface ProcessData {
     operations: OperationData[];
     connections: ConnectionProps[];
     inputs: IOProps[];
     outputs: IOProps[];
-    onOpenOperation: (id: OperationId) => void;
+}
+
+interface ProcessProps {
+    operationClicked: (id: OperationId) => void;
+    operationInputClicked: (id: OperationId, index: number) => void;
+    operationOutputClicked: (id: OperationId, index: number) => void;
+    inputClicked: (index: number) => void;
+    outputClicked: (index: number) => void;
+}
+
+const rootStyle: SxProps<Theme> = {
+    '& *:focus': {
+       outline: 'none',
+       fill: theme => theme.palette.secondary.main,
+    }
 }
 
 const emptyViewBox = '0 0 1 1';
@@ -45,16 +61,26 @@ export const ProcessDisplay: React.FC<ProcessProps> = props => {
     }
     
     return (
-        <svg
+        <Box
+            component="svg"
             ref={svgRef}
             className={classes.root}
+            sx={rootStyle}
             viewBox={viewBoxRef.current}
         >
             {connections.map(connection => <ConnectionDisplay key={connection.id} {...connection} />)}
-            {operations.map(operation => <OperationDisplay key={operation.id} {...operation} onOpen={() => props.onOpenOperation(operation.id)} />)}
-            {inputs.map((io, index) => <IODisplay key={index} {...io} />)}
-            {outputs.map((io, index) => <IODisplay key={index} {...io} />)}
-        </svg>
+            {operations.map(operation => (
+                <OperationDisplay
+                    key={operation.id}
+                    {...operation}
+                    onClicked={() => props.operationClicked(operation.id)}
+                    onInputClicked={input => props.operationInputClicked(operation.id, input)}
+                    onOutputClicked={output => props.operationInputClicked(operation.id, output)}
+                />
+            ))}
+            {inputs.map((io, index) => <IODisplay key={index} {...io} onClick={() => props.inputClicked(index)} />)}
+            {outputs.map((io, index) => <IODisplay key={index} {...io} onClick={() => props.outputClicked(index)} />)}
+        </Box>
     );
 }
 

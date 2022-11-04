@@ -5,15 +5,15 @@ import MenuItem from '@mui/material/MenuItem';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
-import { ProcessDisplay, ProcessProps } from '../display/ProcessDisplay';
-import { OperationId } from '../data/identifiers';
+import { ProcessDisplay, ProcessData } from '../display/ProcessDisplay';
 import { OperationConfigEditor, OperationConfigData } from './OperationConfigEditor';
 import Drawer from '@mui/material/Drawer';
+import { WorkspaceAction } from '../services/workspaceReducer';
+import { OperationId } from '../data/identifiers';
 
-export interface Props extends Omit<ProcessProps, 'onOpenOperation'> {
-    setEditOperation: (id: OperationId | null) => void;
+export interface Props extends ProcessData {
     editOperation: OperationConfigData | null;
-    setOperationConfigValue: (operationId: OperationId, config: string, value: string | null) => void;
+    dispatch: React.Dispatch<WorkspaceAction>
 }
 
 const rootStyle: SxProps = {
@@ -35,15 +35,27 @@ const fabStyle: SxProps = {
     gap: 2,
 }
 
+interface ConnectorInfo {
+    operation?: OperationId,
+    number: number;
+    type: 'i' | 'o';
+}
+
 export const ProcessEditor: React.FC<Props> = props => {
     const [addMenuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const addMenuIsOpen = Boolean(addMenuAnchor);
+
+    const [connectingFrom, setConnectingFrom] = useState<null | ConnectorInfo>(null);
 
     const addOperation = (name: string) => {
         return () => { setMenuAnchor(null); /* props.addOperation(name); */ };
     }
 
-    const { setEditOperation, editOperation: editOperationConfig, ...displayProps } = props;
+    const {
+        dispatch,
+        editOperation: editOperationConfig,
+        ...displayProps
+    } = props;
 
     const [configDrawerShowing, showConfigDrawer] = useState(false);
 
@@ -59,7 +71,7 @@ export const ProcessEditor: React.FC<Props> = props => {
         ? (
             <OperationConfigEditor
                 {...editOperationConfig}
-                setConfigValue={(config, value) => props.setOperationConfigValue(editOperationConfig.id, config, value)}
+                setConfigValue={(config, value) => dispatch({ type: 'setOperationConfigValue', operationId: editOperationConfig.id, config, value })}
             />
         )
         : undefined;
@@ -68,7 +80,11 @@ export const ProcessEditor: React.FC<Props> = props => {
         <Paper sx={rootStyle}>
             <ProcessDisplay
                 {...displayProps}
-                onOpenOperation={setEditOperation}
+                operationClicked={id => dispatch({ type: 'setEditOperation', id })}
+                operationInputClicked={(op, input) => {/* TODO */}}
+                operationOutputClicked={(op, output) => {/* TODO */}}
+                inputClicked={(input) => {/* TODO */}}
+                outputClicked={(output) => {/* TODO */}}
             />
 
             <Fab
@@ -109,7 +125,7 @@ export const ProcessEditor: React.FC<Props> = props => {
             <Drawer
                 anchor="bottom"
                 open={configDrawerShowing}
-                onClose={() => setEditOperation(null)}
+                onClose={() => dispatch({ type: 'setEditOperation', id: null })}
             >
                 {configEditor}
             </Drawer>

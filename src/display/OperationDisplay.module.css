@@ -1,6 +1,5 @@
 .operation {
     cursor: pointer;
-    user-select: none;
 }
 
 .operation:focus {
@@ -31,12 +30,13 @@
     alignment-baseline: central;
     fill: var(--operation-fg);
     font: bold 0.825px sans-serif;
+    pointer-events: none;
 }
 
-.operation:focus .symbol {
+.operation:focus-within .symbol {
     fill: var(--operation-fg-focus);
 }
 
-.operation:focus .background {
+.operation:focus-within .background {
     opacity: 0.8;
 }

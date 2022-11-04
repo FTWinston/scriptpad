@@ -7,6 +7,7 @@ export interface IOProps {
     type: IOType;
     position: Vector2D;
     connected: boolean;
+    onClick?: () => void;
 }
 
 export const IODisplay: React.FC<IOProps> = props => {
@@ -20,6 +21,8 @@ export const IODisplay: React.FC<IOProps> = props => {
             cx={props.position.x + 0.5}
             cy={props.position.y}
             r={0.1}
+            tabIndex={0}
+            onClick={props.onClick}
         />
     )
 }
