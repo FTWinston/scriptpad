@@ -3,7 +3,6 @@ import { IOperation } from '../data/IOperation';
 import { IOType } from '../data/Values';
 import { Vector2D } from '../data/Vector2D';
 import { ConnectorDisplay } from './ConnectorDisplay';
-import type { IOProps } from './IODisplay';
 import classes from './OperationDisplay.module.css';
 
 export type ConnectorProps = {
@@ -21,6 +20,7 @@ export interface OperationData {
     type: IOperation['type'];
     inputs: ConnectorProps[];
     outputs: ConnectorProps[];
+    validConnections: boolean;
 }
 
 interface OperationProps extends OperationData {
@@ -33,7 +33,7 @@ export const OperationDisplay: React.FC<OperationProps> = props => {
     return (
         <g
             id={`operation-${props.id}`}
-            className={classes.operation}
+            className={classes.operation + (props.validConnections ? '' : ` ${classes.invalid}`)}
             tabIndex={0}
             transform={`translate(${props.position.x},${props.position.y})`}
             onClick={props.onOpen}

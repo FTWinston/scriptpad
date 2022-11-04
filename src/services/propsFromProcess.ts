@@ -16,6 +16,7 @@ function propsFromOperation(operation: Operation): OperationData {
         position: operation.position,
         inputs: operation.inputs.map(input => ({ type: input[1], connected: operation.inputConnections.has(input[0]) })),
         outputs: operation.outputs.map(output => ({ type: output[1], connected: operation.outputConnections.has(output[0]) })),
+        validConnections: operation.hasValidInputs(),
     }
 }
 

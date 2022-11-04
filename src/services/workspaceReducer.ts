@@ -219,6 +219,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
                 if (operation) {
                     operation.setConfig(state.editOperation.config);
 
+                    // Recalculate everything in the process display.
                     updatedProcessDisplay = propsFromProcess(process),
 
                     changedPrevConfig = true;

@@ -48,6 +48,10 @@ export abstract class Operation {
 
     public outputConnections: Connections = new Map();
 
+    public hasValidInputs() {
+        return this.inputs.every(([input]) => this.inputConnections.has(input));
+    }
+
     private _currentOutputs: IOValues | null = null;
 
     public get currentOutputs(): Readonly<IOValues> | null { return this._currentOutputs }

@@ -11,6 +11,10 @@
     fill: var(--operation-bg);
 }
 
+.invalid .background {
+    fill: darkred;
+}
+
 .functionBackground {
     rx: 0.15;
 }
