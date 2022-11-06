@@ -9,6 +9,7 @@ import { Workspace } from '../models/Workspace';
 import { getUniqueName } from './getUniqueName';
 import { mapToObject, objectToObject } from './maps';
 import { inputsFromProcess, outputsFromProcess, propsFromProcess } from './propsFromProcess';
+import { tryConnect } from './tryConnect';
 
 export interface ParameterData {
     value: string;
@@ -67,6 +68,12 @@ export type WorkspaceAction = {
     operationId: OperationId;
     config: string;
     value: string | null;
+} | {
+    type: 'connect';
+    fromOperation?: OperationId,
+    fromConnector: number,
+    toOperation?: OperationId,
+    toConnector: number,
 }
 
 function canRemoveInput(process: Process, input: string) {
@@ -100,7 +107,6 @@ function refreshInputValues(state: WorkspaceState) {
 function refreshOutputValues(state: WorkspaceState) {
     return objectToObject(state.outputValues, ({ value }, name) => ({ value, canRemove: canRemoveOutput(state.workspace.entryProcess, name) }))
 }
-
 
 export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction): WorkspaceState {
     const process = state.workspace.entryProcess;
@@ -269,6 +275,18 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
                     config,
                 }
             };
+        }
+        case 'connect': {
+            if (!tryConnect(process, action.fromOperation, action.fromConnector, action.toOperation, action.toConnector)) {
+                return state;
+            }
+            
+            return {
+                ...state,
+                
+                // Recalculate everything in the process display.
+                ...propsFromProcess(process),
+            }
         }
     }
 }

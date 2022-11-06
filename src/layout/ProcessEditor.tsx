@@ -47,6 +47,41 @@ export const ProcessEditor: React.FC<Props> = props => {
 
     const [connectingFrom, setConnectingFrom] = useState<null | ConnectorInfo>(null);
 
+    const connect = (connector: ConnectorInfo) => {
+        // If not connecting from anything, start from the current point.
+        if (connectingFrom === null) {
+            setConnectingFrom(connector);
+            return;
+        }
+
+        // Whether we create a connection or not, forget about the previously-selected connector.
+        setConnectingFrom(null);
+
+        // If an item of the same type (i/o) as the previous one is clicked, forget about both.
+        if (connectingFrom.type === connector.type
+        ) {
+            return;
+        }
+
+        // You can't connect an operation's output to its input.
+        if (connectingFrom.operation !== undefined && connector.operation === connectingFrom.operation) {
+            return;
+        }
+
+        const output = connectingFrom.type === 'o'
+            ? connectingFrom : connector;
+        const input = connectingFrom === output
+            ? connector : connectingFrom;
+
+        dispatch({
+            type: 'connect',
+            fromOperation: output.operation,
+            fromConnector: output.number,
+            toOperation: input.operation,
+            toConnector: output.number,
+        });
+    }
+
     const addOperation = (name: string) => {
         return () => { setMenuAnchor(null); /* props.addOperation(name); */ };
     }

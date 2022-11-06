@@ -1,4 +1,4 @@
-import { IOperationConnection } from './IConnection';
+import { IConnection } from './IConnection';
 import { IOperation } from './IOperation';
 import { IOTypes } from './Values';
 
@@ -7,5 +7,5 @@ export interface IProcess {
     inputs: IOTypes;
     outputs: IOTypes;
     operations: IOperation[];
-    outputConnections: Record<string, IOperationConnection>;
+    outputConnections: Record<string, IConnection>;
 }

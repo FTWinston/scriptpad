@@ -3,8 +3,8 @@ import { IProcess } from '../data/IProcess';
 import { IOValues, IOType } from '../data/Values';
 import { Operation } from './Operation';
 import { determineOperationExecutionOrder } from '../services/determineOperationExecutionOrder';
-import { OperationConnection } from './OperationConnection';
 import { getMaxValue, mapToArray, mapToObject } from '../services/maps';
+import { Connection } from './Connection';
 
 export class Process {
     constructor(
@@ -12,7 +12,7 @@ export class Process {
         private readonly _operations: Map<OperationId, Operation>,
         public inputs: Map<string, IOType>,
         public outputs: Map<string, IOType>,
-        public outputConnections: Map<string, OperationConnection>
+        public outputConnections: Map<string, Connection>
     ) {}
 
     public toJson(): IProcess {
