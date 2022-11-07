@@ -54,6 +54,8 @@ export const ProcessEditor: React.FC<Props> = props => {
             return;
         }
 
+        
+
         // Whether we create a connection or not, forget about the previously-selected connector.
         setConnectingFrom(null);
 
