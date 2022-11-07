@@ -15,7 +15,7 @@ export interface ProcessData {
     outputs: IOProps[];
 }
 
-interface ProcessProps {
+interface ProcessProps extends ProcessData {
     operationClicked: (id: OperationId) => void;
     operationInputClicked: (id: OperationId, index: number) => void;
     operationOutputClicked: (id: OperationId, index: number) => void;
