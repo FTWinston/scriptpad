@@ -50,11 +50,27 @@ export const ProcessEditor: React.FC<Props> = props => {
     const connect = (connector: ConnectorInfo) => {
         // If not connecting from anything, start from the current point.
         if (connectingFrom === null) {
+
+            if (connector.type === 'i') {
+
+                if (connector.operation) {
+                    const operation = props.operations.find(operation => operation.id === connector.operation);
+
+                    // Click a connected input to disconnect it. This might be a temporary thing.
+                    if (operation?.inputs[connector.number].connected) {
+                        dispatch({
+                            type: 'disconnect',
+                            operation: connector.operation,
+                            input: connector.number,
+                        });
+                        return;
+                    }
+                }
+            }
+
             setConnectingFrom(connector);
             return;
         }
-
-        
 
         // Whether we create a connection or not, forget about the previously-selected connector.
         setConnectingFrom(null);

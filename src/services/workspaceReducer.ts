@@ -74,6 +74,10 @@ export type WorkspaceAction = {
     fromConnector: number,
     toOperation?: OperationId,
     toConnector: number,
+} | {
+    type: 'disconnect';
+    operation: OperationId;
+    input: number;
 }
 
 function canRemoveInput(process: Process, input: string) {
@@ -280,6 +284,22 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             if (!tryConnect(process, action.fromOperation, action.fromConnector, action.toOperation, action.toConnector)) {
                 return state;
             }
+            
+            return {
+                ...state,
+                
+                // Recalculate everything in the process display.
+                ...propsFromProcess(process),
+            }
+        }
+        case 'disconnect': {
+            const operation = process.operations.get(action.operation);
+            if (!operation) {
+                return state;
+            }
+
+            const inputName = operation.inputs[action.input][0]
+            operation.inputConnections.delete(inputName);
             
             return {
                 ...state,
