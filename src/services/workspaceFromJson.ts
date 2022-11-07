@@ -1,4 +1,4 @@
-import { IConnection, IOperationConnection } from '../data/IConnection';
+import { IConnection, IOperationConnection, IProcessConnection } from '../data/IConnection';
 import { ProcessId, OperationId } from '../data/identifiers';
 import { IFunctionOperation, IOperation, IProcessOperation } from '../data/IOperation';
 import { IProcess } from '../data/IProcess';
@@ -20,7 +20,7 @@ function connectionFromJson(data: IConnection, process: Process): Connection {
         return operationConnectionFromJson(data, process.operations);
     }
     else { // if (data.type === 'process')
-        return ProcessConnection.fromJson(data, process);
+        return processConnectionFromJson(data, process);
     }
 }
 
@@ -38,6 +38,14 @@ function operationConnectionFromJson(data: IOperationConnection, operations: Rea
     }
 
     return new OperationConnection(from, data.output);
+}
+
+function processConnectionFromJson(data: IProcessConnection, process: Process): ProcessConnection {
+    if (!process.inputs.has(data.input)) {
+        throw new Error(`Process input "${data.input}" not recognised in process ${process.id}`);
+    }
+
+    return new ProcessConnection(data.input, process);
 }
 
 function functionOperationFromJson(data: IFunctionOperation) {
@@ -72,21 +80,25 @@ function operationFromJson(data: IOperation, processesById: ReadonlyMap<ProcessI
 
 function processFromJson(data: IProcess, otherProcesses: ReadonlyMap<ProcessId, Process>) {
     const operations = data.operations
-            .map(operation => operationFromJson(operation, otherProcesses));
+        .map(operation => operationFromJson(operation, otherProcesses));
     
     const operationMap = arrayToMap<OperationId, Operation>(operations);
     const inputs = objectToMap(data.inputs);
     const outputs = objectToMap(data.outputs);
-    const outputConnections = objectToMap(data.outputConnections, output => operationConnectionFromJson(output, operationMap));
 
-    const process = new Process(data.id, operationMap, inputs, outputs, outputConnections);
+    const process = new Process(data.id, operationMap, inputs, outputs, new Map());
 
-    // We can only populate input connections once we have all the operations.
+    // We can only populate operation input connections once we have the process.
     for (let i = 0; i < operations.length; i++) {
         const operation = operations[i];
         const inputData = data.operations[i].inputs;
 
         operation.inputConnections = objectToMap(inputData, input => connectionFromJson(input, process));
+    }
+
+    // Likewise, now that we have the process, we can do its output connections.
+    for (const [name, connection] of Object.entries<IConnection>(data.outputConnections)) {
+        process.outputConnections.set(name, connectionFromJson(connection, process));
     }
 
     return process;

@@ -28,14 +28,6 @@ export class ProcessConnection {
         };
     }
 
-    public static fromJson(data: IProcessConnection, process: Process): ProcessConnection {
-        if (!process.inputs.has(data.input)) {
-            throw new Error(`Process input "${data.input}" not recognised in process ${process.id}`);
-        }
-
-        return new ProcessConnection(data.input, process);
-    }
-
     public type: 'process' = 'process';
 
     public get valueType(): IOType {
