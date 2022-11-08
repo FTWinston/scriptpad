@@ -1,15 +1,12 @@
 import Paper from '@mui/material/Paper';
 import type { SxProps } from '@mui/material/styles';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Fab from '@mui/material/Fab';
-import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 import { ProcessDisplay, ProcessData } from '../display/ProcessDisplay';
 import { OperationConfigEditor, OperationConfigData } from './OperationConfigEditor';
 import Drawer from '@mui/material/Drawer';
 import { WorkspaceAction } from '../services/workspaceReducer';
 import { OperationId } from '../data/identifiers';
+import { AddMenu } from './AddMenu';
 
 export interface Props extends ProcessData {
     editOperation: OperationConfigData | null;
@@ -42,9 +39,6 @@ interface ConnectorInfo {
 }
 
 export const ProcessEditor: React.FC<Props> = props => {
-    const [addMenuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-    const addMenuIsOpen = Boolean(addMenuAnchor);
-
     const [connectingFrom, setConnectingFrom] = useState<null | ConnectorInfo>(null);
 
     const connect = (connector: ConnectorInfo) => {
@@ -101,7 +95,7 @@ export const ProcessEditor: React.FC<Props> = props => {
     }
 
     const addOperation = (name: string) => {
-        return () => { setMenuAnchor(null); /* props.addOperation(name); */ };
+        return () => { /* props.addOperation(name); */ };
     }
 
     const {
@@ -140,40 +134,9 @@ export const ProcessEditor: React.FC<Props> = props => {
                 outputClicked={(number) => connect({ number, type: 'i' })}
             />
 
-            <Fab
-                color="secondary"
-                id="add-op-button"
-                aria-label="add operations"
-                aria-controls={addMenuIsOpen ? 'add-op-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={addMenuIsOpen ? 'true' : undefined}
-                onClick={e => setMenuAnchor(e.currentTarget)}
-                sx={fabStyle}
-            >
-                <AddIcon />
-            </Fab>
-            
-            <Menu
-                id="add-op-menu"
-                anchorEl={addMenuAnchor}
-                open={addMenuIsOpen}
-                onClose={() => setMenuAnchor(null)}
-                MenuListProps={{
-                    'aria-labelledby': 'add-op-button',
-                }}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                }}
-                transformOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                }}
-            >
-                <MenuItem onClick={addOperation('replace')}>Replace</MenuItem>
-                <MenuItem onClick={addOperation('prefix/suffix')}>Prefix/Suffix</MenuItem>
-                <MenuItem onClick={addOperation('filter')}>Filter</MenuItem>
-            </Menu>
+            <AddMenu
+                addOperation={opFunction => addOperation(opFunction.id)}
+            />
 
             <Drawer
                 anchor="bottom"
