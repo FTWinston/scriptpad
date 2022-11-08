@@ -1,12 +1,11 @@
 import { ParameterValuesFromTypes, IOValuesFromTypes} from '../data/Values';
 import { CodeFunction } from '../models/CodeFunction';
-import { escapeRegExp } from '../services/escapeRegExp';
 
 type Parameters = {
-    in: 'text',
-    find: 'text',
-    replace: 'text',
-    matchCase: 'toggle',
+    source: 'text',
+    add: 'text',
+    index: 'text',
+    fromEnd: 'toggle',
 }
 
 type Outputs = {
@@ -14,40 +13,46 @@ type Outputs = {
 }
 
 export default new CodeFunction<Parameters, Outputs>({
-    id: 'replace',
-    symbol: 'RPL',
+    id: 'insert',
+    symbol: 'INS',
     parameters: {
-        in: {
+        source: {
             type: 'text',
             inputByDefault: true,
         },
-        find: {
+        add: {
             type: 'text',
             inputByDefault: false,
             validation: /.+/
         },
-        replace: {
+        index: {
             type: 'text',
             inputByDefault: false,
+            validation: /\d+/
         },
-        matchCase: {
-            type: 'toggle'
-        },
+        fromEnd: {
+            type: 'toggle',
+        }
     },
     outputs: {
         result: 'text',
     },
     run: (parameters: Readonly<ParameterValuesFromTypes<Parameters>>): IOValuesFromTypes<Outputs> => {
-        if (parameters.find.length === 0) {
-            return { result: parameters.in };
-        }
-        
-        const findValue = parameters.matchCase === 'true'
-            ? new RegExp(escapeRegExp(parameters.find), 'i')
-            : parameters.find;
+        let index = parseInt(parameters.index);
 
-        const result = parameters.in.replaceAll(findValue, parameters.replace);
-        
+        const { source, add, fromEnd } = parameters;
+
+        // Do nothing if the index given is bigger than the length of the source.
+        if (index > source.length) {
+            return { result: source };
+        }
+
+        if (fromEnd) {
+            index = source.length - index;
+        }
+
+        const result = `${source.substring(0, index)}${add}${source.substring(index)}`;
+
         return { result };
     },
 });
