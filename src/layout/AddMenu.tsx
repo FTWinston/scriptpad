@@ -3,9 +3,10 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
+import { NestedMenuItem } from 'mui-nested-menu';
 import { useState } from 'react';
 import { IFunction } from '../models/CodeFunction';
-import functions from '../functions';
+import { textFunctions, sequenceFunctions, conversionFunctions } from '../functions';
 
 export interface Props {
     addOperation: (operation: IFunction) => void;
@@ -59,9 +60,21 @@ export const AddMenu: React.FC<Props> = props => {
                     horizontal: 'right',
                 }}
             >
-                {Object.values(functions).map(opFunction => (
-                    <MenuItem key={opFunction.id} onClick={addOperation(opFunction)}>{opFunction.id}</MenuItem>
-                ))}
+                <NestedMenuItem label="Text operations" parentMenuOpen={addMenuIsOpen} nonce="text">
+                    {Object.values(textFunctions).map(opFunction => (
+                        <MenuItem key={opFunction.id} onClick={addOperation(opFunction)}>{opFunction.id}</MenuItem>
+                    ))}
+                </NestedMenuItem>
+                <NestedMenuItem label="Sequence operations" parentMenuOpen={addMenuIsOpen} nonce="sequence">
+                    {Object.values(sequenceFunctions).map(opFunction => (
+                        <MenuItem key={opFunction.id} onClick={addOperation(opFunction)}>{opFunction.id}</MenuItem>
+                    ))}
+                </NestedMenuItem>
+                <NestedMenuItem label="Conversions" parentMenuOpen={addMenuIsOpen} nonce="convert">
+                    {Object.values(conversionFunctions).map(opFunction => (
+                        <MenuItem key={opFunction.id} onClick={addOperation(opFunction)}>{opFunction.id}</MenuItem>
+                    ))}
+                </NestedMenuItem>
             </Menu>
         </>
     );
