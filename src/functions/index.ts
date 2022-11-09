@@ -1,4 +1,6 @@
 import concat from './concat';
+import distinct from './distinct';
+import filter from './filter';
 import insert from './insert';
 import join from './join';
 import replace from './replace';
@@ -13,7 +15,8 @@ export const textFunctions = {
 };
 
 export const sequenceFunctions = {
-    replace // TODO: remove
+    filter,
+    distinct,
 };
 
 export const conversionFunctions = {

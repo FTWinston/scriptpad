@@ -42,11 +42,11 @@ export default new CodeFunction<Parameters, Outputs>({
             return { result: parameters.in };
         }
         
-        const findValue = parameters.matchCase === 'true'
-            ? new RegExp(escapeRegExp(parameters.find), 'i')
-            : parameters.find;
+        const findValue = escapeRegExp(parameters.find);
+        
+        const findExpression = new RegExp(findValue, parameters.matchCase === 'true' ? '' : 'i');
 
-        const result = parameters.in.replaceAll(findValue, parameters.replace);
+        const result = parameters.in.replaceAll(findExpression, parameters.replace);
         
         return { result };
     },
