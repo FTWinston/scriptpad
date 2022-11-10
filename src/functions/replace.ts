@@ -7,6 +7,7 @@ type Parameters = {
     find: 'text',
     replace: 'text',
     matchCase: 'toggle',
+    regularExpressions: 'toggle',
 }
 
 type Outputs = {
@@ -33,6 +34,9 @@ export default new CodeFunction<Parameters, Outputs>({
         matchCase: {
             type: 'toggle'
         },
+        regularExpressions: {
+            type: 'toggle'
+        },
     },
     outputs: {
         result: 'text',
@@ -42,7 +46,9 @@ export default new CodeFunction<Parameters, Outputs>({
             return { result: parameters.in };
         }
         
-        const findValue = escapeRegExp(parameters.find);
+        const findValue = parameters.regularExpressions
+            ? parameters.find
+            : escapeRegExp(parameters.find);
         
         const findExpression = new RegExp(findValue, parameters.matchCase === 'true' ? '' : 'i');
 
