@@ -19,27 +19,28 @@ export default new CodeFunction<Parameters, Outputs>({
     parameters: {
         first: {
             type: 'text',
-            inputByDefault: false,
         },
         second: {
             type: 'text',
-            inputByDefault: true,
         },
         third: {
             type: 'text',
-            inputByDefault: false,
         },
         fourth: {
             type: 'text',
-            inputByDefault: false,
         },
         fifth: {
             type: 'text',
-            inputByDefault: false,
         },
     },
     outputs: {
         result: 'text',
+    },
+    defaultConfig: {
+        first: '',
+        third: '',
+        fourth: '',
+        fifth: '',
     },
     run: (parameters: Readonly<ParameterValuesFromTypes<Parameters>>): IOValuesFromTypes<Outputs> => {
         return { result: `${parameters.first}${parameters.second}${parameters.third}${parameters.fourth}${parameters.fifth}` };

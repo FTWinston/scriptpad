@@ -18,11 +18,9 @@ export default new CodeFunction<Parameters, Outputs>({
     parameters: {
         in: {
             type: 'text',
-            inputByDefault: true,
         },
         characters: {
             type: 'text',
-            inputByDefault: false,
             validation: /.+/
         },
         location: {
@@ -32,6 +30,9 @@ export default new CodeFunction<Parameters, Outputs>({
     },
     outputs: {
         result: 'text',
+    },
+    defaultConfig: {
+        characters: ' \t\n',
     },
     run: (parameters: Readonly<ParameterValuesFromTypes<Parameters>>): IOValuesFromTypes<Outputs> => {
         if (parameters.characters.length === 0) {

@@ -12,13 +12,11 @@ export interface ChoiceParameterDefinition {
 
 export interface TextParameterDefinition {
     readonly type: 'text';
-    readonly inputByDefault: boolean;
     readonly validation?: RegExp;
 }
 
 export interface SequenceParameterDefinition {
     readonly type: 'sequence';
-    readonly inputByDefault: boolean;
     readonly validation?: RegExp;
 }
 
@@ -42,7 +40,7 @@ export type ParameterTypes = Record<string, ParameterType>;
 export type IOTypes = Record<string, IOType>;
 
 // Values by parameter name
-export type RawParameters = Record<string, ParameterValue>;
+export type ParameterValues = Partial<Record<string, ParameterValue>>;
 export type IOValues = Record<string, IOValue>;
 
 // Get a ParameterValue from a ParameterType

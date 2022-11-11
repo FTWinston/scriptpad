@@ -1,6 +1,6 @@
 import { OperationId } from '../data/identifiers';
 import { IFunctionOperation } from '../data/IOperation';
-import { IOValues, IOType, ParameterDefinition, SequenceParameterDefinition, TextParameterDefinition, canBeInput } from '../data/Values';
+import { IOValues, IOType, ParameterDefinition, canBeInput, ParameterValues } from '../data/Values';
 import type { IFunction } from './CodeFunction';
 import { Operation } from './Operation';
 import { mapToObject, objectToArray } from '../services/maps';
@@ -11,9 +11,9 @@ export class FunctionOperation extends Operation {
         id: OperationId,
         position: Vector2D,
         public readonly functionToRun: IFunction,
-        config: Record<string, string> = {},
+        config?: ParameterValues,
     ) {
-        super(id, position, config);
+        super(id, position, config ?? functionToRun.defaultConfig);
         this.updateInputs();
         this.outputs = objectToArray(functionToRun.outputs, (value, key) => [key, value]);
     }
@@ -52,15 +52,7 @@ export class FunctionOperation extends Operation {
     }
 }
 
-function filterDefaultInputs(parameter: ParameterDefinition, id: string): [string, IOType] | undefined {
-    if (!canBeInput(parameter) || !parameter.inputByDefault) {
-        return undefined;
-    }
-
-    return [id, parameter.type];
-}
-
-function filterInputs(parameter: ParameterDefinition, id: string, config: Record<string, string>): [string, IOType] | undefined {
+function filterInputs(parameter: ParameterDefinition, id: string, config: ParameterValues): [string, IOType] | undefined {
     if (config[id] !== undefined || !canBeInput(parameter)) {
         return undefined;
     }

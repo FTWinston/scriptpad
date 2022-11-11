@@ -20,11 +20,9 @@ export default new CodeFunction<Parameters, Outputs>({
     parameters: {
         in: {
             type: 'text',
-            inputByDefault: true,
         },
         find: {
             type: 'text',
-            inputByDefault: false,
             validation: /.+/
         },
         remove: {
@@ -40,6 +38,12 @@ export default new CodeFunction<Parameters, Outputs>({
     },
     outputs: {
         result: 'text',
+    },
+    defaultConfig: {
+        find: '',
+        remove: 'before match',
+        matchCase: 'false',
+        regularExpressions: 'false',
     },
     run: (parameters: Readonly<ParameterValuesFromTypes<Parameters>>): IOValuesFromTypes<Outputs> => {
         if (parameters.find.length === 0) {

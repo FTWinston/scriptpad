@@ -18,16 +18,13 @@ export default new CodeFunction<Parameters, Outputs>({
     parameters: {
         source: {
             type: 'text',
-            inputByDefault: true,
         },
         add: {
             type: 'text',
-            inputByDefault: false,
             validation: /.+/
         },
         index: {
             type: 'text',
-            inputByDefault: false,
             validation: /\d+/
         },
         fromEnd: {
@@ -36,6 +33,11 @@ export default new CodeFunction<Parameters, Outputs>({
     },
     outputs: {
         result: 'text',
+    },
+    defaultConfig: {
+        add: '',
+        index: '0',
+        fromEnd: 'false',
     },
     run: (parameters: Readonly<ParameterValuesFromTypes<Parameters>>): IOValuesFromTypes<Outputs> => {
         let index = parseInt(parameters.index);

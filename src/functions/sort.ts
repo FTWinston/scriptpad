@@ -17,7 +17,6 @@ export default new CodeFunction<Parameters, Outputs>({
     parameters: {
         items: {
             type: 'sequence',
-            inputByDefault: true,
         },
         sortBy: {
             type: 'choice',
@@ -30,6 +29,10 @@ export default new CodeFunction<Parameters, Outputs>({
     },
     outputs: {
         items: 'sequence',
+    },
+    defaultConfig: {
+        sortBy: 'text (ignore case)',
+        direction: 'ascending',
     },
     run: (parameters: Readonly<ParameterValuesFromTypes<Parameters>>): IOValuesFromTypes<Outputs> => {
         let sortFunc: (a: string, b: string) => number;

@@ -334,7 +334,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             return {
                 ...state,
                 lastFunctionalChange: Date.now(),
-                
+
                 // Recalculate everything in the process display.
                 ...propsFromProcess(process),
             }

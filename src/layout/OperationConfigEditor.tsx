@@ -1,14 +1,14 @@
 import Box from '@mui/material/Box';
 import { SxProps } from '@mui/material/styles';
 import { OperationId } from '../data/identifiers';
-import { ParameterDefinition } from '../data/Values';
+import { ParameterDefinition, ParameterValues } from '../data/Values';
 import { ConfigParameterEdit } from './ConfigParameterEdit';
 
 export interface OperationConfigData {
     id: OperationId;
     name: string;
     symbol: string;
-    config: Record<string, string>;
+    config: ParameterValues;
     parameters: Record<string, ParameterDefinition>;
 }
 
@@ -32,7 +32,7 @@ export const OperationConfigEditor: React.FC<OperationConfigProps> = props => {
             key={id}
             id={id}
             definition={definition}
-            fixedValue={Object.hasOwn(props.config, id) ? props.config[id] : null}
+            fixedValue={Object.hasOwn(props.config, id) ? props.config[id] as string : null}
             setFixedValue={value => props.setConfigValue(id, value)}
         />
     ));

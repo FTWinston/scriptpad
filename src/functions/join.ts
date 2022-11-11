@@ -16,15 +16,16 @@ export default new CodeFunction<Parameters, Outputs>({
     parameters: {
         sequence: {
             type: 'sequence',
-            inputByDefault: true,
         },
         separator: {
             type: 'text',
-            inputByDefault: false,
         },
     },
     outputs: {
         text: 'text',
+    },
+    defaultConfig: {
+        separator: '\n',
     },
     run: (parameters: Readonly<ParameterValuesFromTypes<Parameters>>): IOValuesFromTypes<Outputs> => {
         const text = parameters.sequence.join(parameters.separator);

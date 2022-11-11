@@ -1,7 +1,7 @@
 import { OperationId } from '../data/identifiers';
 import { IProcessOperation } from '../data/IOperation';
 import { Vector2D } from '../data/Vector2D';
-import { IOType, IOValues, ParameterDefinition } from '../data/Values';
+import { IOType, IOValues, ParameterDefinition, ParameterValues } from '../data/Values';
 import { mapToArray, mapToObject } from '../services/maps';
 import { Operation } from './Operation';
 import { Process } from './Process';
@@ -11,7 +11,7 @@ export class ProcessOperation extends Operation {
         id: OperationId,
         position: Vector2D,
         public readonly process: Process,
-        config: Record<string, string> = {},
+        config: ParameterValues = {},
     ) {
         super(id, position, config);
         

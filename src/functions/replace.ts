@@ -20,16 +20,13 @@ export default new CodeFunction<Parameters, Outputs>({
     parameters: {
         in: {
             type: 'text',
-            inputByDefault: true,
         },
         find: {
             type: 'text',
-            inputByDefault: false,
             validation: /.+/
         },
         replace: {
             type: 'text',
-            inputByDefault: false,
         },
         matchCase: {
             type: 'toggle'
@@ -41,16 +38,22 @@ export default new CodeFunction<Parameters, Outputs>({
     outputs: {
         result: 'text',
     },
+    defaultConfig: {
+        find: '',
+        replace: '',
+        matchCase: 'false',
+        regularExpressions: 'false',
+    },
     run: (parameters: Readonly<ParameterValuesFromTypes<Parameters>>): IOValuesFromTypes<Outputs> => {
         if (parameters.find.length === 0) {
             return { result: parameters.in };
         }
         
-        const findValue = parameters.regularExpressions
+        const findValue = parameters.regularExpressions === 'true'
             ? parameters.find
             : escapeRegExp(parameters.find);
         
-        const findExpression = new RegExp(findValue, parameters.matchCase === 'true' ? '' : 'i');
+        const findExpression = new RegExp(findValue, parameters.matchCase === 'true' ? 'g' : 'gi');
 
         const result = parameters.in.replaceAll(findExpression, parameters.replace);
         

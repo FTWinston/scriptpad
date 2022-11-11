@@ -17,7 +17,6 @@ export default new CodeFunction<Parameters, Outputs>({
     parameters: {
         items: {
             type: 'sequence',
-            inputByDefault: true,
         },
         type: {
             type: 'choice',
@@ -29,6 +28,10 @@ export default new CodeFunction<Parameters, Outputs>({
     },
     outputs: {
         items: 'sequence',
+    },
+    defaultConfig: {
+        type: 'distinct items',
+        matchCase: 'false',
     },
     run: (parameters: Readonly<ParameterValuesFromTypes<Parameters>>): IOValuesFromTypes<Outputs> => {
         const countsByKey = new Map<string, number>();

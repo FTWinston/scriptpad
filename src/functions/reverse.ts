@@ -16,12 +16,12 @@ export default new CodeFunction<Parameters, Outputs>({
     parameters: {
         in: {
             type: 'text',
-            inputByDefault: true,
         },
     },
     outputs: {
         result: 'text',
     },
+    defaultConfig: {},
     run: (parameters: Readonly<ParameterValuesFromTypes<Parameters>>): IOValuesFromTypes<Outputs> => {
         const result = reverse(parameters.in);
         

@@ -18,16 +18,13 @@ export default new CodeFunction<Parameters, Outputs>({
     parameters: {
         in: {
             type: 'text',
-            inputByDefault: true,
         },
         startIndex: {
             type: 'text',
-            inputByDefault: false,
             validation: /\d+/
         },
         length: {
             type: 'text',
-            inputByDefault: false,
             validation: /\d?/
         },
         keep: {
@@ -37,6 +34,11 @@ export default new CodeFunction<Parameters, Outputs>({
     },
     outputs: {
         result: 'text',
+    },
+    defaultConfig: {
+        startIndex: '0',
+        length: '0',
+        keep: 'matched section',
     },
     run: (parameters: Readonly<ParameterValuesFromTypes<Parameters>>): IOValuesFromTypes<Outputs> => {
         const startIndex = parseInt(parameters.startIndex);
@@ -55,7 +57,7 @@ export default new CodeFunction<Parameters, Outputs>({
         else {
             result = parameters.in.slice(0, startIndex) + parameters.in.slice(endIndex);
         }
-        
+
         return { result };
     },
 });

@@ -7,6 +7,7 @@ type Parameters = {
     find: 'text',
     type: 'choice',
     matchCase: 'toggle',
+    regularExpressions: 'toggle',
 }
 
 type Outputs = {
@@ -19,11 +20,9 @@ export default new CodeFunction<Parameters, Outputs>({
     parameters: {
         items: {
             type: 'sequence',
-            inputByDefault: true,
         },
         find: {
             type: 'text',
-            inputByDefault: false,
             validation: /.+/
         },
         type: {
@@ -33,12 +32,23 @@ export default new CodeFunction<Parameters, Outputs>({
         matchCase: {
             type: 'toggle'
         },
+        regularExpressions: {
+            type: 'toggle'
+        },
     },
     outputs: {
         items: 'sequence',
     },
+    defaultConfig: {
+        find: '',
+        type: 'contains',
+        matchCase: 'false',
+        regularExpressions: 'false',
+    },
     run: (parameters: Readonly<ParameterValuesFromTypes<Parameters>>): IOValuesFromTypes<Outputs> => {
-        let findValue = escapeRegExp(parameters.find);
+        let findValue = parameters.regularExpressions === 'true'
+            ? parameters.find
+            : escapeRegExp(parameters.find);
 
         switch (parameters.type) {
             case 'starts with':

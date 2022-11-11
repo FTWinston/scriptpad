@@ -1,5 +1,6 @@
 import { IConnections } from './IConnection';
 import { OperationId, FunctionId, ProcessId } from './identifiers';
+import { IOValues } from './Values';
 import { Vector2D } from './Vector2D';
 
 interface IBaseOperation {
@@ -11,7 +12,7 @@ interface IBaseOperation {
 export interface IFunctionOperation extends IBaseOperation {
     type: 'function';
     function: FunctionId;
-    config: Record<string, string>;
+    config: Partial<IOValues>;
 }
 
 export interface IProcessOperation extends IBaseOperation {

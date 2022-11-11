@@ -1,7 +1,7 @@
 import { OperationId } from '../data/identifiers';
 import { IOperation } from '../data/IOperation';
 import { add, Vector2D } from '../data/Vector2D';
-import { IOValues, IOType, ParameterDefinition } from '../data/Values';
+import { IOValues, IOType, ParameterDefinition, ParameterValues } from '../data/Values';
 import { mapToObject } from '../services/maps';
 import { Connections } from './Connection';
 
@@ -9,7 +9,7 @@ export abstract class Operation {
     constructor(
         public readonly id: OperationId,
         public position: Readonly<Vector2D>,
-        private _config: Record<string, string>,
+        private _config: ParameterValues,
     ) {
     }
 
@@ -27,9 +27,9 @@ export abstract class Operation {
     
     public abstract get parameters(): Record<string, ParameterDefinition>;
 
-    public get config(): Readonly<Record<string, string>> { return this._config; }
+    public get config(): Readonly<ParameterValues> { return this._config; }
 
-    public setConfig(config: Record<string, string>) {
+    public setConfig(config: ParameterValues) {
         this._config = config;
 
         this.updateInputs();

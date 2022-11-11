@@ -16,16 +16,17 @@ export default new CodeFunction<Parameters, Outputs>({
     parameters: {
         items: {
             type: 'sequence',
-            inputByDefault: true,
         },
         indices: {
             type: 'text',
-            inputByDefault: false,
             validation: /\d+(\-\d+)?(,\d+(\-\d+)?)*/,
         },
     },
     outputs: {
         items: 'sequence',
+    },
+    defaultConfig: {
+        indices: '',
     },
     run: (parameters: Readonly<ParameterValuesFromTypes<Parameters>>): IOValuesFromTypes<Outputs> => {
         const indicesToKeep = parseIndices(parameters.indices);
