@@ -5,7 +5,7 @@ import { ProcessDisplay, ProcessData } from '../display/ProcessDisplay';
 import { OperationConfigEditor, OperationConfigData } from './OperationConfigEditor';
 import Drawer from '@mui/material/Drawer';
 import { WorkspaceAction } from '../services/workspaceReducer';
-import { OperationId } from '../data/identifiers';
+import { FunctionId, OperationId } from '../data/identifiers';
 import { AddMenu } from './AddMenu';
 
 export interface Props extends ProcessData {
@@ -22,14 +22,6 @@ const rootStyle: SxProps = {
     '& > *': {
         flexGrow: 1,
     }
-}
-
-const fabStyle: SxProps = {
-    position: 'absolute',
-    bottom: 16,
-    right: 16,
-    display: 'flex',
-    gap: 2,
 }
 
 interface ConnectorInfo {
@@ -94,8 +86,8 @@ export const ProcessEditor: React.FC<Props> = props => {
         });
     }
 
-    const addOperation = (name: string) => {
-        return () => { /* props.addOperation(name); */ };
+    const addOperation = (functionId: FunctionId) => {
+        dispatch({ type: 'addOperation', functionId });
     }
 
     const {
@@ -134,9 +126,7 @@ export const ProcessEditor: React.FC<Props> = props => {
                 outputClicked={(number) => connect({ number, type: 'i' })}
             />
 
-            <AddMenu
-                addOperation={opFunction => addOperation(opFunction.id)}
-            />
+            <AddMenu addOperation={addOperation} />
 
             <Drawer
                 anchor="bottom"

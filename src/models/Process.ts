@@ -32,14 +32,22 @@ export class Process {
         }
     }
 
+    public getMaxOperationPositionY() {
+        return getMaxValue(this.operations.values(), operation => operation.position.y);
+    }
+
     public getOutputPosition(name: string) {
         return {
             x: [...this.outputs.keys()].indexOf(name) + 1,
-            y: getMaxValue(this.operations, operation => operation.position.y) + 2,
+            y: this.getMaxOperationPositionY() + 2,
         }
     }
 
     public get operations(): ReadonlyMap<OperationId, Operation> { return this._operations; }
+
+    public getNextOperationId(): OperationId {
+        return getMaxValue(this.operations.keys(), id => id) + 1;
+    }
 
     public addOperation(operation: Operation) {
         this.sortedOperations = null;

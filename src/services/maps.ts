@@ -125,10 +125,10 @@ export function objectToArray<TKey extends MapKey, TValue, TResult>(
     return result;
 }
 
-export function getMaxValue<TValue>(map: ReadonlyMap<unknown, TValue>, getValue: (value: TValue) => number): number {
+export function getMaxValue<TValue>(values: IterableIterator<TValue>, getValue: (value: TValue) => number): number {
     let maxValue = Number.MIN_SAFE_INTEGER;
 
-    for (const entry of map.values()) {
+    for (const entry of values) {
         const value = getValue(entry);
         if (value > maxValue) {
             maxValue = value;

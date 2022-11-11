@@ -5,11 +5,11 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import { NestedMenuItem } from 'mui-nested-menu';
 import { useState } from 'react';
-import { IFunction } from '../models/CodeFunction';
 import { textFunctions, sequenceFunctions, conversionFunctions } from '../functions';
+import { FunctionId } from '../data/identifiers';
 
 export interface Props {
-    addOperation: (operation: IFunction) => void;
+    addOperation: (id: FunctionId) => void;
 }
 
 const fabStyle: SxProps = {
@@ -24,7 +24,7 @@ export const AddMenu: React.FC<Props> = props => {
     const [addMenuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
     const addMenuIsOpen = Boolean(addMenuAnchor);
 
-    const addOperation = (opFunction: IFunction) => {
+    const addOperation = (opFunction: FunctionId) => {
         return () => { setMenuAnchor(null); props.addOperation(opFunction); };
     }
 
@@ -62,17 +62,17 @@ export const AddMenu: React.FC<Props> = props => {
             >
                 <NestedMenuItem label="Text operations" parentMenuOpen={addMenuIsOpen} nonce="text">
                     {Object.values(textFunctions).map(opFunction => (
-                        <MenuItem key={opFunction.id} onClick={addOperation(opFunction)}>{opFunction.id}</MenuItem>
+                        <MenuItem key={opFunction.id} onClick={addOperation(opFunction.id)}>{opFunction.id}</MenuItem>
                     ))}
                 </NestedMenuItem>
                 <NestedMenuItem label="Sequence operations" parentMenuOpen={addMenuIsOpen} nonce="sequence">
                     {Object.values(sequenceFunctions).map(opFunction => (
-                        <MenuItem key={opFunction.id} onClick={addOperation(opFunction)}>{opFunction.id}</MenuItem>
+                        <MenuItem key={opFunction.id} onClick={addOperation(opFunction.id)}>{opFunction.id}</MenuItem>
                     ))}
                 </NestedMenuItem>
                 <NestedMenuItem label="Conversions" parentMenuOpen={addMenuIsOpen} nonce="convert">
                     {Object.values(conversionFunctions).map(opFunction => (
-                        <MenuItem key={opFunction.id} onClick={addOperation(opFunction)}>{opFunction.id}</MenuItem>
+                        <MenuItem key={opFunction.id} onClick={addOperation(opFunction.id)}>{opFunction.id}</MenuItem>
                     ))}
                 </NestedMenuItem>
             </Menu>

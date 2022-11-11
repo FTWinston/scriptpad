@@ -1,9 +1,11 @@
-import { OperationId } from '../data/identifiers';
+import { FunctionId, OperationId } from '../data/identifiers';
 import { canBeInput } from '../data/Values';
 import type { ConnectionProps } from '../display/ConnectionDisplay';
 import type { IOProps } from '../display/IODisplay';
 import type { OperationData } from '../display/OperationDisplay';
 import { OperationConfigData } from '../layout/OperationConfigEditor';
+import { getFunction } from '../models/CodeFunction';
+import { FunctionOperation } from '../models/FunctionOperation';
 import { Process } from '../models/Process';
 import { Workspace } from '../models/Workspace';
 import { getUniqueName } from './getUniqueName';
@@ -78,6 +80,9 @@ export type WorkspaceAction = {
     type: 'disconnect';
     operation: OperationId;
     input: number;
+} | {
+    type: 'addOperation';
+    functionId: FunctionId;
 }
 
 function canRemoveInput(process: Process, input: string) {
@@ -274,6 +279,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
 
             return {
                 ...state,
+                lastFunctionalChange: Date.now(),
                 editOperation: {
                     ...state.editOperation,
                     config,
@@ -287,7 +293,8 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             
             return {
                 ...state,
-                
+                lastFunctionalChange: Date.now(),
+
                 // Recalculate everything in the process display.
                 ...propsFromProcess(process),
             }
@@ -303,6 +310,30 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             
             return {
                 ...state,
+                lastFunctionalChange: Date.now(),
+
+                // Recalculate everything in the process display.
+                ...propsFromProcess(process),
+            }
+        }
+        case 'addOperation': {
+            const functionToAdd = getFunction(action.functionId);
+            if (!functionToAdd) {
+                console.error('Function not found:', action.functionId);
+                return state;
+            }
+
+            const id = process.getNextOperationId();
+
+            const position = { x: 1, y: process.getMaxOperationPositionY() + 2 };
+
+            const operation = new FunctionOperation(id, position, functionToAdd);
+
+            process.addOperation(operation);
+
+            return {
+                ...state,
+                lastFunctionalChange: Date.now(),
                 
                 // Recalculate everything in the process display.
                 ...propsFromProcess(process),
