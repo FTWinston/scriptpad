@@ -13,8 +13,8 @@ type Outputs = {
 }
 
 export default new CodeFunction<Parameters, Outputs>({
-    id: 'replace',
-    symbol: 'RPL',
+    id: 'trim',
+    symbol: 'TRM',
     parameters: {
         in: {
             type: 'text',
