@@ -75,7 +75,7 @@ export const OperationDisplay: React.FC<OperationProps> = props => {
                     connected={connector.connected}
                     offset={index}
                     type={connector.type}
-                    onClick={() => props.onInputClicked(index)}
+                    onClick={() => props.onOutputClicked(index)}
                 />
             ))}
         </g>
