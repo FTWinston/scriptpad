@@ -1,6 +1,7 @@
 import { IOperationConnection } from '../data/IConnection';
 import { IOValue, IOType } from '../data/Values';
 import { Vector2D } from '../data/Vector2D';
+import { gridSize } from '../display/Constants';
 import { Operation } from './Operation';
 
 export class OperationConnection {
@@ -17,7 +18,7 @@ export class OperationConnection {
 
     public get startPosition(): Vector2D {
         return {
-            x: this.from.position.x + this.outputNumber,
+            x: this.from.position.x + this.outputNumber * gridSize,
             y: this.from.position.y,
         }
     }

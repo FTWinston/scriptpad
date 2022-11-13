@@ -5,6 +5,7 @@ import { Operation } from './Operation';
 import { determineOperationExecutionOrder } from '../services/determineOperationExecutionOrder';
 import { getMaxValue, mapToArray, mapToObject } from '../services/maps';
 import { Connection } from './Connection';
+import { gridSize } from '../display/Constants';
 
 export class Process {
     constructor(
@@ -27,19 +28,19 @@ export class Process {
 
     public getInputPosition(name: string) {
         return {
-            x: [...this.inputs.keys()].indexOf(name) + 1,
+            x: [...this.inputs.keys()].indexOf(name) * gridSize,
             y: 0,
         }
     }
 
     public getMaxOperationPositionY() {
-        return getMaxValue(this.operations.values(), operation => operation.position.y);
+        return Math.max(0, getMaxValue(this.operations.values(), operation => operation.position.y));
     }
 
     public getOutputPosition(name: string) {
         return {
-            x: [...this.outputs.keys()].indexOf(name) + 1,
-            y: this.getMaxOperationPositionY() + 2,
+            x: [...this.outputs.keys()].indexOf(name) * gridSize,
+            y: this.getMaxOperationPositionY() + 2 * gridSize,
         }
     }
 

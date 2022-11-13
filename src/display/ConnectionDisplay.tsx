@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { IOType } from '../data/Values';
 import { add, Direction, dot, getStep, offset, scale, subtract, Vector2D } from '../data/Vector2D';
 import classes from './ConnectionDisplay.module.css';
+import { gridSize } from './Constants';
 
 export interface ConnectionProps {
     id: string;
@@ -35,12 +36,12 @@ export const ConnectionDisplay: React.FC<ConnectionProps> = props => {
 
 function offsetConnectionPoint(endpoint: Vector2D, type: 'in' | 'out'): Vector2D {
     return {
-        x: endpoint.x + 0.5,
-        y: endpoint.y + (type === 'in' ? 0 : 1),
+        x: endpoint.x + 0.5 * gridSize,
+        y: endpoint.y + (type === 'in' ? 0 : gridSize),
     };
 }
 
-const cornerRadius = 0.125;
+const cornerRadius = 0.125 * gridSize;
 
 function isClockwise(from: Direction, to: Direction) {
     switch (from) {
@@ -71,10 +72,10 @@ function resolvePath(from: Vector2D, to: Vector2D): string {
     const toStep = getStep('D');
 
     // Step half a square out from the starting point.
-    let inFrontOfStartPos = add(startPos, scale(fromStep, 0.5));
+    let inFrontOfStartPos = add(startPos, scale(fromStep, 0.5 * gridSize));
 
     // We will end half a square out from the end point.
-    const inFrontOfEndPos = add(endPos, scale(toStep, -0.5));
+    const inFrontOfEndPos = add(endPos, scale(toStep, -0.5 * gridSize));
 
     // Keep moving currentPos in the direction of fromStep, while this leads even vaguely towards targetPos.
     while (dot(subtract(inFrontOfEndPos, inFrontOfStartPos), fromStep) > 0) {

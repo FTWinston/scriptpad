@@ -5,12 +5,12 @@
 .line1 {
     fill: transparent;
     stroke: var(--connection);
-    stroke-width: 0.0533;
+    stroke-width: 5.33;
 }
 
 .line2 {
     fill: transparent;
-    stroke-width: 0.0333;
+    stroke-width: 3.33;
 }
 
 .line2.text {

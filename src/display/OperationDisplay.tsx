@@ -1,9 +1,19 @@
+import { IconButton } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardActionArea from '@mui/material/CardActionArea';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import { SxProps, Theme } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import MenuIcon from '@mui/icons-material/MoreVert';
+import MoveIcon from '@mui/icons-material/OpenWith';
+import { useId } from 'react';
 import { OperationId } from '../data/identifiers';
 import { IOperation } from '../data/IOperation';
 import { IOType } from '../data/Values';
 import { Vector2D } from '../data/Vector2D';
-import { ConnectorDisplay } from './ConnectorDisplay';
-import classes from './OperationDisplay.module.css';
+import { ConnectorButton } from './ConnectorButton';
+import { gridSize } from './Constants';
 
 export type ConnectorProps = {
     type: IOType;
@@ -14,9 +24,9 @@ export interface OperationData {
     id: OperationId;
     position: Vector2D;
     width: number;
-    height: number;
+    height: number; // TODO: remove?
     name: string;
-    symbol: string;
+    symbol: string; // TODO: remove?
     type: IOperation['type'];
     inputs: ConnectorProps[];
     outputs: ConnectorProps[];
@@ -29,55 +39,135 @@ interface OperationProps extends OperationData {
     onOutputClicked: (index: number) => void;
 }
 
+const rootStyle: SxProps<Theme> = {
+    overflow: 'visible',
+    height: gridSize,
+    display: 'flex',
+    flexDirection: 'column',
+}
+
+const invalidRootStyle: SxProps<Theme> = {
+    ...rootStyle,
+    borderColor: 'red',
+    backgroundColor: '#fdd',
+    color: 'red',
+}
+
+const connectorsStyle: SxProps<Theme> = {
+    paddingTop: 0,
+    paddingBottom: 0,
+    height: 8,
+}
+
+const topConnectorsStyle: SxProps<Theme> = {
+    ...connectorsStyle,
+    '& > *': {
+        position: 'relative',
+        top: -5,
+    }
+};
+
+const bottomConnectorsStyle: SxProps<Theme> = {
+    ...connectorsStyle,
+    '& > *': {
+        position: 'relative',
+        top: 5,
+    }
+};
+
+const contentWrapperStyle: SxProps<Theme> = {
+    flexGrow: 1,
+}
+
+const contentStyle: SxProps<Theme> = {
+    paddingTop: 1,
+    paddingBottom: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+}
+
+const nameStyle: SxProps<Theme> = {
+    flexGrow: 1,
+}
+
+const actionButtonStyle: SxProps<Theme> = {
+    paddingTop: 0.5,
+    paddingBottom: 0.5,
+}
+
 export const OperationDisplay: React.FC<OperationProps> = props => {
-    const typeBackground = props.type + 'Background';
+    const titleId = useId();
+
+    const style = {
+        ...(props.validConnections ? rootStyle : invalidRootStyle),
+        //transform: `translate(${props.position.x},${props.position.y})`,
+    }
 
     return (
-        <g
+        <Card
+            variant="outlined"
+            sx={style}
             id={`operation-${props.id}`}
-            className={classes.operation + (props.validConnections ? '' : ` ${classes.invalid}`)}
-            transform={`translate(${props.position.x},${props.position.y})`}
+            aria-labelledby={titleId}
         >
-            <title>{props.name}</title>
-
-            <rect
-                className={`${classes.background} ${classes[typeBackground]}`}
-                width={props.width}
-                height={props.height}
+            <CardActions sx={topConnectorsStyle}>
+                {props.inputs.map((connector, index) => (
+                    <ConnectorButton
+                        key={index}
+                        name={'SOME INPUT'}
+                        onOperation={true}
+                        connected={connector.connected}
+                        dataType={connector.type}
+                        onClick={() => props.onInputClicked(index)}
+                    />
+                ))}
+            </CardActions>
+            <CardActionArea
+                sx={contentWrapperStyle}
                 onClick={props.onClicked}
                 onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { props.onClicked(); }}}
-                tabIndex={0}
-            />
-
-            <text
-                className={classes.symbol}
-                x={props.width / 2}
-                y={props.height / 2}
-                aria-hidden
             >
-                {props.symbol}
-            </text>
+                <CardContent sx={contentStyle}>
+                    <IconButton
+                        aria-label="move"
+                        edge="start"
+                        sx={actionButtonStyle}
+                        onClick={e => {  }}
+                    >
+                        <MoveIcon />
+                    </IconButton>
 
-            {props.inputs.map((connector, index) => (
-                <ConnectorDisplay
-                    key={index}
-                    attachment="in"
-                    connected={connector.connected}
-                    offset={index}
-                    type={connector.type}
-                    onClick={() => props.onInputClicked(index)}
-                />
-            ))}
-            {props.outputs.map((connector, index) => (
-                <ConnectorDisplay
-                    key={index}
-                    attachment="out"
-                    connected={connector.connected}
-                    offset={index}
-                    type={connector.type}
-                    onClick={() => props.onOutputClicked(index)}
-                />
-            ))}
-        </g>
+                    <Typography
+                        id={titleId}
+                        variant="h5"
+                        sx={nameStyle}
+                    >
+                        {props.name}
+                    </Typography>
+
+                    <IconButton
+                        aria-label="more"
+                        edge="end"
+                        sx={actionButtonStyle}
+                        onClick={e => {  }}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                </CardContent>
+            </CardActionArea>
+            <CardActions sx={bottomConnectorsStyle}>
+                {props.outputs.map((connector, index) => (
+                    <ConnectorButton
+                        key={index}
+                        name={'SOME OUTPUT'}
+                        onOperation={true}
+                        connected={connector.connected}
+                        dataType={connector.type}
+                        onClick={() => props.onOutputClicked(index)}
+                    />
+                ))}
+            </CardActions>
+        </Card>
     );
 }

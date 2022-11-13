@@ -1,6 +1,7 @@
 import { IProcessConnection } from '../data/IConnection';
 import { IOValue, IOType } from '../data/Values';
 import { Vector2D } from '../data/Vector2D';
+import { gridSize } from '../display/Constants';
 import { Process } from './Process';
 
 export class ProcessConnection {
@@ -16,8 +17,8 @@ export class ProcessConnection {
     
     public get startPosition(): Vector2D {
         return {
-            x: this.inputNumber + 1,
-            y: -1,
+            x: this.inputNumber * gridSize,
+            y: -gridSize,
         }
     }
 

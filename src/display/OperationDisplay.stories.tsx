@@ -3,15 +3,13 @@ import { ComponentProps } from 'react';
 import { OperationDisplay } from './OperationDisplay';
 
 export default {
-  title: 'Workspace/Operation',
+  title: 'Workspace/New Operation',
   component: OperationDisplay,
 } as Meta<typeof OperationDisplay>;
 
 export const Function: StoryObj<ComponentProps<typeof OperationDisplay>> = {
   render: (args) => (
-    <svg viewBox="0.75 0.75 3.25 1.5" style={{maxWidth: '400px', maxHeight: '400px', '--background': '#aaa', '--operation-bg': '#333', '--operation-fg': '#ddd', '--operation-fg-focus': '#f00'} as React.CSSProperties}>
       <OperationDisplay {...args} />
-    </svg>
   ),
 
   args: {
@@ -25,6 +23,7 @@ export const Function: StoryObj<ComponentProps<typeof OperationDisplay>> = {
     },
     width: 1,
     height: 1,
+    validConnections: true,
     inputs: [{ type: 'text', connected: true }],
     outputs: [{ type: 'text', connected: true }],
   }
@@ -41,6 +40,7 @@ export const Process = {
       x: 1,
       y: 1,
     },
+    validConnections: true,
     width: 1,
     height: 1,
     inputs: [{ type: 'text', connected: true }],
@@ -59,9 +59,10 @@ export const Wide = {
       x: 1,
       y: 1,
     },
+    validConnections: false,
     width: 3,
     height: 1,
-    inputs: [{ type: 'text', connected: true }, { type: 'sequence', connected: true }, { type: 'text', connected: true }],
-    outputs: [{ type: 'sequence', connected: true }, { type: 'text', connected: true }],
+    inputs: [{ type: 'text', connected: false }, { type: 'sequence', connected: false }, { type: 'text', connected: false }],
+    outputs: [{ type: 'sequence', connected: false }, { type: 'text', connected: false }],
   }
 };

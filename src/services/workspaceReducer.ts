@@ -1,7 +1,8 @@
 import { FunctionId, OperationId } from '../data/identifiers';
 import { canBeInput } from '../data/Values';
 import type { ConnectionProps } from '../display/ConnectionDisplay';
-import type { IOProps } from '../display/IODisplay';
+import { gridSize } from '../display/Constants';
+import type { IOProps } from '../display/ConnectorButton';
 import type { OperationData } from '../display/OperationDisplay';
 import { OperationConfigData } from '../layout/OperationConfigEditor';
 import { getFunction } from '../models/CodeFunction';
@@ -325,7 +326,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
 
             const id = process.getNextOperationId();
 
-            const position = { x: 1, y: process.getMaxOperationPositionY() + 2 };
+            const position = { x: 0, y: process.getMaxOperationPositionY() + 2 * gridSize };
 
             const operation = new FunctionOperation(id, position, functionToAdd);
 

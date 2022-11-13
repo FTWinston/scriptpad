@@ -12,7 +12,7 @@ type Outputs = {
 }
 
 export default new CodeFunction<Parameters, Outputs>({
-    id: 'SORT',
+    id: 'sort',
     symbol: 'SRT',
     parameters: {
         items: {

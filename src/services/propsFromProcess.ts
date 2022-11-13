@@ -1,5 +1,5 @@
 import type { ConnectionProps } from '../display/ConnectionDisplay';
-import type { IOProps } from '../display/IODisplay';
+import type { IOProps } from '../display/ConnectorButton';
 import type { OperationData } from '../display/OperationDisplay';
 import { Connection } from '../models/Connection';
 import { Operation } from '../models/Operation';

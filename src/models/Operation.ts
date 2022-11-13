@@ -4,6 +4,7 @@ import { add, Vector2D } from '../data/Vector2D';
 import { IOValues, IOType, ParameterDefinition, ParameterValues } from '../data/Values';
 import { mapToObject } from '../services/maps';
 import { Connections } from './Connection';
+import { gridSize } from '../display/Constants';
 
 export abstract class Operation {
     constructor(
@@ -70,6 +71,6 @@ export abstract class Operation {
         const inputNumber = this.inputs
             .findIndex(input => input[0] === name);
 
-        return add(this.position, { x: inputNumber, y: 0 });
+        return add(this.position, { x: inputNumber * gridSize, y: 0 });
     }
 }

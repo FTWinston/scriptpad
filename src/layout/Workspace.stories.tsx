@@ -2,6 +2,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { ComponentProps } from 'react';
 import { Workspace } from './Workspace';
 import { workspaceFromJson } from '../services/workspaceFromJson';
+import { gridSize } from '../display/Constants';
 
 export default {
     title: 'Page/Workspace',
@@ -34,7 +35,7 @@ export const Simple: StoryObj<ComponentProps<typeof Workspace>> = {
                                     input: 'content',
                                 },
                             },
-                            position: { x: 1, y: 1 },
+                            position: { x: 0, y: gridSize },
                         }
                     ],
                     inputs: { content: 'text' },
@@ -81,7 +82,7 @@ export const Multiple: StoryObj<ComponentProps<typeof Workspace>> = {
                                     input: 'replaceMe',
                                 }
                             },
-                            position: { x: 1, y: 1 },
+                            position: { x: 0, y: gridSize },
                         }
                     ],
                     inputs: { lookIn: 'text', findMe: 'text', replaceMe: 'text' },
