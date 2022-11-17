@@ -60,7 +60,7 @@ export const ProcessDisplay: React.FC<ProcessProps> = props => {
                         x={operation.position.x}
                         y={operation.position.y}
                         width={operation.width * gridSize}
-                        height={operation.height * gridSize}
+                        height={gridSize}
                         key={operation.id}
                     >
                         <OperationDisplay

@@ -22,7 +22,6 @@ export const Function: StoryObj<ComponentProps<typeof OperationDisplay>> = {
       y: 1,
     },
     width: 1,
-    height: 1,
     validConnections: true,
     inputs: [{ type: 'text', connected: true }],
     outputs: [{ type: 'text', connected: true }],
@@ -42,7 +41,6 @@ export const Process = {
     },
     validConnections: true,
     width: 1,
-    height: 1,
     inputs: [{ type: 'text', connected: true }],
     outputs: [{ type: 'text', connected: true }],
   }
@@ -61,7 +59,6 @@ export const Wide = {
     },
     validConnections: false,
     width: 3,
-    height: 1,
     inputs: [{ type: 'text', connected: false }, { type: 'sequence', connected: false }, { type: 'text', connected: false }],
     outputs: [{ type: 'sequence', connected: false }, { type: 'text', connected: false }],
   }

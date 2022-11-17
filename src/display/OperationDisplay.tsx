@@ -24,7 +24,6 @@ export interface OperationData {
     id: OperationId;
     position: Vector2D;
     width: number;
-    height: number; // TODO: remove?
     name: string;
     symbol: string; // TODO: remove?
     type: IOperation['type'];
