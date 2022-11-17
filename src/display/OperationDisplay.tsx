@@ -107,6 +107,7 @@ export const OperationDisplay: React.FC<OperationProps> = props => {
             sx={style}
             id={`operation-${props.id}`}
             aria-labelledby={titleId}
+            role="group"
         >
             <CardActions sx={topConnectorsStyle}>
                 {props.inputs.map((connector, index) => (
@@ -138,6 +139,7 @@ export const OperationDisplay: React.FC<OperationProps> = props => {
                     <Typography
                         id={titleId}
                         variant="h5"
+                        component="div"
                     >
                         {props.name}
                     </Typography>

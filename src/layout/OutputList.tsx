@@ -15,7 +15,7 @@ export const OutputList: React.FC<Props> = props => {
     const outputEntries = Object.entries(props.entries);
 
     return (
-        <Box sx={props.sx}>
+        <Box sx={props.sx} role="region" aria-label="Outputs">
             {outputEntries.map(([name, data]) => (
                 <OutputText
                     key={name}

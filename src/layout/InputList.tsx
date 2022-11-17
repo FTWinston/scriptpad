@@ -16,7 +16,7 @@ export const InputList: React.FC<Props> = props => {
     const inputEntries = Object.entries(props.entries);
 
     return (
-        <Box sx={props.sx}>
+        <Box sx={props.sx} role="region" aria-label="Inputs">
             {inputEntries.map(([name, data]) => (
                 <InputText
                     key={name}
