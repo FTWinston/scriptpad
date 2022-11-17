@@ -24,7 +24,7 @@ const operationRootStyle: SxProps<Theme> = {
 const noOperationRootStyle: SxProps<Theme> = {
     position: 'relative',
     top: -28,
-    left: -28,
+    left: 7,
 }
 
 const iconStyle: SxProps<Theme> = {

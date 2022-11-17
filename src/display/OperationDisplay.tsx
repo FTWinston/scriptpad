@@ -12,7 +12,7 @@ import { OperationId } from '../data/identifiers';
 import { IOperation } from '../data/IOperation';
 import { IOType } from '../data/Values';
 import { Vector2D } from '../data/Vector2D';
-import { ConnectorButton } from './ConnectorButton';
+import { ConnectorButton, connectorButtonSize } from './ConnectorButton';
 import { gridSize } from './Constants';
 
 export type ConnectorProps = {
@@ -57,6 +57,12 @@ const connectorsStyle: SxProps<Theme> = {
     paddingTop: 0,
     paddingBottom: 0,
     height: 8,
+    '& > :not(:first-of-type)': {
+        marginLeft: `${gridSize - connectorButtonSize}px`,
+    },
+    '& > :first-of-type': {
+        marginLeft: `${(gridSize - connectorButtonSize) / 2 - 9}px`,
+    }
 }
 
 const topConnectorsStyle: SxProps<Theme> = {
