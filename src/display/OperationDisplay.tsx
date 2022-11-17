@@ -76,19 +76,16 @@ const bottomConnectorsStyle: SxProps<Theme> = {
 };
 
 const contentWrapperStyle: SxProps<Theme> = {
-    flexGrow: 1,
+    alignSelf: 'stretch',
 }
 
 const contentStyle: SxProps<Theme> = {
-    paddingTop: 1,
-    paddingBottom: 1,
+    paddingTop: 0,
+    paddingBottom: 0,
+    flexGrow: 1,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-}
-
-const nameStyle: SxProps<Theme> = {
-    flexGrow: 1,
 }
 
 const actionButtonStyle: SxProps<Theme> = {
@@ -123,39 +120,37 @@ export const OperationDisplay: React.FC<OperationProps> = props => {
                     />
                 ))}
             </CardActions>
-            <CardActionArea
-                sx={contentWrapperStyle}
-                onClick={props.onClicked}
-                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { props.onClicked(); }}}
-            >
-                <CardContent sx={contentStyle}>
-                    <IconButton
-                        aria-label="move"
-                        edge="start"
-                        sx={actionButtonStyle}
-                        onClick={e => {  }}
-                    >
-                        <MoveIcon />
-                    </IconButton>
+            <CardContent sx={contentStyle}>
+                <IconButton
+                    aria-label="move"
+                    edge="start"
+                    sx={actionButtonStyle}
+                    onClick={e => {  }}
+                >
+                    <MoveIcon />
+                </IconButton>
 
+                <CardActionArea
+                    sx={contentWrapperStyle}
+                    onClick={props.onClicked}
+                    onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { props.onClicked(); }}}
+                >
                     <Typography
                         id={titleId}
                         variant="h5"
-                        sx={nameStyle}
                     >
                         {props.name}
                     </Typography>
-
-                    <IconButton
-                        aria-label="more"
-                        edge="end"
-                        sx={actionButtonStyle}
-                        onClick={e => {  }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                </CardContent>
-            </CardActionArea>
+                </CardActionArea>
+                <IconButton
+                    aria-label="more"
+                    edge="end"
+                    sx={actionButtonStyle}
+                    onClick={e => {  }}
+                >
+                    <MenuIcon />
+                </IconButton>
+            </CardContent>
             <CardActions sx={bottomConnectorsStyle}>
                 {props.outputs.map((connector, index) => (
                     <ConnectorButton
