@@ -52,6 +52,7 @@ export const ProcessDisplay: React.FC<ProcessProps> = props => {
             <Box
                 component="svg"
                 sx={svgStyle}
+                role="figure"
             >
                 {connections.map(connection => <ConnectionDisplay key={connection.id} {...connection} />)}
                 {operations.map(operation => (
