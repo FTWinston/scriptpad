@@ -3,10 +3,10 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
-import { NestedMenuItem } from 'mui-nested-menu';
 import { useState } from 'react';
 import { textFunctions, sequenceFunctions, conversionFunctions } from '../functions';
 import { FunctionId } from '../data/identifiers';
+import Divider from '@mui/material/Divider';
 
 export interface Props {
     addOperation: (id: FunctionId) => void;
@@ -60,21 +60,26 @@ export const AddMenu: React.FC<Props> = props => {
                     horizontal: 'right',
                 }}
             >
-                <NestedMenuItem label="Text operations" parentMenuOpen={addMenuIsOpen} nonce="text">
-                    {Object.values(textFunctions).map(opFunction => (
-                        <MenuItem key={opFunction.id} onClick={addOperation(opFunction.id)}>{opFunction.id}</MenuItem>
-                    ))}
-                </NestedMenuItem>
-                <NestedMenuItem label="Sequence operations" parentMenuOpen={addMenuIsOpen} nonce="sequence">
-                    {Object.values(sequenceFunctions).map(opFunction => (
-                        <MenuItem key={opFunction.id} onClick={addOperation(opFunction.id)}>{opFunction.id}</MenuItem>
-                    ))}
-                </NestedMenuItem>
-                <NestedMenuItem label="Conversions" parentMenuOpen={addMenuIsOpen} nonce="convert">
-                    {Object.values(conversionFunctions).map(opFunction => (
-                        <MenuItem key={opFunction.id} onClick={addOperation(opFunction.id)}>{opFunction.id}</MenuItem>
-                    ))}
-                </NestedMenuItem>
+                <MenuItem disabled>Text operations</MenuItem>
+
+                {Object.values(textFunctions).map(opFunction => (
+                    <MenuItem key={opFunction.id} onClick={addOperation(opFunction.id)}>{opFunction.id}</MenuItem>
+                ))}
+
+                <Divider />
+
+                <MenuItem disabled>Sequence operations</MenuItem>
+
+                {Object.values(sequenceFunctions).map(opFunction => (
+                    <MenuItem key={opFunction.id} onClick={addOperation(opFunction.id)}>{opFunction.id}</MenuItem>
+                ))}
+
+                <Divider />
+
+                <MenuItem disabled>Conversion operations</MenuItem>
+                {Object.values(conversionFunctions).map(opFunction => (
+                    <MenuItem key={opFunction.id} onClick={addOperation(opFunction.id)}>{opFunction.id}</MenuItem>
+                ))}
             </Menu>
         </>
     );
