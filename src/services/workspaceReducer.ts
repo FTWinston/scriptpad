@@ -84,6 +84,11 @@ export type WorkspaceAction = {
 } | {
     type: 'addOperation';
     functionId: FunctionId;
+} | {
+    type: 'moveOperation';
+    id: OperationId;
+    x: number;
+    y: number;
 }
 
 function canRemoveInput(process: Process, input: string) {
@@ -335,6 +340,25 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             return {
                 ...state,
                 lastFunctionalChange: Date.now(),
+
+                // Recalculate everything in the process display.
+                ...propsFromProcess(process),
+            }
+        }
+        case 'moveOperation': {
+            const operation = process.operations.get(action.id);
+
+            if (!operation) {
+                return state;
+            }
+
+            operation.position = {
+                x: action.x,
+                y: action.y,
+            };
+            
+            return {
+                ...state,
 
                 // Recalculate everything in the process display.
                 ...propsFromProcess(process),

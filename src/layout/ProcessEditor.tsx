@@ -116,6 +116,7 @@ export const ProcessEditor: React.FC<Props> = props => {
             <ProcessDisplay
                 {...displayProps}
                 operationClicked={id => dispatch({ type: 'setEditOperation', id })}
+                operationMoved={(id, x, y) => dispatch({ type: 'moveOperation', id, x, y })}
                 operationInputClicked={(operation, number) => connect({ number, operation, type: 'i' })}
                 operationOutputClicked={(operation, number) => connect({ number, operation, type: 'o' })}
                 inputClicked={(number) => connect({ number, type: 'o' })}

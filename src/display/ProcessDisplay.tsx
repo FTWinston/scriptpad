@@ -16,6 +16,7 @@ export interface ProcessData {
 
 interface ProcessProps extends ProcessData {
     operationClicked: (id: OperationId) => void;
+    operationMoved: (id: OperationId, x: number, y: number) => void;
     operationInputClicked: (id: OperationId, index: number) => void;
     operationOutputClicked: (id: OperationId, index: number) => void;
     inputClicked: (index: number) => void;
@@ -65,6 +66,7 @@ export const ProcessDisplay: React.FC<ProcessProps> = props => {
                     >
                         <OperationDisplay
                             {...operation}
+                            onMove={(x, y) => props.operationMoved(operation.id, x, y)}
                             onClicked={() => props.operationClicked(operation.id)}
                             onInputClicked={input => props.operationInputClicked(operation.id, input)}
                             onOutputClicked={output => props.operationInputClicked(operation.id, output)}
