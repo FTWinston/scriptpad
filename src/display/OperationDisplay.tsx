@@ -100,13 +100,17 @@ const actionButtonStyle: SxProps<Theme> = {
     paddingBottom: 0.5,
 }
 
+const moveButtonStyle: SxProps<Theme> = {
+    ...actionButtonStyle,
+    cursor: 'move',
+}
+
 const unmoving = { x: 0, y: 0 };
 
 const dragGrid: [number, number] = [gridSize, gridSize];
 
 export const OperationDisplay: React.FC<OperationProps> = props => {
     const titleId = useId();
-    const handleId = useId();
 
     const style = {
         ...(props.validConnections ? rootStyle : invalidRootStyle),
@@ -114,10 +118,10 @@ export const OperationDisplay: React.FC<OperationProps> = props => {
 
     return (
         <Draggable
-            //handle={handleId}
+            handle=".dragHandle"
             //grid={dragGrid}
-            position={unmoving /* props.position? If not, lose it! */}
-            onDrag={(_e, data) => props.onMove(data.x, data.y)}
+            position={unmoving}
+            onStop={(_e, data) => props.onMove(data.x + props.position.x, data.y + props.position.y)}
         >
             <Card
                 variant="outlined"
@@ -141,10 +145,9 @@ export const OperationDisplay: React.FC<OperationProps> = props => {
                 <CardContent sx={contentStyle}>
                     <IconButton
                         aria-label="move"
-                        itemID={handleId}
-                        id={handleId}
+                        className="dragHandle"
                         edge="start"
-                        sx={actionButtonStyle}
+                        sx={moveButtonStyle}
                     >
                         <MoveIcon />
                     </IconButton>
