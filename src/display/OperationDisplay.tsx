@@ -15,6 +15,7 @@ import { IOType } from '../data/Values';
 import { Vector2D } from '../data/Vector2D';
 import { ConnectorButton, connectorButtonSize } from './ConnectorButton';
 import { gridSize } from './Constants';
+import { moveWithArrowKeys } from '../services/moveWithArrowKeys';
 
 export type ConnectorProps = {
     type: IOType;
@@ -119,9 +120,9 @@ export const OperationDisplay: React.FC<OperationProps> = props => {
     return (
         <Draggable
             handle=".dragHandle"
-            //grid={dragGrid}
+            grid={dragGrid}
             position={unmoving}
-            onStop={(_e, data) => props.onMove(data.x + props.position.x, data.y + props.position.y)}
+            onStop={(_e, data) => props.onMove(Math.max(0, data.x + props.position.x), Math.max(gridSize, data.y + props.position.y))}
         >
             <Card
                 variant="outlined"
@@ -148,6 +149,7 @@ export const OperationDisplay: React.FC<OperationProps> = props => {
                         className="dragHandle"
                         edge="start"
                         sx={moveButtonStyle}
+                        onKeyDown={moveWithArrowKeys(props.onMove, props.position)}
                     >
                         <MoveIcon />
                     </IconButton>
