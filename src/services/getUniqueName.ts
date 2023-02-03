@@ -3,7 +3,7 @@ export function getUniqueName(entries: ReadonlyMap<string, unknown>, baseName: s
     let number = 1;
     
     while (entries.has(name)) {
-        name = `${baseName} ${++number}`;
+        name = `${baseName}${++number}`;
     }
 
     return name;

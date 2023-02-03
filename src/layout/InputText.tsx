@@ -9,6 +9,7 @@ import DeleteIcon from '@mui/icons-material/DeleteForever';
 import RenameIcon from '@mui/icons-material/Edit';
 import type { SxProps } from '@mui/material/styles';
 import { useRef } from 'react';
+import { isValidVariableName } from '../services/isValidVariableName';
 
 interface Props {
     label: string;
@@ -61,10 +62,16 @@ export const InputText: React.FC<Props> = props => {
     }
     
     const promptRename = () => {
-        const newName = prompt('Enter new name', props.label);
-        if (newName?.trim()) {
-            props.rename(newName);
-        }
+        let newName: string | null;
+        do {
+            newName = prompt('Enter new name', props.label)?.trim() ?? null;
+            
+            if (newName === null) {
+                return;
+            }
+        } while (!newName || !isValidVariableName(newName));
+        
+        props.rename(newName);
     }
 
     const valueIsEmpty = props.value === '';

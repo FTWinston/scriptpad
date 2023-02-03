@@ -80,7 +80,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             break;
             
         case 'addInput': {
-            const newName = getUniqueName(state.inputValues, 'Input');
+            const newName = getUniqueName(state.inputValues, 'input');
             state.inputValues.set(newName, '');
             state.currentFunction.parameters = [...state.inputValues.keys()]
             state.lastChange = Date.now();

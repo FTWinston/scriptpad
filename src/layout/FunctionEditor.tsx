@@ -1,9 +1,16 @@
 import Paper from '@mui/material/Paper';
 import type { SxProps } from '@mui/material/styles';
-import TextField from '@mui/material/TextField';
+import Editor from 'react-simple-code-editor';
+import { highlight, languages } from 'prismjs/components/prism-core';
+import 'prismjs/components/prism-clike';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/themes/prism.css';
 import { IFunction } from '../data/IFunction';
+import Box from '@mui/material/Box';
+import { FunctionId } from '../data/identifiers';
 
 export interface Props extends IFunction {
+    id?: FunctionId;
     setBody: (body: string) => void;
 }
 
@@ -12,25 +19,36 @@ const rootStyle: SxProps = {
     position: 'relative',
     flexDirection: 'column',
     alignContent: 'stretch',
-    overflow: 'clip',
-    '& > *': {
+    padding: '0.5em',
+    '& > :last-child': {
         flexGrow: 1,
-    }
+    },
+}
+
+const preStyle: SxProps = { 
+    margin: 0,
+    whiteSpace: 'pre-wrap',
+    fontFamily: 'monospace',
+    fontSize: 12,
 }
 
 export const FunctionEditor: React.FC<Props> = props => {
+    const functionName = props.id ?? 'newFunction';
+
     return (
-        <Paper sx={rootStyle}>
-            <div>Show parameters here. TODO: as an adornment?</div>
-            <TextField
-                label="Function body"
-                multiline
-                fullWidth
-                variant="outlined"
-                minRows={10}
+        <Paper sx={rootStyle} elevation={3}>
+            <Box sx={preStyle} component="pre" dangerouslySetInnerHTML={{ __html: highlight(`function ${functionName}(${props.parameters.join(', ')}) {`, languages.js) }} />
+            <Editor
                 value={props.body}
-                onChange={e => props.setBody(e.target.value)}
+                onValueChange={props.setBody}
+                highlight={body => highlight(body, languages.js)}
+                padding={12}
+                style={{
+                  fontFamily: 'monospace',
+                  fontSize: 12,
+                }}
             />
+            <Box sx={preStyle} component="pre" dangerouslySetInnerHTML={{ __html: highlight('}', languages.js) }} />
         </Paper>
     );
 }

@@ -42,7 +42,7 @@ export const Output: React.FC<Props> = props => {
         <Paper sx={props.sx ? { ...rootStyle, ...props.sx } : rootStyle} role="region">
             <TextField
                 sx={textStyle}
-                label="Output"
+                label="output"
                 multiline
                 InputProps={{
                     readOnly: true,
