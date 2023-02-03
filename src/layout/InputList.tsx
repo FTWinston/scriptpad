@@ -8,6 +8,7 @@ export interface Props {
     entries: Map<string, string>;
     setValue: (name: string, value: string) => void;
     addEntry: () => void;
+    renameEntry: (oldName: string, newName: string) => void;
     removeEntry: (name: string) => void;
 }
 
@@ -22,6 +23,7 @@ export const InputList: React.FC<Props> = props => {
                     minRows={6}
                     onChange={value => props.setValue(name, value)}
                     remove={() => props.removeEntry(name)}
+                    rename={newName => props.renameEntry(name, newName)}
                 />
             ))}
             

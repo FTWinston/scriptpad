@@ -59,6 +59,7 @@ export const Workspace: React.FC<Props> = props => {
                 entries={state.inputValues}
                 addEntry={() => dispatch({ type: 'addInput' })}
                 removeEntry={(name) => dispatch({ type: 'removeInput', name })}
+                renameEntry={(oldName, newName) => dispatch({ type: 'renameInput', oldName, newName })}
                 setValue={(name, value) => dispatch({ type: 'setInput', name, value })}
             />
 

@@ -6,8 +6,8 @@ import TabIcon from '@mui/icons-material/KeyboardTab';
 import ReturnIcon from '@mui/icons-material/KeyboardReturn';
 import ClearIcon from '@mui/icons-material/Delete';
 import DeleteIcon from '@mui/icons-material/DeleteForever';
+import RenameIcon from '@mui/icons-material/Edit';
 import type { SxProps } from '@mui/material/styles';
-import InputAdornment from '@mui/material/InputAdornment';
 import { useRef } from 'react';
 
 interface Props {
@@ -18,6 +18,7 @@ interface Props {
     value: string;
     onChange: (value: string) => void;
     remove: () => void;
+    rename: (newName: string) => void;
     startAdornment?: React.ReactNode;
 }
 
@@ -41,11 +42,6 @@ const iconBarStyle: SxProps = {
     top: 8
 }
 
-const adornmentStyle: SxProps = {
-    alignSelf: 'baseline',
-    marginTop: '0.7em',
-}
-
 export const InputText: React.FC<Props> = props => {
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -63,9 +59,14 @@ export const InputText: React.FC<Props> = props => {
             // And a ref to detect when we just clicked a button?
         }
     }
-
-    // TODO: Rename button
     
+    const promptRename = () => {
+        const newName = prompt('Enter new name', props.label);
+        if (newName?.trim()) {
+            props.rename(newName);
+        }
+    }
+
     const valueIsEmpty = props.value === '';
     const clearOrDelete = valueIsEmpty
         ? (
@@ -81,7 +82,7 @@ export const InputText: React.FC<Props> = props => {
         : (
             <IconButton
                 title="clear all text"
-                color="primary"
+                color="secondary"
                 disabled={valueIsEmpty || props.disabled}
                 onClick={() => props.onChange('')}
             >
@@ -102,11 +103,6 @@ export const InputText: React.FC<Props> = props => {
                 minRows={props.minRows}
                 value={props.value}
                 onChange={e => props.onChange(e.target.value)}
-                InputProps={{
-                    startAdornment: props.startAdornment
-                        ? <InputAdornment position="start" sx={adornmentStyle}>{props.startAdornment}</InputAdornment>
-                        : undefined,
-                }}
             />
             
             <Box sx={iconBarStyle}>
@@ -126,6 +122,15 @@ export const InputText: React.FC<Props> = props => {
                     disabled={props.disabled}
                 >
                     <ReturnIcon />
+                </IconButton>
+
+                <IconButton
+                    title="rename input"
+                    color="secondary"
+                    onClick={promptRename}
+                    disabled={props.disabled}
+                >
+                    <RenameIcon />
                 </IconButton>
 
                 {clearOrDelete}
