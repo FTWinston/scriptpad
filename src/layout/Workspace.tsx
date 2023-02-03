@@ -4,7 +4,7 @@ import produce from 'immer';
 import { useEffect, useLayoutEffect, useReducer } from 'react';
 import { Workspace as WorkspaceData } from '../models/Workspace';
 import { InputList } from './InputList';
-import { OutputList } from './OutputList';
+import { Output } from './Output';
 import { FunctionEditor } from './FunctionEditor';
 import { getEmptyState, workspaceReducer } from '../services/workspaceReducer';
 
@@ -69,7 +69,7 @@ export const Workspace: React.FC<Props> = props => {
                 setBody={value => dispatch({ type: 'setFunctionBody', value })}
             />
 
-            <OutputList
+            <Output
                 sx={ioListStyle}
                 value={state.outputValue}
             />

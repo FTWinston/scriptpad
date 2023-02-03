@@ -1,13 +1,12 @@
 import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import CopyIcon from '@mui/icons-material/ContentCopy';
-import DeleteIcon from '@mui/icons-material/DeleteForever';
-import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
+import Paper from '@mui/material/Paper';
 import type { SxProps } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
+import CopyIcon from '@mui/icons-material/ContentCopy';
 
-interface Props {
-    label: string;
+export interface Props {
+    sx?: SxProps;
     value: string;
 }
 
@@ -20,6 +19,14 @@ const rootStyle: SxProps = {
 const textStyle: SxProps = {
     flexGrow: 1,
     display: 'flex',
+    '& > .MuiInputBase-root': {
+        flexGrow: 1,
+        flexDirection: 'column',
+
+        '& > textarea': {
+            flexGrow: 1,
+        },
+    },
 }
 
 const iconBarStyle: SxProps = {
@@ -28,21 +35,20 @@ const iconBarStyle: SxProps = {
     top: 8
 }
 
-export const OutputText: React.FC<Props> = props => {
+export const Output: React.FC<Props> = props => {
     const valueIsEmpty = props.value === '';
-    
+
     return (
-        <Paper sx={rootStyle}>
+        <Paper sx={props.sx ? { ...rootStyle, ...props.sx } : rootStyle} role="region">
             <TextField
                 sx={textStyle}
-                label={props.label}
+                label="Output"
                 multiline
                 InputProps={{
                     readOnly: true,
                 }}
                 fullWidth
                 variant="filled"
-                minRows={6}
                 value={props.value}
             />
 
