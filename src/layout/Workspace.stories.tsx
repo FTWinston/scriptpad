@@ -2,7 +2,6 @@ import { Meta, StoryObj } from '@storybook/react';
 import { ComponentProps } from 'react';
 import { Workspace } from './Workspace';
 import { workspaceFromJson } from '../services/workspaceFromJson';
-import { gridSize } from '../display/Constants';
 
 export default {
     title: 'Page/Workspace',
@@ -16,40 +15,7 @@ export default {
 export const Simple: StoryObj<ComponentProps<typeof Workspace>> = {
     args: {
         workspace: workspaceFromJson({
-            processes: [
-                {
-                    id: 'My process',
-                    operations: [
-                        {
-                            id: 1,
-                            type: 'function',
-                            function: 'replace',
-                            config: {            
-                                find: 'this',
-                                replace: 'that',
-                                matchCase: 'false',
-                            },
-                            inputs: {
-                                'in': {
-                                    type: 'process',
-                                    input: 'content',
-                                },
-                            },
-                            position: { x: 0, y: gridSize },
-                        }
-                    ],
-                    inputs: { content: 'text' },
-                    outputs: { content: 'text' },
-                    outputConnections: {
-                        'content': {
-                            type: 'operation',
-                            from: 1,
-                            output: 'result',
-                        }
-                    },
-                },
-            ],
-            entryProcess: 'My process',
+            functions: {}
         })
     },
 }
@@ -57,46 +23,24 @@ export const Simple: StoryObj<ComponentProps<typeof Workspace>> = {
 export const Multiple: StoryObj<ComponentProps<typeof Workspace>> = {
     args: {
         workspace: workspaceFromJson({
-            processes: [
-                {
-                    id: 'My process',
-                    operations: [
-                        {
-                            id: 1,
-                            type: 'function',
-                            function: 'replace',
-                            config: {
-                                matchCase: 'false',
-                            },
-                            inputs: {
-                                'in': {
-                                    type: 'process',
-                                    input: 'lookIn',
-                                },
-                                'find': {
-                                    type: 'process',
-                                    input: 'findMe',
-                                },
-                                'replace': {
-                                    type: 'process',
-                                    input: 'replaceMe',
-                                }
-                            },
-                            position: { x: 0, y: gridSize },
-                        }
-                    ],
-                    inputs: { lookIn: 'text', findMe: 'text', replaceMe: 'text' },
-                    outputs: { result1: 'text', output2: 'text' },
-                    outputConnections: {
-                        'result1': {
-                            type: 'operation',
-                            from: 1,
-                            output: 'result',
-                        }
-                    },
+            functions: {
+                'concat': {
+                    parameters: ['first', 'second'],
+                    body: 'return first + " " + second;',
+                },
+                'sql insert': {
+                    parameters: ['values', 'tableName'],
+                    body: `return values
+    .split('\n')
+    .map(row => row.split('\t'))
+    .map(rowValues => 'insert into [' + tableName + '] select ' + rowValues
+        .map(val => val.replace("'", "''"))
+        .join("', "')
+        .replaceAll(/'null'/i, 'null')
+    ).join('\n');
+`,
                 }
-            ],
-            entryProcess: 'My process',
+            }
         }),
     }
 }

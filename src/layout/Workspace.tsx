@@ -1,12 +1,12 @@
 import Box from '@mui/material/Box';
 import type { SxProps } from '@mui/material/styles';
+import produce from 'immer';
 import { useEffect, useLayoutEffect, useReducer } from 'react';
 import { Workspace as WorkspaceData } from '../models/Workspace';
-import { objectToObject } from '../services/maps';
 import { InputList } from './InputList';
 import { OutputList } from './OutputList';
-import { ProcessEditor } from './ProcessEditor';
-import { emptyState, workspaceReducer } from '../services/workspaceReducer';
+import { FunctionEditor } from './FunctionEditor';
+import { getEmptyState, workspaceReducer } from '../services/workspaceReducer';
 
 interface Props {
     workspace: WorkspaceData;
@@ -37,8 +37,7 @@ const ioListStyle: SxProps = {
 }
 
 export const Workspace: React.FC<Props> = props => {
-    const [state, dispatch] = useReducer(workspaceReducer, emptyState);
-
+    const [state, dispatch] = useReducer(produce(workspaceReducer), undefined, getEmptyState);
     const { workspace } = props;
 
     // On startup, or if the workspace ever changes, load all data from the workspace.
@@ -47,17 +46,11 @@ export const Workspace: React.FC<Props> = props => {
         () => dispatch({ type: 'load', workspace }), [workspace]
     );
     
-    // Whenever an input or the entry process (view!?) changes, wait until it hasn't changed for short while, then run the process.
-    // Don't do this on account of the outputs changing, or it'll just re-run forever.
+    // Whenever an input or the process body changes, wait until it hasn't changed for short while, then run the process.
     useEffect(() => {
-        const timeout = setTimeout(() => {
-            const justInputValues = objectToObject(state.inputValues, value => value.value);
-            const justOutputValues = state.workspace.entryProcess.run(justInputValues) as Record<string, string>; // TODO: what about string[] types?
-            dispatch({ type: 'setOutputValues', values: justOutputValues });
-        }, 500);
-
+        const timeout = setTimeout(() => dispatch({ type: 'run' }), 500);
         return () => clearTimeout(timeout);
-    }, [state.lastFunctionalChange]);
+    }, [state.lastChange]);
 
     return (
         <Box sx={rootStyle}>
@@ -69,20 +62,15 @@ export const Workspace: React.FC<Props> = props => {
                 setValue={(name, value) => dispatch({ type: 'setInput', name, value })}
             />
 
-            <ProcessEditor
-                operations={state.operations}
-                connections={state.connections}
-                inputs={state.inputs}
-                outputs={state.outputs}
-                editOperation={state.editOperation}
-                dispatch={dispatch}
+            <FunctionEditor
+                parameters={state.currentFunction.parameters}
+                body={state.currentFunction.body}
+                setBody={value => dispatch({ type: 'setFunctionBody', value })}
             />
 
             <OutputList
                 sx={ioListStyle}
-                entries={state.outputValues}
-                addEntry={() => dispatch({ type: 'addOutput' })}
-                removeEntry={(name) => dispatch({ type: 'removeOutput', name })}
+                value={state.outputValue}
             />
         </Box>
     );

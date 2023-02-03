@@ -9,8 +9,6 @@ import type { SxProps } from '@mui/material/styles';
 interface Props {
     label: string;
     value: string;
-    canRemove: boolean;
-    remove: () => void;
 }
 
 const rootStyle: SxProps = {
@@ -32,27 +30,7 @@ const iconBarStyle: SxProps = {
 
 export const OutputText: React.FC<Props> = props => {
     const valueIsEmpty = props.value === '';
-    const copyOrDelete = props.canRemove && valueIsEmpty
-        ? (
-            <IconButton
-                title="remove this output"
-                color="warning"
-                onClick={() => props.remove()}
-            >
-                <DeleteIcon />
-            </IconButton>
-        )
-        : (
-            <IconButton
-                color="primary"
-                title="copy text to clipboard"
-                disabled={valueIsEmpty}
-                onClick={() => navigator.clipboard.writeText(props.value)}
-            >
-                <CopyIcon />
-            </IconButton >
-        )
-
+    
     return (
         <Paper sx={rootStyle}>
             <TextField
@@ -69,7 +47,14 @@ export const OutputText: React.FC<Props> = props => {
             />
 
             <Box sx={iconBarStyle}>
-                {copyOrDelete}
+                <IconButton
+                    color="primary"
+                    title="copy text to clipboard"
+                    disabled={valueIsEmpty}
+                    onClick={() => navigator.clipboard.writeText(props.value)}
+                >
+                    <CopyIcon />
+                </IconButton >
             </Box>
         </Paper>
     );

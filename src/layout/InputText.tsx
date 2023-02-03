@@ -7,8 +7,8 @@ import ReturnIcon from '@mui/icons-material/KeyboardReturn';
 import ClearIcon from '@mui/icons-material/Delete';
 import DeleteIcon from '@mui/icons-material/DeleteForever';
 import type { SxProps } from '@mui/material/styles';
-import { useRef } from 'react';
 import InputAdornment from '@mui/material/InputAdornment';
+import { useRef } from 'react';
 
 interface Props {
     label: string;
@@ -17,7 +17,6 @@ interface Props {
     disabled?: boolean;
     value: string;
     onChange: (value: string) => void;
-    canRemove: boolean;
     remove: () => void;
     startAdornment?: React.ReactNode;
 }
@@ -65,8 +64,10 @@ export const InputText: React.FC<Props> = props => {
         }
     }
 
+    // TODO: Rename button
+    
     const valueIsEmpty = props.value === '';
-    const clearOrDelete = props.canRemove && valueIsEmpty
+    const clearOrDelete = valueIsEmpty
         ? (
             <IconButton
                 title="remove this input"

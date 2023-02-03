@@ -1,7 +1,6 @@
-import { ProcessId } from './identifiers';
-import { IProcess } from './IProcess';
+import { FunctionId } from './identifiers';
+import { IFunction } from './IFunction';
 
 export interface IWorkspace {
-    processes: IProcess[];
-    entryProcess: ProcessId;
+    functions: Record<FunctionId, IFunction>;
 }

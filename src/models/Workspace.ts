@@ -1,19 +1,16 @@
-import { ProcessId } from '../data/identifiers';
+import { FunctionId } from '../data/identifiers';
+import { UserFunction } from '../data/IFunction';
 import { IWorkspace } from '../data/IWorkspace';
-import { determineProcessImportOrder } from '../services/determineProcessImportOrder';
-import { Process } from './Process';
+import { mapToObject } from '../services/maps';
 
 export class Workspace {
     constructor(
-        public processes: Map<ProcessId, Process>,
-        public entryProcess: Process,
+        public functions: Map<FunctionId, UserFunction>,
     ) {}
 
     public toJson(): IWorkspace {
         return {
-            processes: determineProcessImportOrder(this.processes)
-                .map(process => process.toJson()),
-            entryProcess: this.entryProcess.id,
+            functions: mapToObject(this.functions, userFunction => userFunction.toJson()),
         };
     }
 }
