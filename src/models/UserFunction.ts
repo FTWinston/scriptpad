@@ -1,6 +1,14 @@
 import { immerable } from 'immer';
 import { IFunction } from '../data/IFunction';
 
+type RunResult = {
+    success: true;
+    output: string;
+} | {
+    success: false;
+    error: string;
+}
+
 export class UserFunction {
     [immerable] = true;
 
@@ -24,14 +32,24 @@ export class UserFunction {
     private _function!: Function;
 
     public get valid() { return this._valid; }
-    public run(inputs: string[]) {
+    public run(inputs: string[]): RunResult {
         try {
-            return this._function(...inputs);
+            const returnValue = this._function(...inputs);
+
+            return {
+                success: true,
+                output: returnValue === undefined || returnValue === null 
+                    ? ''
+                    : String(returnValue),
+            };
         }
-        catch (ex) {
-            console.log(`Error running function`, ex);
-            this._valid = false;
-            return '';
+        catch (error) {
+            return {
+                success: false,
+                error: error instanceof Error
+                    ? error.message
+                    : String(error),
+            };
         }
     }
 
@@ -41,9 +59,14 @@ export class UserFunction {
             this._function = new Function(...this._parameters, this._body);
             this._valid = true;
         }
-        catch (ex)
+        catch (error)
         {
-            console.log(`Error parsing function`, ex);
+            const message = error instanceof Error
+                ? error.message
+                : String(error);
+            
+            console.log(`Error parsing function:`, message);
+
             this._function = () => '';
             this._valid = false;
         }

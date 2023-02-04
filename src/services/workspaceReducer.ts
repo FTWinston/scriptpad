@@ -8,6 +8,7 @@ enableMapSet();
 export interface WorkspaceState {
     workspace: Workspace;
     inputValues: Map<string, string>;
+    functionError: boolean;
     outputValue: string;
     lastChange: number;
     currentFunctionId: FunctionId | null;
@@ -19,6 +20,7 @@ export function getEmptyState(): WorkspaceState {
     return {
         workspace: new Workspace(new Map()),
         inputValues: new Map(emptyFunction.parameters.map(param => [param, ''])),
+        functionError: false,
         outputValue: '',
         lastChange: Date.now(),
         currentFunctionId: null,
@@ -32,6 +34,7 @@ function resetState(state: WorkspaceState, workspace: Workspace) {
     state.currentFunctionId = emptyState.currentFunctionId;
     state.inputValues = emptyState.inputValues;
     state.lastChange = emptyState.lastChange;
+    state.functionError = emptyState.functionError,
     state.outputValue = emptyState.outputValue;
     state.workspace = workspace;
 }
@@ -125,8 +128,22 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
         }
 
         case 'run': {
+            if (!state.currentFunction.valid) {
+                state.functionError = true;
+                break;
+            }
+
             const inputs = [...state.inputValues.values()];
-            state.outputValue = state.currentFunction.run(inputs);
+            const result = state.currentFunction.run(inputs);
+
+            if (result.success) {
+                state.outputValue = result.output;
+                state.functionError = false;
+            }
+            else {
+                state.outputValue = result.error;
+                state.functionError = true;
+            }
             break;
         }
     }

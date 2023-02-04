@@ -71,6 +71,7 @@ export const Workspace: React.FC<Props> = props => {
             <Output
                 sx={ioListStyle}
                 value={state.outputValue}
+                error={state.functionError}
             />
         </Box>
     );

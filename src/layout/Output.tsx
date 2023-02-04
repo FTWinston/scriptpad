@@ -8,6 +8,7 @@ import CopyIcon from '@mui/icons-material/ContentCopy';
 export interface Props {
     sx?: SxProps;
     value: string;
+    error: boolean;
 }
 
 const rootStyle: SxProps = {
@@ -44,6 +45,7 @@ export const Output: React.FC<Props> = props => {
                 sx={textStyle}
                 label="output"
                 multiline
+                error={props.error}
                 InputProps={{
                     readOnly: true,
                 }}
