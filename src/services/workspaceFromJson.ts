@@ -1,5 +1,5 @@
-import { UserFunction } from '../data/IFunction';
 import { IWorkspace } from '../data/IWorkspace';
+import { UserFunction } from '../models/UserFunction';
 import { Workspace } from '../models/Workspace';
 import { objectToMap } from './maps';
 

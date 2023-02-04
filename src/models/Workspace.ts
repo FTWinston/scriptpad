@@ -1,5 +1,5 @@
 import { FunctionId } from '../data/identifiers';
-import { UserFunction } from '../data/IFunction';
+import { UserFunction } from './UserFunction';
 import { IWorkspace } from '../data/IWorkspace';
 import { mapToObject } from '../services/maps';
 

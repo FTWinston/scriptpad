@@ -1,8 +1,7 @@
 import { enableMapSet } from 'immer';
 import { FunctionId } from '../data/identifiers';
-import { UserFunction } from '../data/IFunction';
+import { UserFunction } from '../models/UserFunction';
 import { Workspace } from '../models/Workspace';
-import { getUniqueName } from './getUniqueName';
 
 enableMapSet();
 
