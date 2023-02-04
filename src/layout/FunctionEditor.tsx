@@ -64,7 +64,7 @@ export const FunctionEditor: React.FC<Props> = props => {
                 value={props.body}
                 onValueChange={props.setBody}
                 highlight={body => highlight(body, languages.js)}
-                padding={12}
+                padding={18}
                 style={editorStyle}
             />
             <Box sx={preStyle} component="pre" dangerouslySetInnerHTML={{ __html: highlight('}', languages.js) }} />
