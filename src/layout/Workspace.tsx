@@ -2,12 +2,15 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import type { SxProps } from '@mui/material/styles';
 import produce from 'immer';
-import { useEffect, useLayoutEffect, useReducer } from 'react';
+import { useEffect, useLayoutEffect, useReducer, useState } from 'react';
 import { Workspace as WorkspaceData } from '../models/Workspace';
 import { InputList } from './InputList';
 import { Output } from './Output';
 import { FunctionEditor } from './FunctionEditor';
 import { getEmptyState, workspaceReducer } from '../services/workspaceReducer';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import { FunctionLibrary } from './FunctionLibrary';
 
 interface Props {
     workspace: WorkspaceData;
@@ -53,6 +56,8 @@ export const Workspace: React.FC<Props> = props => {
         return () => clearTimeout(timeout);
     }, [state.lastChange]);
 
+    const [tab, setTab] = useState<0 | 1>(0);
+
     return (
         <Box sx={rootStyle}>
             <InputList
@@ -64,11 +69,43 @@ export const Workspace: React.FC<Props> = props => {
             />
 
             <Paper elevation={3}>
-                <FunctionEditor
-                    parameters={state.currentFunction.parameters}
-                    body={state.currentFunction.body}
-                    setBody={value => dispatch({ type: 'setFunctionBody', value })}
-                />
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <Tabs
+                        value={tab}
+                        onChange={(e, newVal) => setTab(newVal)}
+                        aria-label="Mode selection"
+                        variant="fullWidth"
+                    >
+                        <Tab label="Editor" id="codeTab" aria-controls="codeTabContent" />
+                        <Tab label="Library" id="libraryTab" aria-controls="libraryTabContent" />
+                    </Tabs>
+                </Box>
+                
+                <div
+                    role="tabpanel"
+                    hidden={tab !== 0}
+                    id="codeTabContent"
+                    aria-labelledby="codeTab"
+                >
+                    <FunctionEditor
+                        parameters={state.currentFunction.parameters}
+                        body={state.currentFunction.body}
+                        setBody={value => dispatch({ type: 'setFunctionBody', value })}
+                    />
+                </div>
+
+                <div
+                    role="tabpanel"
+                    hidden={tab !== 1}
+                    id="libraryTabContent"
+                    aria-labelledby="libraryTab"
+                >
+                    <FunctionLibrary
+                        allFunctions={[...state.workspace.functions.keys()]}
+                        currentFunction={state.currentFunctionId}
+                        selectFunction={id => { dispatch({ type: 'setOpenFunction', id }); setTab(0); }}
+                    />
+                </div>
             </Paper>
 
             <Output
