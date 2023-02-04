@@ -37,12 +37,29 @@ const editorStyle: React.CSSProperties = {
     fontSize: 16,
 }
 
+function writeSignature(functionName: string, parameters: readonly string[]) {
+    let result = `function ${functionName}(`;
+
+    if (parameters.length <= 3) {
+        result += parameters.join(', ');
+    }
+    else {
+        result += parameters
+            .map(name => `\n  ` + name)
+            .join(',') + '\n';
+    }
+
+    result += `) {`;
+    
+    return result;
+}
+
 export const FunctionEditor: React.FC<Props> = props => {
     const functionName = props.id ?? 'newFunction';
 
     return (
         <Paper sx={rootStyle} elevation={3}>
-            <Box sx={preStyle} component="pre" dangerouslySetInnerHTML={{ __html: highlight(`function ${functionName}(${props.parameters.join(', ')}) {`, languages.js) }} />
+            <Box sx={preStyle} component="pre" dangerouslySetInnerHTML={{ __html: highlight(writeSignature(functionName, props.parameters), languages.js) }} />
             <Editor
                 value={props.body}
                 onValueChange={props.setBody}
