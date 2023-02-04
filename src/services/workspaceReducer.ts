@@ -128,11 +128,6 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
         }
 
         case 'run': {
-            if (!state.currentFunction.valid) {
-                state.functionError = true;
-                break;
-            }
-
             const inputs = [...state.inputValues.values()];
             const result = state.currentFunction.run(inputs);
 

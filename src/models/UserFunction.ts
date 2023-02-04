@@ -28,11 +28,17 @@ export class UserFunction {
         this.createFunction();
     }
 
-    private _valid!: boolean;
     private _function!: Function;
+    private _parseError?: string;
 
-    public get valid() { return this._valid; }
     public run(inputs: string[]): RunResult {
+        if (this._parseError !== undefined) {
+            return {
+                success: false,
+                error: this._parseError,
+            };
+        }
+
         try {
             const returnValue = this._function(...inputs);
 
@@ -57,7 +63,7 @@ export class UserFunction {
         try
         {
             this._function = new Function(...this._parameters, this._body);
-            this._valid = true;
+            delete this._parseError;
         }
         catch (error)
         {
@@ -65,10 +71,8 @@ export class UserFunction {
                 ? error.message
                 : String(error);
             
-            console.log(`Error parsing function:`, message);
-
             this._function = () => '';
-            this._valid = false;
+            this._parseError = message;
         }
     }
 
