@@ -29,7 +29,12 @@ const preStyle: SxProps = {
     margin: 0,
     whiteSpace: 'pre-wrap',
     fontFamily: 'monospace',
-    fontSize: 12,
+    fontSize: 16,
+}
+
+const editorStyle: React.CSSProperties = {
+    fontFamily: 'monospace',
+    fontSize: 16,
 }
 
 export const FunctionEditor: React.FC<Props> = props => {
@@ -43,10 +48,7 @@ export const FunctionEditor: React.FC<Props> = props => {
                 onValueChange={props.setBody}
                 highlight={body => highlight(body, languages.js)}
                 padding={12}
-                style={{
-                  fontFamily: 'monospace',
-                  fontSize: 12,
-                }}
+                style={editorStyle}
             />
             <Box sx={preStyle} component="pre" dangerouslySetInnerHTML={{ __html: highlight('}', languages.js) }} />
         </Paper>
