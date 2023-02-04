@@ -6,10 +6,8 @@ import TabIcon from '@mui/icons-material/KeyboardTab';
 import ReturnIcon from '@mui/icons-material/KeyboardReturn';
 import ClearIcon from '@mui/icons-material/Delete';
 import DeleteIcon from '@mui/icons-material/DeleteForever';
-import RenameIcon from '@mui/icons-material/Edit';
 import type { SxProps } from '@mui/material/styles';
 import { useRef } from 'react';
-import { isValidVariableName } from '../services/isValidVariableName';
 
 interface Props {
     label: string;
@@ -19,8 +17,6 @@ interface Props {
     value: string;
     onChange: (value: string) => void;
     remove: () => void;
-    rename: (newName: string) => void;
-    startAdornment?: React.ReactNode;
 }
 
 function insertAtCursor(input: HTMLInputElement, textToInsert: string) {
@@ -61,19 +57,6 @@ export const InputText: React.FC<Props> = props => {
         }
     }
     
-    const promptRename = () => {
-        let newName: string | null;
-        do {
-            newName = prompt('Enter new name', props.label)?.trim() ?? null;
-            
-            if (newName === null) {
-                return;
-            }
-        } while (!newName || !isValidVariableName(newName));
-        
-        props.rename(newName);
-    }
-
     const valueIsEmpty = props.value === '';
     const clearOrDelete = valueIsEmpty
         ? (
@@ -89,7 +72,7 @@ export const InputText: React.FC<Props> = props => {
         : (
             <IconButton
                 title="clear all text"
-                color="secondary"
+                color="primary"
                 disabled={valueIsEmpty || props.disabled}
                 onClick={() => props.onChange('')}
             >
@@ -129,15 +112,6 @@ export const InputText: React.FC<Props> = props => {
                     disabled={props.disabled}
                 >
                     <ReturnIcon />
-                </IconButton>
-
-                <IconButton
-                    title="rename input"
-                    color="secondary"
-                    onClick={promptRename}
-                    disabled={props.disabled}
-                >
-                    <RenameIcon />
                 </IconButton>
 
                 {clearOrDelete}

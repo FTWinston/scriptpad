@@ -49,6 +49,7 @@ export type WorkspaceAction = {
     value: string;
 } | {
     type: 'addInput';
+    name: string;
 } | {
     type: 'removeInput';
     name: string;
@@ -80,8 +81,11 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             break;
             
         case 'addInput': {
-            const newName = getUniqueName(state.inputValues, 'input');
-            state.inputValues.set(newName, '');
+            if (state.inputValues.has(action.name)) {
+                break;
+            }
+
+            state.inputValues.set(action.name, '');
             state.currentFunction.parameters = [...state.inputValues.keys()]
             state.lastChange = Date.now();
             break;
@@ -91,15 +95,6 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             state.inputValues.delete(action.name);
             state.currentFunction.parameters = [...state.inputValues.keys()]
             state.lastChange = Date.now();
-            break;
-        }
-
-        case 'renameInput': {
-            const value = state.inputValues.get(action.oldName);
-            if (value !== undefined && !state.inputValues.has(action.newName)) {
-                state.inputValues.delete(action.oldName);
-                state.inputValues.set(action.newName, value);
-            }
             break;
         }
 

@@ -57,9 +57,8 @@ export const Workspace: React.FC<Props> = props => {
             <InputList
                 sx={ioListStyle}
                 entries={state.inputValues}
-                addEntry={() => dispatch({ type: 'addInput' })}
+                addEntry={name => dispatch({ type: 'addInput', name })}
                 removeEntry={(name) => dispatch({ type: 'removeInput', name })}
-                renameEntry={(oldName, newName) => dispatch({ type: 'renameInput', oldName, newName })}
                 setValue={(name, value) => dispatch({ type: 'setInput', name, value })}
             />
 
