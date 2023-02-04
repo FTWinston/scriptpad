@@ -1,9 +1,9 @@
-import type { SxProps } from '@mui/material/styles';
+import { SxProps } from '@mui/material/styles';
 import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-javascript';
-import 'prismjs/themes/prism.css';
+import './FunctionEditor.css'; // Ideally the themes would via link elements, e.g. <link rel="stylesheet" href="/dark.css" media="(prefers-color-scheme: dark)" />
 import { IFunction } from '../data/IFunction';
 import Box from '@mui/material/Box';
 import { FunctionId } from '../data/identifiers';
