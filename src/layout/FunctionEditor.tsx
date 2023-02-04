@@ -1,4 +1,3 @@
-import Paper from '@mui/material/Paper';
 import type { SxProps } from '@mui/material/styles';
 import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
@@ -58,7 +57,7 @@ export const FunctionEditor: React.FC<Props> = props => {
     const functionName = props.id ?? 'newFunction';
 
     return (
-        <Paper sx={rootStyle} elevation={3}>
+        <Box sx={rootStyle}>
             <Box sx={preStyle} component="pre" dangerouslySetInnerHTML={{ __html: highlight(writeSignature(functionName, props.parameters), languages.js) }} />
             <Editor
                 value={props.body}
@@ -68,6 +67,6 @@ export const FunctionEditor: React.FC<Props> = props => {
                 style={editorStyle}
             />
             <Box sx={preStyle} component="pre" dangerouslySetInnerHTML={{ __html: highlight('}', languages.js) }} />
-        </Paper>
+        </Box>
     );
 }

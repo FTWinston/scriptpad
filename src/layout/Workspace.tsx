@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
 import type { SxProps } from '@mui/material/styles';
 import produce from 'immer';
 import { useEffect, useLayoutEffect, useReducer } from 'react';
@@ -17,7 +18,7 @@ const rootStyle: SxProps = {
     gap: 1,
     padding: 1,
     backgroundColor: 'background.default',
-    minHeight: 'calc(100vh - 1em)',
+    minHeight: 'calc(100vh - 2em)',
     alignItems: 'stretch',
     '& > *': {
       width: '30vw',
@@ -62,11 +63,13 @@ export const Workspace: React.FC<Props> = props => {
                 setValue={(name, value) => dispatch({ type: 'setInput', name, value })}
             />
 
-            <FunctionEditor
-                parameters={state.currentFunction.parameters}
-                body={state.currentFunction.body}
-                setBody={value => dispatch({ type: 'setFunctionBody', value })}
-            />
+            <Paper elevation={3}>
+                <FunctionEditor
+                    parameters={state.currentFunction.parameters}
+                    body={state.currentFunction.body}
+                    setBody={value => dispatch({ type: 'setFunctionBody', value })}
+                />
+            </Paper>
 
             <Output
                 sx={ioListStyle}
