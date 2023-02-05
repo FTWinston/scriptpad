@@ -88,6 +88,7 @@ export const Workspace: React.FC<Props> = props => {
                     aria-labelledby="codeTab"
                 >
                     <FunctionEditor
+                        id={state.currentFunctionId}
                         parameters={state.currentFunction.parameters}
                         body={state.currentFunction.body}
                         setBody={value => dispatch({ type: 'setFunctionBody', value })}

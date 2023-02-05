@@ -31,14 +31,13 @@ export const Multiple: StoryObj<ComponentProps<typeof Workspace>> = {
                 'sql insert': {
                     parameters: ['values', 'tableName'],
                     body: `return values
-    .split('\n')
-    .map(row => row.split('\t'))
-    .map(rowValues => 'insert into [' + tableName + '] select ' + rowValues
+    .split('\\n')
+    .map(row => row.split('\\t'))
+    .map(rowValues => ("insert into [" + tableName + "] select '" + rowValues
         .map(val => val.replace("'", "''"))
-        .join("', "')
-        .replaceAll(/'null'/i, 'null')
-    ).join('\n');
-`,
+        .join("', '")
+        .replaceAll(/'null'/ig, 'null')
+    ) + "'").join('\\n');`,
                 }
             }
         }),

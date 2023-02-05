@@ -6,6 +6,8 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import ListItem from '@mui/material/ListItem';
+import { getNameColor } from '../services/getNameColor';
+import { getNameInitials } from '../services/getNameInitials';
 
 export interface Props {
     allFunctions: readonly FunctionId[];
@@ -21,9 +23,9 @@ export const FunctionLibrary: React.FC<Props> = props => {
             </ListItem>
         )
         :  props.allFunctions.map(name => (
-                <ListItemButton key={name} selected={name === props.currentFunction}>
+                <ListItemButton key={name} selected={name === props.currentFunction} onClick={() => props.selectFunction(name)}>
                     <ListItemAvatar>
-                        <Avatar>{name[0]}</Avatar>
+                        <Avatar sx={{ bgcolor: getNameColor(name) }}>{getNameInitials(name)}</Avatar>
                     </ListItemAvatar>
                     <ListItemText primary={name} />
                 </ListItemButton>

@@ -7,9 +7,10 @@ import './FunctionEditor.css'; // Ideally the themes would via link elements, e.
 import { IFunction } from '../data/IFunction';
 import Box from '@mui/material/Box';
 import { FunctionId } from '../data/identifiers';
+import { makeValidFunctionName } from '../services/makeValidFunctionName';
 
 export interface Props extends IFunction {
-    id?: FunctionId;
+    id: FunctionId | null;
     setBody: (body: string) => void;
 }
 
@@ -54,7 +55,9 @@ function writeSignature(functionName: string, parameters: readonly string[]) {
 }
 
 export const FunctionEditor: React.FC<Props> = props => {
-    const functionName = props.id ?? 'newFunction';
+    const functionName = props.id === null
+        ? 'newFunction'
+        : makeValidFunctionName(props.id);
 
     return (
         <Box sx={rootStyle}>
