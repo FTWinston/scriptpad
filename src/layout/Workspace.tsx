@@ -6,13 +6,14 @@ import { useEffect, useLayoutEffect, useReducer, useState } from 'react';
 import { InputList } from './InputList';
 import { Output } from './Output';
 import { FunctionEditor } from './FunctionEditor';
-import { getEmptyState, workspaceReducer } from '../services/workspaceReducer';
+import { getEmptyState, workspaceReducer, WorkspaceState } from '../services/workspaceReducer';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { FunctionLibrary } from './FunctionLibrary';
 import { FunctionRecord } from '../data/IFunction';
 import { functionsToJson } from '../services/functionsToJson';
 import { TabPanel } from './TabPanel';
+import { promptFunctionName } from '../services/promptFunctionName';
 
 interface Props {
     load: () => FunctionRecord;
@@ -70,15 +71,13 @@ export const Workspace: React.FC<Props> = props => {
     const [tab, setTab] = useState<0 | 1>(0);
 
     const saveChanges = () => {
-        let currentFunctionId: string | null;
-        do {
-            currentFunctionId = prompt('Name this function', 'New Function')?.trim() ?? null;
-            if (currentFunctionId === null) {
-                return;
-            }
-        } while (!currentFunctionId || state.functionLibrary.has(currentFunctionId));
+        const id = promptFunctionName(state.currentFunctionId, [...state.functionLibrary.keys()]);
 
-        dispatch({ type: 'save', id: currentFunctionId });
+        if (id === null) {
+            return;
+        }
+
+        dispatch({ type: 'save', id });
     };
 
     return (
@@ -114,7 +113,7 @@ export const Workspace: React.FC<Props> = props => {
                         parameters={state.currentFunction.parameters}
                         body={state.currentFunction.body}
                         setBody={value => dispatch({ type: 'setFunctionBody', value })}
-                        hasChanges={state.unsavedChanges}
+                        hasChanges={state.unsavedChangesToCurrentFunction}
                         saveChanges={saveChanges}
                     />
                 </TabPanel>
@@ -127,7 +126,9 @@ export const Workspace: React.FC<Props> = props => {
                     <FunctionLibrary
                         allFunctions={[...state.functionLibrary.keys()]}
                         currentFunction={state.currentFunctionId}
-                        selectFunction={id => { dispatch({ type: 'setOpenFunction', id }); setTab(0); }}
+                        selectFunction={id => { dispatch({ type: 'openFunction', id }); setTab(0); }}
+                        renameFunction={(oldId, newId) => dispatch({ type: 'renameFunction', id: oldId, newId })}
+                        deleteFunction={id => dispatch({ type: 'deleteFunction', id })}
                     />
                 </TabPanel>
             </Paper>

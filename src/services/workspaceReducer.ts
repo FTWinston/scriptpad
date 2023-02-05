@@ -9,7 +9,7 @@ export interface WorkspaceState {
     functionLibrary: Map<string, UserFunction>;
     inputValues: Map<string, string>;
     functionError: boolean;
-    unsavedChanges: boolean;
+    unsavedChangesToCurrentFunction: boolean;
     outputValue: string;
     lastRunTrigger: number;
     lastSaveTrigger?: number;
@@ -23,7 +23,7 @@ export function getEmptyState(): WorkspaceState {
         functionLibrary: new Map(),
         inputValues: new Map(emptyFunction.parameters.map(param => [param, ''])),
         functionError: false,
-        unsavedChanges: false,
+        unsavedChangesToCurrentFunction: false,
         outputValue: '',
         lastRunTrigger: Date.now(),
         lastSaveTrigger: undefined,
@@ -40,7 +40,7 @@ function resetState(state: WorkspaceState, functionLibrary: Map<string, UserFunc
     state.lastRunTrigger = emptyState.lastRunTrigger;
     state.lastSaveTrigger = emptyState.lastSaveTrigger;
     state.functionError = emptyState.functionError,
-    state.unsavedChanges = emptyState.unsavedChanges;
+    state.unsavedChangesToCurrentFunction = emptyState.unsavedChangesToCurrentFunction;
     state.outputValue = emptyState.outputValue;
     state.functionLibrary = functionLibrary;
 }
@@ -66,8 +66,15 @@ export type WorkspaceAction = {
     oldName: string;
     newName: string;
 } | {
-    type: 'setOpenFunction';
+    type: 'openFunction';
     id: FunctionId | null;
+} | {
+    type: 'renameFunction';
+    id: FunctionId;
+    newId: FunctionId;
+} | {
+    type: 'deleteFunction';
+    id: FunctionId;
 } | {
     type: 'run';
 } | {
@@ -98,7 +105,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
 
             state.inputValues.set(action.name, '');
             state.currentFunction.parameters = [...state.inputValues.keys()]
-            state.unsavedChanges = true;
+            state.unsavedChangesToCurrentFunction = true;
             state.lastRunTrigger = Date.now();
             break;
         }
@@ -106,7 +113,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
         case 'removeInput': {
             state.inputValues.delete(action.name);
             state.currentFunction.parameters = [...state.inputValues.keys()]
-            state.unsavedChanges = true;
+            state.unsavedChangesToCurrentFunction = true;
             state.lastRunTrigger = Date.now();
             break;
         }
@@ -114,14 +121,14 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
         case 'setFunctionBody': {
             if (state.currentFunction) {
                 state.currentFunction.body = action.value;
-                state.unsavedChanges = true;
+                state.unsavedChangesToCurrentFunction = true;
                 state.lastRunTrigger = Date.now();
             }
             break;
         }
 
-        case 'setOpenFunction': {
-            if (state.unsavedChanges && action.id !== state.currentFunctionId) {
+        case 'openFunction': {
+            if (state.unsavedChangesToCurrentFunction && action.id !== state.currentFunctionId) {
                 // TODO: confirm discard changes?
             }
 
@@ -140,8 +147,40 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             state.inputValues = new Map(functionToOpen.parameters.map(name => [name, '']));
             state.outputValue = '';
             state.functionError = false;
-            state.unsavedChanges = false;
+            state.unsavedChangesToCurrentFunction = false;
             state.lastRunTrigger = Date.now();
+            break;
+        }
+
+        case 'renameFunction': {
+            if (state.functionLibrary.has(action.newId)) {
+                return;
+            }
+
+            const renameFunction = state.functionLibrary.get(action.id);
+
+            if (!renameFunction) {
+                return;
+            }
+
+            state.functionLibrary.delete(action.id);
+            state.functionLibrary.set(action.newId, renameFunction);
+            if (state.currentFunctionId === action.id) {
+                state.currentFunctionId = action.newId;
+            }
+
+            state.lastSaveTrigger = Date.now();
+            break;
+        }
+
+        case 'deleteFunction': {
+            state.functionLibrary.delete(action.id);
+
+            if (state.currentFunctionId === action.id) {
+                resetState(state, state.functionLibrary);
+            }
+
+            state.lastSaveTrigger = Date.now();
             break;
         }
 
@@ -161,13 +200,13 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
         }
 
         case 'save': {
-            if (!state.unsavedChanges) {
+            if (!state.unsavedChangesToCurrentFunction) {
                 break;
             }
 
             state.currentFunctionId = action.id;
             state.functionLibrary.set(action.id, state.currentFunction);
-            state.unsavedChanges = false;
+            state.unsavedChangesToCurrentFunction = false;
             state.lastSaveTrigger = Date.now();
             break;
         }
