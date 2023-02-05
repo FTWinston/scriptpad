@@ -1,5 +1,5 @@
 import { enableMapSet } from 'immer';
-import { FunctionId } from '../data/identifiers';
+import { FunctionId } from '../data/IFunction';
 import { UserFunction } from '../models/UserFunction';
 import { Workspace } from '../models/Workspace';
 

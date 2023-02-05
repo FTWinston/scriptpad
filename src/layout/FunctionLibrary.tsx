@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import { FunctionId } from '../data/identifiers';
+import { FunctionId } from '../data/IFunction';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';

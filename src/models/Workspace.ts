@@ -1,6 +1,5 @@
-import { FunctionId } from '../data/identifiers';
+import { FunctionId, FunctionRecord } from '../data/IFunction';
 import { UserFunction } from './UserFunction';
-import { IWorkspace } from '../data/IWorkspace';
 import { mapToObject } from '../services/maps';
 
 export class Workspace {
@@ -8,9 +7,7 @@ export class Workspace {
         public functions: Map<FunctionId, UserFunction>,
     ) {}
 
-    public toJson(): IWorkspace {
-        return {
-            functions: mapToObject(this.functions, userFunction => userFunction.toJson()),
-        };
+    public toJson(): FunctionRecord {
+        return mapToObject(this.functions, userFunction => userFunction.toJson());
     }
 }
