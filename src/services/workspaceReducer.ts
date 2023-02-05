@@ -1,12 +1,12 @@
 import { enableMapSet } from 'immer';
-import { FunctionId } from '../data/IFunction';
+import { FunctionId, FunctionRecord } from '../data/IFunction';
 import { UserFunction } from '../models/UserFunction';
-import { Workspace } from '../models/Workspace';
+import { functionsFromJson } from './functionsFromJson';
 
 enableMapSet();
 
 export interface WorkspaceState {
-    workspace: Workspace;
+    functionLibrary: Map<string, UserFunction>;
     inputValues: Map<string, string>;
     functionError: boolean;
     outputValue: string;
@@ -18,7 +18,7 @@ export interface WorkspaceState {
 export function getEmptyState(): WorkspaceState {
     const emptyFunction = new UserFunction(['input'], "return '';");
     return {
-        workspace: new Workspace(new Map()),
+        functionLibrary: new Map(),
         inputValues: new Map(emptyFunction.parameters.map(param => [param, ''])),
         functionError: false,
         outputValue: '',
@@ -28,7 +28,7 @@ export function getEmptyState(): WorkspaceState {
     };
 }
 
-function resetState(state: WorkspaceState, workspace: Workspace) {
+function resetState(state: WorkspaceState, functionLibrary: Map<string, UserFunction>) {
     const emptyState = getEmptyState();
     state.currentFunction = emptyState.currentFunction;
     state.currentFunctionId = emptyState.currentFunctionId;
@@ -36,12 +36,12 @@ function resetState(state: WorkspaceState, workspace: Workspace) {
     state.lastChange = emptyState.lastChange;
     state.functionError = emptyState.functionError,
     state.outputValue = emptyState.outputValue;
-    state.workspace = workspace;
+    state.functionLibrary = functionLibrary;
 }
 
 export type WorkspaceAction = {
     type: 'load';
-    workspace: Workspace;
+    functions: FunctionRecord;
 } | {
     type: 'setInput';
     name: string;
@@ -69,7 +69,7 @@ export type WorkspaceAction = {
 export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction): void {
     switch (action.type) {
         case 'load': {
-            resetState(state, action.workspace);
+            resetState(state, functionsFromJson(action.functions));
             break;
         }
 
@@ -110,11 +110,11 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
 
         case 'setOpenFunction': {
             if (action.id === null) {
-                resetState(state, state.workspace);
+                resetState(state, state.functionLibrary);
                 break;
             }
             
-            const functionToOpen = state.workspace.functions.get(action.id);
+            const functionToOpen = state.functionLibrary.get(action.id);
             if (!functionToOpen) {
                 break;
             }

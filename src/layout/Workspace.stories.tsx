@@ -1,7 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { ComponentProps } from 'react';
 import { Workspace } from './Workspace';
-import { workspaceFromJson } from '../services/workspaceFromJson';
 
 export default {
     title: 'Page/Workspace',
@@ -14,23 +13,21 @@ export default {
 
 export const Simple: StoryObj<ComponentProps<typeof Workspace>> = {
     args: {
-        workspace: workspaceFromJson({
-            functions: {}
-        })
+        load: () => ({}),
+        save: () => {},
     },
 }
 
 export const Multiple: StoryObj<ComponentProps<typeof Workspace>> = {
     args: {
-        workspace: workspaceFromJson({
-            functions: {
-                'concat': {
-                    parameters: ['first', 'second'],
-                    body: 'return first + " " + second;',
-                },
-                'sql insert': {
-                    parameters: ['values', 'tableName'],
-                    body: `return values
+        load: () => ({
+            'concat': {
+                parameters: ['first', 'second'],
+                body: 'return first + " " + second;',
+            },
+            'sql insert': {
+                parameters: ['values', 'tableName'],
+                body: `return values
     .split('\\n')
     .map(row => row.split('\\t'))
     .map(rowValues => ("insert into [" + tableName + "] select '" + rowValues
@@ -38,8 +35,8 @@ export const Multiple: StoryObj<ComponentProps<typeof Workspace>> = {
         .join("', '")
         .replaceAll(/'null'/ig, 'null')
     ) + "'").join('\\n');`,
-                }
             }
         }),
+        save: () => {},
     }
 }

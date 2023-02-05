@@ -1,10 +1,10 @@
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useMemo } from 'react';
-import { Workspace as WorkspaceDisplay } from './layout/Workspace'
-import { Workspace } from './models/Workspace';
+import { Workspace } from './layout/Workspace'
 
-const workspace = new Workspace(new Map());
+const loadFunctions = () => ({});
+const saveFunctions = () => {};
 
 export const App: React.FC = () => {
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
@@ -20,7 +20,7 @@ export const App: React.FC = () => {
     
     return (
         <ThemeProvider theme={theme}>
-            <WorkspaceDisplay workspace={workspace} />
+            <Workspace load={loadFunctions} save={saveFunctions} />
         </ThemeProvider>
     )
 }

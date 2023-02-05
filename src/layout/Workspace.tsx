@@ -3,7 +3,6 @@ import Paper from '@mui/material/Paper';
 import type { SxProps } from '@mui/material/styles';
 import produce from 'immer';
 import { useEffect, useLayoutEffect, useReducer, useState } from 'react';
-import { Workspace as WorkspaceData } from '../models/Workspace';
 import { InputList } from './InputList';
 import { Output } from './Output';
 import { FunctionEditor } from './FunctionEditor';
@@ -11,9 +10,11 @@ import { getEmptyState, workspaceReducer } from '../services/workspaceReducer';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { FunctionLibrary } from './FunctionLibrary';
+import { FunctionRecord } from '../data/IFunction';
 
 interface Props {
-    workspace: WorkspaceData;
+    load: () => FunctionRecord;
+    save: (functions: FunctionRecord) => void;
 }
 
 const rootStyle: SxProps = {
@@ -33,21 +34,16 @@ const ioListStyle: SxProps = {
     display: 'flex',
     flexDirection: 'column',
     gap: 1,
-    /*
-    '& > *': {
-        flexGrow: 1,
-    }
-    */
 }
 
 export const Workspace: React.FC<Props> = props => {
     const [state, dispatch] = useReducer(produce(workspaceReducer), undefined, getEmptyState);
-    const { workspace } = props;
-
+    
     // On startup, or if the workspace ever changes, load all data from the workspace.
     // This is the only time (outside of the reducer) that we access it.
+    const { load, save } = props;
     useLayoutEffect(
-        () => dispatch({ type: 'load', workspace }), [workspace]
+        () => dispatch({ type: 'load', functions: load() }), [load]
     );
     
     // Whenever an input or the process body changes, wait until it hasn't changed for short while, then run the process.
@@ -102,7 +98,7 @@ export const Workspace: React.FC<Props> = props => {
                     aria-labelledby="libraryTab"
                 >
                     <FunctionLibrary
-                        allFunctions={[...state.workspace.functions.keys()]}
+                        allFunctions={[...state.functionLibrary.keys()]}
                         currentFunction={state.currentFunctionId}
                         selectFunction={id => { dispatch({ type: 'setOpenFunction', id }); setTab(0); }}
                     />
