@@ -11,7 +11,8 @@ export interface WorkspaceState {
     functionError: boolean;
     unsavedChanges: boolean;
     outputValue: string;
-    lastUpdated: number;
+    lastRunTrigger: number;
+    lastSaveTrigger?: number;
     currentFunctionId: FunctionId | null;
     currentFunction: UserFunction;
 }
@@ -24,7 +25,8 @@ export function getEmptyState(): WorkspaceState {
         functionError: false,
         unsavedChanges: false,
         outputValue: '',
-        lastUpdated: Date.now(),
+        lastRunTrigger: Date.now(),
+        lastSaveTrigger: undefined,
         currentFunctionId: null,
         currentFunction: emptyFunction,
     };
@@ -35,7 +37,8 @@ function resetState(state: WorkspaceState, functionLibrary: Map<string, UserFunc
     state.currentFunction = emptyState.currentFunction;
     state.currentFunctionId = emptyState.currentFunctionId;
     state.inputValues = emptyState.inputValues;
-    state.lastUpdated = emptyState.lastUpdated;
+    state.lastRunTrigger = emptyState.lastRunTrigger;
+    state.lastSaveTrigger = emptyState.lastSaveTrigger;
     state.functionError = emptyState.functionError,
     state.unsavedChanges = emptyState.unsavedChanges;
     state.outputValue = emptyState.outputValue;
@@ -85,7 +88,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             }
 
             state.inputValues.set(action.name, action.value);
-            state.lastUpdated = Date.now();
+            state.lastRunTrigger = Date.now();
             break;
             
         case 'addInput': {
@@ -96,7 +99,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             state.inputValues.set(action.name, '');
             state.currentFunction.parameters = [...state.inputValues.keys()]
             state.unsavedChanges = true;
-            state.lastUpdated = Date.now();
+            state.lastRunTrigger = Date.now();
             break;
         }
 
@@ -104,7 +107,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             state.inputValues.delete(action.name);
             state.currentFunction.parameters = [...state.inputValues.keys()]
             state.unsavedChanges = true;
-            state.lastUpdated = Date.now();
+            state.lastRunTrigger = Date.now();
             break;
         }
 
@@ -112,7 +115,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             if (state.currentFunction) {
                 state.currentFunction.body = action.value;
                 state.unsavedChanges = true;
-                state.lastUpdated = Date.now();
+                state.lastRunTrigger = Date.now();
             }
             break;
         }
@@ -138,7 +141,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             state.outputValue = '';
             state.functionError = false;
             state.unsavedChanges = false;
-            state.lastUpdated = Date.now();
+            state.lastRunTrigger = Date.now();
             break;
         }
 
@@ -165,6 +168,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             state.currentFunctionId = action.id;
             state.functionLibrary.set(action.id, state.currentFunction);
             state.unsavedChanges = false;
+            state.lastSaveTrigger = Date.now();
             break;
         }
     }

@@ -51,14 +51,35 @@ export const Workspace: React.FC<Props> = props => {
     useLayoutEffect(
         () => dispatch({ type: 'load', functions: load() }), []
     );
-    
+
+    // Save changes after the function library is updated
+    useEffect(() => {
+        if (state.lastSaveTrigger === undefined) {
+            return;
+        }
+
+        save(functionsToJson(state.functionLibrary));
+    }, [state.lastSaveTrigger]);
+
     // Whenever an input or the function body changes, wait until it hasn't changed for short while, then run the function.
     useEffect(() => {
         const timeout = setTimeout(() => dispatch({ type: 'run' }), 500);
         return () => clearTimeout(timeout);
-    }, [state.lastUpdated]);
+    }, [state.lastRunTrigger]);
 
     const [tab, setTab] = useState<0 | 1>(0);
+
+    const saveChanges = () => {
+        let currentFunctionId: string | null;
+        do {
+            currentFunctionId = prompt('Name this function', 'New Function')?.trim() ?? null;
+            if (currentFunctionId === null) {
+                return;
+            }
+        } while (!currentFunctionId || state.functionLibrary.has(currentFunctionId));
+
+        dispatch({ type: 'save', id: currentFunctionId });
+    };
 
     return (
         <Box sx={rootStyle}>
@@ -74,7 +95,7 @@ export const Workspace: React.FC<Props> = props => {
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs
                         value={tab}
-                        onChange={(e, newVal) => setTab(newVal)}
+                        onChange={(_, newVal) => setTab(newVal)}
                         aria-label="Mode selection"
                         variant="fullWidth"
                     >
@@ -94,19 +115,7 @@ export const Workspace: React.FC<Props> = props => {
                         body={state.currentFunction.body}
                         setBody={value => dispatch({ type: 'setFunctionBody', value })}
                         hasChanges={state.unsavedChanges}
-                        saveChanges={() => {
-                            let currentFunctionId: string | null;
-                            do {
-                                currentFunctionId = prompt('Name this function', 'New Function')?.trim() ?? null;
-                                if (currentFunctionId === null) {
-                                    return;
-                                }
-                            } while (!currentFunctionId || state.functionLibrary.has(currentFunctionId));
-
-                            dispatch({ type: 'save', id: currentFunctionId });
-                            // TODO: library hasnt' yet updated!
-                            save(functionsToJson(state.functionLibrary));
-                        }}
+                        saveChanges={saveChanges}
                     />
                 </TabPanel>
 
