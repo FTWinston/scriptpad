@@ -9,8 +9,9 @@ export interface WorkspaceState {
     functionLibrary: Map<string, UserFunction>;
     inputValues: Map<string, string>;
     functionError: boolean;
+    unsavedChanges: boolean;
     outputValue: string;
-    lastChange: number;
+    lastUpdated: number;
     currentFunctionId: FunctionId | null;
     currentFunction: UserFunction;
 }
@@ -21,8 +22,9 @@ export function getEmptyState(): WorkspaceState {
         functionLibrary: new Map(),
         inputValues: new Map(emptyFunction.parameters.map(param => [param, ''])),
         functionError: false,
+        unsavedChanges: false,
         outputValue: '',
-        lastChange: Date.now(),
+        lastUpdated: Date.now(),
         currentFunctionId: null,
         currentFunction: emptyFunction,
     };
@@ -33,8 +35,9 @@ function resetState(state: WorkspaceState, functionLibrary: Map<string, UserFunc
     state.currentFunction = emptyState.currentFunction;
     state.currentFunctionId = emptyState.currentFunctionId;
     state.inputValues = emptyState.inputValues;
-    state.lastChange = emptyState.lastChange;
+    state.lastUpdated = emptyState.lastUpdated;
     state.functionError = emptyState.functionError,
+    state.unsavedChanges = emptyState.unsavedChanges;
     state.outputValue = emptyState.outputValue;
     state.functionLibrary = functionLibrary;
 }
@@ -64,6 +67,9 @@ export type WorkspaceAction = {
     id: FunctionId | null;
 } | {
     type: 'run';
+} | {
+    type: 'save';
+    id: FunctionId;
 }
 
 export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction): void {
@@ -79,7 +85,7 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             }
 
             state.inputValues.set(action.name, action.value);
-            state.lastChange = Date.now();
+            state.lastUpdated = Date.now();
             break;
             
         case 'addInput': {
@@ -89,26 +95,33 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
 
             state.inputValues.set(action.name, '');
             state.currentFunction.parameters = [...state.inputValues.keys()]
-            state.lastChange = Date.now();
+            state.unsavedChanges = true;
+            state.lastUpdated = Date.now();
             break;
         }
 
         case 'removeInput': {
             state.inputValues.delete(action.name);
             state.currentFunction.parameters = [...state.inputValues.keys()]
-            state.lastChange = Date.now();
+            state.unsavedChanges = true;
+            state.lastUpdated = Date.now();
             break;
         }
 
         case 'setFunctionBody': {
             if (state.currentFunction) {
                 state.currentFunction.body = action.value;
-                state.lastChange = Date.now();
+                state.unsavedChanges = true;
+                state.lastUpdated = Date.now();
             }
             break;
         }
 
         case 'setOpenFunction': {
+            if (state.unsavedChanges && action.id !== state.currentFunctionId) {
+                // TODO: confirm discard changes?
+            }
+
             if (action.id === null) {
                 resetState(state, state.functionLibrary);
                 break;
@@ -123,7 +136,9 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
             state.currentFunction = functionToOpen;
             state.inputValues = new Map(functionToOpen.parameters.map(name => [name, '']));
             state.outputValue = '';
-            state.lastChange = Date.now();
+            state.functionError = false;
+            state.unsavedChanges = false;
+            state.lastUpdated = Date.now();
             break;
         }
 
@@ -139,6 +154,17 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
                 state.outputValue = result.error;
                 state.functionError = true;
             }
+            break;
+        }
+
+        case 'save': {
+            if (!state.unsavedChanges) {
+                break;
+            }
+
+            state.currentFunctionId = action.id;
+            state.functionLibrary.set(action.id, state.currentFunction);
+            state.unsavedChanges = false;
             break;
         }
     }

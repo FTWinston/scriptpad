@@ -1,5 +1,7 @@
+import SaveIcon from '@mui/icons-material/Save';
 import { SxProps } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import Fab from '@mui/material/Fab';
 import Editor from 'react-simple-code-editor';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-clike';
@@ -11,6 +13,8 @@ import { makeValidFunctionName } from '../services/makeValidFunctionName';
 export interface Props extends IFunction {
     id: FunctionId | null;
     setBody: (body: string) => void;
+    saveChanges: () => void;
+    hasChanges: boolean;
 }
 
 const rootStyle: SxProps = {
@@ -19,6 +23,7 @@ const rootStyle: SxProps = {
     flexDirection: 'column',
     alignContent: 'stretch',
     padding: '0.5em',
+    flexGrow: 1,
     '& > :last-child': {
         flexGrow: 1,
     },
@@ -34,6 +39,14 @@ const preStyle: SxProps = {
 const editorStyle: React.CSSProperties = {
     fontFamily: 'monospace',
     fontSize: 16,
+}
+
+const fabStyle: SxProps = {
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+    display: 'flex',
+    gap: 2,
 }
 
 function writeSignature(functionName: string, parameters: readonly string[]) {
@@ -69,6 +82,16 @@ export const FunctionEditor: React.FC<Props> = props => {
                 style={editorStyle}
             />
             <Box sx={preStyle} component="pre" dangerouslySetInnerHTML={{ __html: highlight('}', languages.js) }} />
+
+            <Fab
+                color="secondary"
+                aria-label="save function"
+                onClick={props.saveChanges}
+                sx={fabStyle}
+                disabled={!props.hasChanges}
+            >
+                <SaveIcon />
+            </Fab>
         </Box>
     );
 }

@@ -11,6 +11,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { FunctionLibrary } from './FunctionLibrary';
 import { FunctionRecord } from '../data/IFunction';
+import { functionsToJson } from '../services/functionsToJson';
+import { TabPanel } from './TabPanel';
 
 interface Props {
     load: () => FunctionRecord;
@@ -30,6 +32,11 @@ const rootStyle: SxProps = {
     }
 }
 
+const functionsStyle: SxProps = {
+    display: 'flex',
+    flexDirection: 'column',
+}
+
 const ioListStyle: SxProps = {
     display: 'flex',
     flexDirection: 'column',
@@ -39,18 +46,17 @@ const ioListStyle: SxProps = {
 export const Workspace: React.FC<Props> = props => {
     const [state, dispatch] = useReducer(produce(workspaceReducer), undefined, getEmptyState);
     
-    // On startup, or if the workspace ever changes, load all data from the workspace.
-    // This is the only time (outside of the reducer) that we access it.
+    // On startup, load saved functions.
     const { load, save } = props;
     useLayoutEffect(
-        () => dispatch({ type: 'load', functions: load() }), [load]
+        () => dispatch({ type: 'load', functions: load() }), []
     );
     
-    // Whenever an input or the process body changes, wait until it hasn't changed for short while, then run the process.
+    // Whenever an input or the function body changes, wait until it hasn't changed for short while, then run the function.
     useEffect(() => {
         const timeout = setTimeout(() => dispatch({ type: 'run' }), 500);
         return () => clearTimeout(timeout);
-    }, [state.lastChange]);
+    }, [state.lastUpdated]);
 
     const [tab, setTab] = useState<0 | 1>(0);
 
@@ -64,7 +70,7 @@ export const Workspace: React.FC<Props> = props => {
                 setValue={(name, value) => dispatch({ type: 'setInput', name, value })}
             />
 
-            <Paper elevation={3}>
+            <Paper sx={functionsStyle} elevation={3}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs
                         value={tab}
@@ -77,32 +83,44 @@ export const Workspace: React.FC<Props> = props => {
                     </Tabs>
                 </Box>
                 
-                <div
-                    role="tabpanel"
+                <TabPanel
                     hidden={tab !== 0}
                     id="codeTabContent"
-                    aria-labelledby="codeTab"
+                    tabId="codeTab"
                 >
                     <FunctionEditor
                         id={state.currentFunctionId}
                         parameters={state.currentFunction.parameters}
                         body={state.currentFunction.body}
                         setBody={value => dispatch({ type: 'setFunctionBody', value })}
-                    />
-                </div>
+                        hasChanges={state.unsavedChanges}
+                        saveChanges={() => {
+                            let currentFunctionId: string | null;
+                            do {
+                                currentFunctionId = prompt('Name this function', 'New Function')?.trim() ?? null;
+                                if (currentFunctionId === null) {
+                                    return;
+                                }
+                            } while (!currentFunctionId || state.functionLibrary.has(currentFunctionId));
 
-                <div
-                    role="tabpanel"
+                            dispatch({ type: 'save', id: currentFunctionId });
+                            // TODO: library hasnt' yet updated!
+                            save(functionsToJson(state.functionLibrary));
+                        }}
+                    />
+                </TabPanel>
+
+                <TabPanel
                     hidden={tab !== 1}
                     id="libraryTabContent"
-                    aria-labelledby="libraryTab"
+                    tabId="libraryTab"
                 >
                     <FunctionLibrary
                         allFunctions={[...state.functionLibrary.keys()]}
                         currentFunction={state.currentFunctionId}
                         selectFunction={id => { dispatch({ type: 'setOpenFunction', id }); setTab(0); }}
                     />
-                </div>
+                </TabPanel>
             </Paper>
 
             <Output
