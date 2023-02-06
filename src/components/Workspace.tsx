@@ -6,14 +6,14 @@ import { useEffect, useLayoutEffect, useReducer, useState } from 'react';
 import { InputList } from './InputList';
 import { Output } from './Output';
 import { FunctionEditor } from './FunctionEditor';
-import { getEmptyState, workspaceReducer, WorkspaceState } from '../services/workspaceReducer';
+import { getEmptyState, workspaceReducer, WorkspaceState } from '../utils/workspaceReducer';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { FunctionLibrary } from './FunctionLibrary';
 import { FunctionRecord } from '../data/IFunction';
-import { functionsToJson } from '../services/functionsToJson';
+import { functionsToJson } from '../utils/functionsToJson';
 import { TabPanel } from './TabPanel';
-import { promptFunctionName } from '../services/promptFunctionName';
+import { promptFunctionName } from '../utils/promptFunctionName';
 
 interface Props {
     load: () => FunctionRecord;

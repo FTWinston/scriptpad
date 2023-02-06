@@ -7,7 +7,7 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import { FunctionId } from '../data/IFunction'
 import { FunctionLibraryItem } from './FunctionLibraryItem';
-import { promptFunctionName } from '../services/promptFunctionName';
+import { promptFunctionName } from '../utils/promptFunctionName';
 
 export interface Props {
     allFunctions: readonly FunctionId[];

@@ -8,7 +8,7 @@ import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-javascript';
 import './FunctionEditor.css'; // Ideally the themes would via link elements, e.g. <link rel="stylesheet" href="/dark.css" media="(prefers-color-scheme: dark)" />
 import { FunctionId, IFunction } from '../data/IFunction';
-import { makeValidFunctionName } from '../services/makeValidFunctionName';
+import { makeValidFunctionName } from '../utils/makeValidFunctionName';
 
 export interface Props extends IFunction {
     id: FunctionId | null;

@@ -4,8 +4,8 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import { FunctionId } from '../data/IFunction'
-import { getNameColor } from '../services/getNameColor';
-import { getNameInitials } from '../services/getNameInitials';
+import { getNameColor } from '../utils/getNameColor';
+import { getNameInitials } from '../utils/getNameInitials';
 import ListItem from '@mui/material/ListItem';
 import IconButton from '@mui/material/IconButton';
 import { useState } from 'react';

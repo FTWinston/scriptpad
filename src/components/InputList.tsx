@@ -1,8 +1,8 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import type { SxProps } from '@mui/material/styles';
-import { getUniqueName } from '../services/getUniqueName';
-import { isValidVariableName } from '../services/isValidVariableName';
+import { getUniqueName } from '../utils/getUniqueName';
+import { isValidVariableName } from '../utils/isValidVariableName';
 import { InputText } from './InputText';
 
 export interface Props {
