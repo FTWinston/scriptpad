@@ -1,5 +1,5 @@
 import { immerable } from 'immer';
-import { IFunction } from '../data/IFunction';
+import { IFunction } from './IFunction';
 
 type RunResult = {
     success: true;

@@ -1,6 +1,6 @@
 import { enableMapSet } from 'immer';
 import { FunctionId, FunctionRecord } from '../data/IFunction';
-import { UserFunction } from '../models/UserFunction';
+import { UserFunction } from '../data/UserFunction';
 import { functionsFromJson } from './functionsFromJson';
 
 enableMapSet();
