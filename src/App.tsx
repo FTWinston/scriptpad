@@ -2,7 +2,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useMemo } from 'react';
 import { FunctionRecord } from './data/IFunction';
-import { Workspace } from './layout/Workspace'
+import { Workspace } from './components/Workspace'
 
 const savedFunctionKey = 'functions';
 const loadFunctions = () => {
