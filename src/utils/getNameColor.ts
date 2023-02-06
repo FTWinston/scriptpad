@@ -6,14 +6,18 @@ export function getNameColor(name: string) {
 	for (i = 0; i < name.length; i += 1) {
 	  hash = name.charCodeAt(i) + ((hash << 5) - hash);
 	}
-  
-	let color = '#';
-  
-	for (i = 0; i < 3; i += 1) {
-	  const value = (hash >> (i * 8)) & 0xff;
-	  color += `00${value.toString(16)}`.slice(-2);
-	}
 	/* eslint-enable no-bitwise */
-  
-	return color;
+
+	const randomInt = (min: number, max: number) => {
+		const val = Math.sin(hash++) * 10000;
+		const clamped = val - Math.floor(val);
+		
+		return Math.round(clamped * (max - min) + min);
+	}
+
+	const hue = randomInt(0, 360);
+	const saturation = randomInt(50, 100);
+	const lightness = randomInt(30, 70);
+	
+	return `hsl(${hue}deg, ${saturation}%, ${lightness}%)`;
 }
