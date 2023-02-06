@@ -71,7 +71,7 @@ export const Workspace: React.FC<Props> = props => {
     const [tab, setTab] = useState<0 | 1>(0);
 
     const saveChanges = () => {
-        const id = promptFunctionName(state.currentFunctionId, [...state.functionLibrary.keys()]);
+        const id = state.currentFunctionId ?? promptFunctionName(state.currentFunctionId, [...state.functionLibrary.keys()]);
 
         if (id === null) {
             return;
