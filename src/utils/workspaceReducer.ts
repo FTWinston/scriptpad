@@ -1,4 +1,5 @@
 import { enableMapSet } from 'immer';
+import { defaultFunctionBody } from '../data/defaultFunctionBody';
 import { FunctionId, FunctionRecord } from '../data/IFunction';
 import { UserFunction } from '../data/UserFunction';
 import { functionsFromJson } from './functionsFromJson';
@@ -18,7 +19,8 @@ export interface WorkspaceState {
 }
 
 export function getEmptyState(): WorkspaceState {
-    const emptyFunction = new UserFunction(['input'], "return input\n  .split('\\n') // Separate each line.\n  .filter(line => line.length > 0) // Remove empty lines.\n  .map(line => `\"${line}\"`) // Wrap each in quotes.\n  .join(', '); // Join them back together with commas.");
+    const emptyFunction = new UserFunction(['input'], defaultFunctionBody);
+    
     return {
         functionLibrary: new Map(),
         inputValues: new Map(emptyFunction.parameters.map(param => [param, ''])),
