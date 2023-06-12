@@ -36,6 +36,10 @@ const rootStyle: SxProps = {
 const functionsStyle: SxProps = {
     display: 'flex',
     flexDirection: 'column',
+    position: 'sticky',
+    top: 0,
+    left: 0,
+    right: 0,
 }
 
 const ioListStyle: SxProps = {
@@ -90,6 +94,7 @@ export const Workspace: React.FC<Props> = props => {
                 setValue={(name, value) => dispatch({ type: 'setInput', name, value })}
             />
 
+            <Box>
             <Paper sx={functionsStyle} elevation={3}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs
@@ -132,6 +137,7 @@ export const Workspace: React.FC<Props> = props => {
                     />
                 </TabPanel>
             </Paper>
+            </Box>
 
             <Output
                 sx={ioListStyle}
