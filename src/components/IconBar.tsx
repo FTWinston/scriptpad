@@ -6,5 +6,5 @@ export const IconBar = styled(Box)(({ theme }) => ({
     right: 8,
     top: 8,
     borderRadius: 50,
-    backgroundColor: alpha(theme.palette.background.paper, 0.85),
+    backgroundColor: alpha(theme.palette.background.paper, 0.7),
 }));

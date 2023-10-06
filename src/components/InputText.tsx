@@ -83,7 +83,7 @@ export const InputText: React.FC<Props> = props => {
                 disabled={props.disabled}
                 multiline
                 fullWidth
-                variant="outlined"
+                variant="filled"
                 minRows={props.minRows}
                 value={props.value}
                 onChange={e => props.onChange(e.target.value)}

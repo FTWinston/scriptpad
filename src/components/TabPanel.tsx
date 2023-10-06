@@ -1,4 +1,3 @@
-import { StandardTextFieldProps } from '@mui/material';
 import Box from '@mui/material/Box';
 import type { SxProps } from '@mui/material/styles';
 import { PropsWithChildren } from 'react';

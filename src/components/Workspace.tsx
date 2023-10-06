@@ -6,7 +6,7 @@ import { useEffect, useLayoutEffect, useReducer, useState } from 'react';
 import { InputList } from './InputList';
 import { Output } from './Output';
 import { FunctionEditor } from './FunctionEditor';
-import { getEmptyState, workspaceReducer, WorkspaceState } from '../utils/workspaceReducer';
+import { getEmptyState, workspaceReducer } from '../utils/workspaceReducer';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { FunctionLibrary } from './FunctionLibrary';
@@ -21,16 +21,22 @@ interface Props {
 }
 
 const rootStyle: SxProps = {
-    display: 'flex',
+    display: 'grid',
     gap: 1,
     padding: 1,
+    gridTemplate: '1fr / 1fr 1fr 1fr',
     backgroundColor: 'background.default',
     minHeight: 'calc(100vh - 2em)',
+    maxHeight: 'calc(100vh - 2em)',
     alignItems: 'stretch',
-    '& > *': {
-      width: '30vw',
-      flexGrow: 1,
-    }
+    overflow: 'hidden',
+}
+const columnStyle: SxProps = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 1,
+    flexGrow: 1,
+    overflowY: 'auto',
 }
 
 const functionsStyle: SxProps = {
@@ -40,12 +46,6 @@ const functionsStyle: SxProps = {
     top: 0,
     left: 0,
     right: 0,
-}
-
-const ioListStyle: SxProps = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 1,
 }
 
 export const Workspace: React.FC<Props> = props => {
@@ -87,60 +87,60 @@ export const Workspace: React.FC<Props> = props => {
     return (
         <Box sx={rootStyle}>
             <InputList
-                sx={ioListStyle}
+                sx={columnStyle}
                 entries={state.inputValues}
                 addEntry={name => dispatch({ type: 'addInput', name })}
                 removeEntry={(name) => dispatch({ type: 'removeInput', name })}
                 setValue={(name, value) => dispatch({ type: 'setInput', name, value })}
             />
 
-            <Box>
-            <Paper sx={functionsStyle} elevation={3}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Tabs
-                        value={tab}
-                        onChange={(_, newVal) => setTab(newVal)}
-                        aria-label="Mode selection"
-                        variant="fullWidth"
+            <Box sx={columnStyle}>
+                <Paper sx={functionsStyle} elevation={3}>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <Tabs
+                            value={tab}
+                            onChange={(_, newVal) => setTab(newVal)}
+                            aria-label="Mode selection"
+                            variant="fullWidth"
+                        >
+                            <Tab label="Editor" id="codeTab" aria-controls="codeTabContent" />
+                            <Tab label="Library" id="libraryTab" aria-controls="libraryTabContent" />
+                        </Tabs>
+                    </Box>
+                    
+                    <TabPanel
+                        hidden={tab !== 0}
+                        id="codeTabContent"
+                        tabId="codeTab"
                     >
-                        <Tab label="Editor" id="codeTab" aria-controls="codeTabContent" />
-                        <Tab label="Library" id="libraryTab" aria-controls="libraryTabContent" />
-                    </Tabs>
-                </Box>
-                
-                <TabPanel
-                    hidden={tab !== 0}
-                    id="codeTabContent"
-                    tabId="codeTab"
-                >
-                    <FunctionEditor
-                        id={state.currentFunctionId}
-                        parameters={state.currentFunction.parameters}
-                        body={state.currentFunction.body}
-                        setBody={value => dispatch({ type: 'setFunctionBody', value })}
-                        hasChanges={state.unsavedChangesToCurrentFunction}
-                        saveChanges={saveChanges}
-                    />
-                </TabPanel>
+                        <FunctionEditor
+                            id={state.currentFunctionId}
+                            parameters={state.currentFunction.parameters}
+                            body={state.currentFunction.body}
+                            setBody={value => dispatch({ type: 'setFunctionBody', value })}
+                            hasChanges={state.unsavedChangesToCurrentFunction}
+                            saveChanges={saveChanges}
+                        />
+                    </TabPanel>
 
-                <TabPanel
-                    hidden={tab !== 1}
-                    id="libraryTabContent"
-                    tabId="libraryTab"
-                >
-                    <FunctionLibrary
-                        allFunctions={[...state.functionLibrary.keys()]}
-                        currentFunction={state.currentFunctionId}
-                        selectFunction={id => { dispatch({ type: 'openFunction', id }); setTab(0); }}
-                        renameFunction={(oldId, newId) => dispatch({ type: 'renameFunction', id: oldId, newId })}
-                        deleteFunction={id => dispatch({ type: 'deleteFunction', id })}
-                    />
-                </TabPanel>
-            </Paper>
+                    <TabPanel
+                        hidden={tab !== 1}
+                        id="libraryTabContent"
+                        tabId="libraryTab"
+                    >
+                        <FunctionLibrary
+                            allFunctions={[...state.functionLibrary.keys()]}
+                            currentFunction={state.currentFunctionId}
+                            selectFunction={id => { dispatch({ type: 'openFunction', id }); setTab(0); }}
+                            renameFunction={(oldId, newId) => dispatch({ type: 'renameFunction', id: oldId, newId })}
+                            deleteFunction={id => dispatch({ type: 'deleteFunction', id })}
+                        />
+                    </TabPanel>
+                </Paper>
             </Box>
 
             <Output
-                sx={ioListStyle}
+                sx={columnStyle}
                 value={state.outputValue}
                 error={state.functionError}
             />
