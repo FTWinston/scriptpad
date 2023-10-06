@@ -1,4 +1,3 @@
-import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
@@ -8,6 +7,7 @@ import ClearIcon from '@mui/icons-material/Delete';
 import DeleteIcon from '@mui/icons-material/DeleteForever';
 import type { SxProps } from '@mui/material/styles';
 import { useRef } from 'react';
+import { IconBar } from './IconBar';
 
 interface Props {
     label: string;
@@ -31,12 +31,6 @@ const rootStyle: SxProps = {
     position: 'relative',
     display: 'flex',
     alignItems: 'stretch'
-}
-
-const iconBarStyle: SxProps = {
-    position: 'absolute',
-    right: 8,
-    top: 8
 }
 
 export const InputText: React.FC<Props> = props => {
@@ -95,7 +89,7 @@ export const InputText: React.FC<Props> = props => {
                 onChange={e => props.onChange(e.target.value)}
             />
             
-            <Box sx={iconBarStyle}>
+            <IconBar>
                 <IconButton
                     title="insert tab character"
                     color="primary"
@@ -115,7 +109,7 @@ export const InputText: React.FC<Props> = props => {
                 </IconButton>
 
                 {clearOrDelete}
-            </Box>
+            </IconBar>
         </Paper>
     );
 }

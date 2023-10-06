@@ -1,9 +1,9 @@
-import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
 import type { SxProps } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import CopyIcon from '@mui/icons-material/ContentCopy';
+import { IconBar } from './IconBar';
 
 export interface Props {
     sx?: SxProps;
@@ -30,12 +30,6 @@ const textStyle: SxProps = {
     },
 }
 
-const iconBarStyle: SxProps = {
-    position: 'absolute',
-    right: 8,
-    top: 8
-}
-
 export const Output: React.FC<Props> = props => {
     const valueIsEmpty = props.value === '';
 
@@ -54,7 +48,7 @@ export const Output: React.FC<Props> = props => {
                 value={props.value}
             />
 
-            <Box sx={iconBarStyle}>
+            <IconBar>
                 <IconButton
                     color="primary"
                     title="copy text to clipboard"
@@ -63,7 +57,7 @@ export const Output: React.FC<Props> = props => {
                 >
                     <CopyIcon />
                 </IconButton >
-            </Box>
+            </IconBar>
         </Paper>
     );
 }
