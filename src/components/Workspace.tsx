@@ -26,26 +26,23 @@ const rootStyle: SxProps = {
     padding: 1,
     gridTemplate: '1fr / 1fr 1fr 1fr',
     backgroundColor: 'background.default',
-    minHeight: 'calc(100vh - 2em)',
-    maxHeight: 'calc(100vh - 2em)',
     alignItems: 'stretch',
     overflow: 'hidden',
 }
+
 const columnStyle: SxProps = {
     display: 'flex',
     flexDirection: 'column',
     gap: 1,
     flexGrow: 1,
-    overflowY: 'auto',
+    position: 'relative',
+    minHeight: 'calc(100vh - 2em)',
+    maxHeight: 'calc(100vh - 2em)',
 }
 
-const functionsStyle: SxProps = {
-    display: 'flex',
-    flexDirection: 'column',
-    position: 'sticky',
-    top: 0,
-    left: 0,
-    right: 0,
+const ioColumnStyle: SxProps = {
+    ...columnStyle,
+    overflowY: 'auto',
 }
 
 export const Workspace: React.FC<Props> = props => {
@@ -87,60 +84,57 @@ export const Workspace: React.FC<Props> = props => {
     return (
         <Box sx={rootStyle}>
             <InputList
-                sx={columnStyle}
+                sx={ioColumnStyle}
                 entries={state.inputValues}
                 addEntry={name => dispatch({ type: 'addInput', name })}
                 removeEntry={(name) => dispatch({ type: 'removeInput', name })}
                 setValue={(name, value) => dispatch({ type: 'setInput', name, value })}
             />
 
-            <Box sx={columnStyle}>
-                <Paper sx={functionsStyle} elevation={3}>
-                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                        <Tabs
-                            value={tab}
-                            onChange={(_, newVal) => setTab(newVal)}
-                            aria-label="Mode selection"
-                            variant="fullWidth"
-                        >
-                            <Tab label="Editor" id="codeTab" aria-controls="codeTabContent" />
-                            <Tab label="Library" id="libraryTab" aria-controls="libraryTabContent" />
-                        </Tabs>
-                    </Box>
-                    
-                    <TabPanel
-                        hidden={tab !== 0}
-                        id="codeTabContent"
-                        tabId="codeTab"
-                    >
-                        <FunctionEditor
-                            id={state.currentFunctionId}
-                            parameters={state.currentFunction.parameters}
-                            body={state.currentFunction.body}
-                            setBody={value => dispatch({ type: 'setFunctionBody', value })}
-                            hasChanges={state.unsavedChangesToCurrentFunction}
-                            saveChanges={saveChanges}
-                        />
-                    </TabPanel>
+            <Paper sx={columnStyle} elevation={3}>
+                <Tabs
+                    value={tab}
+                    onChange={(_, newVal) => setTab(newVal)}
+                    aria-label="Mode selection"
+                    variant="fullWidth"
+                    sx={{ borderBottom: 1, borderColor: 'divider' }}
+                >
+                    <Tab label="Editor" id="codeTab" aria-controls="codeTabContent" />
+                    <Tab label="Library" id="libraryTab" aria-controls="libraryTabContent" />
+                </Tabs>
 
-                    <TabPanel
-                        hidden={tab !== 1}
-                        id="libraryTabContent"
-                        tabId="libraryTab"
-                    >
-                        <FunctionLibrary
-                            allFunctions={[...state.functionLibrary.keys()]}
-                            currentFunction={state.currentFunctionId}
-                            selectFunction={id => { dispatch({ type: 'openFunction', id }); setTab(0); }}
-                            renameFunction={(oldId, newId) => dispatch({ type: 'renameFunction', id: oldId, newId })}
-                            deleteFunction={id => dispatch({ type: 'deleteFunction', id })}
-                        />
-                    </TabPanel>
-                </Paper>
-            </Box>
+                <TabPanel
+                    hidden={tab !== 0}
+                    id="codeTabContent"
+                    tabId="codeTab"
+                >
+                    <FunctionEditor
+                        id={state.currentFunctionId}
+                        parameters={state.currentFunction.parameters}
+                        body={state.currentFunction.body}
+                        setBody={value => dispatch({ type: 'setFunctionBody', value })}
+                        hasChanges={state.unsavedChangesToCurrentFunction}
+                        saveChanges={saveChanges}
+                    />
+                </TabPanel>
+
+                <TabPanel
+                    hidden={tab !== 1}
+                    id="libraryTabContent"
+                    tabId="libraryTab"
+                >
+                    <FunctionLibrary
+                        allFunctions={[...state.functionLibrary.keys()]}
+                        currentFunction={state.currentFunctionId}
+                        selectFunction={id => { dispatch({ type: 'openFunction', id }); setTab(0); }}
+                        renameFunction={(oldId, newId) => dispatch({ type: 'renameFunction', id: oldId, newId })}
+                        deleteFunction={id => dispatch({ type: 'deleteFunction', id })}
+                    />
+                </TabPanel>
+            </Paper>
 
             <Output
-                sx={columnStyle}
+                sx={ioColumnStyle}
                 value={state.outputValue}
                 error={state.functionError}
             />

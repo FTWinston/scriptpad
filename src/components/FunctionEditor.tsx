@@ -19,7 +19,6 @@ export interface Props extends IFunction {
 
 const rootStyle: SxProps = {
     display: 'flex',
-    position: 'relative',
     flexDirection: 'column',
     alignContent: 'stretch',
     padding: '0.5em',

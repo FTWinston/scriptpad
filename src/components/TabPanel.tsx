@@ -18,6 +18,7 @@ const rootStyle: SxProps = {
     '& > :last-child': {
         flexGrow: 1,
     },
+    overflowY: 'auto',
 }
 
 export const TabPanel: React.FC<PropsWithChildren<Props>> = props => (
