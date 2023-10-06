@@ -146,7 +146,10 @@ export function workspaceReducer(state: WorkspaceState, action: WorkspaceAction)
 
             state.currentFunctionId = action.id;
             state.currentFunction = functionToOpen;
-            state.inputValues = new Map(functionToOpen.parameters.map(name => [name, '']));
+            
+            // Preserve existing input values with the same name as those on the new function, where they match.
+            state.inputValues = new Map(functionToOpen.parameters.map(name => [name, state.inputValues.get(name) ?? '']));
+            
             state.outputValue = '';
             state.functionError = false;
             state.unsavedChangesToCurrentFunction = false;
